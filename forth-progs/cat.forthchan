@@ -1,0 +1,30 @@
+: swap-second-third
+	rot
+	1 roll 
+;
+
+: cat
+	-1 	\ counter
+	begin
+		1 +			\ increment counter
+		key			\ read ascii character
+		dup 13 =		\ check if key is enter
+		swap-second-third	\ place counter right after flag
+	until
+	swap drop 	\ ignore enter, after counter is on top
+	1 -		\ fix indexing
+	-1	\ loop from count till 0
+	swap
+	?do i
+		pick
+		emit
+	1 -loop
+	cr
+;
+
+: ttest
+	-1 3 ?do i . 1 -loop
+;
+ttest
+cr
+cat

@@ -1,0 +1,23 @@
+: test1 ( start step -- count step )
+    swap
+    1 0 do i
+	.
+      over +
+      dup .
+      dup 20 > if 
+        ." >20 "
+        leave
+      then
+      dup 13 = if
+        ." =13 "
+        leave
+      then
+      dup 17 = if
+        ." =17 "
+        leave
+      then
+    0 +loop
+;
+
+1 20 
+test1

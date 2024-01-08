@@ -1,0 +1,28 @@
+: prob5 ( from, to )
+	-1
+	2 pick	\ start with to	
+	do i	\ o_i, stack is ( o_i, from, to)
+		0 3 pick 3 pick		\ adding flag before and dupl from to
+			.s cr
+		do i				\ stack is ( i, flag, o_i, from, to )
+			.s
+			rot dup 2 roll .s mod		\ stack is ( o_i % i, o_i, flag )
+			.s cr
+			0 <> if
+				.s cr
+				swap drop -1	 	\ flag is false - not an answer
+				.s cr
+				leave
+			then
+			swap
+		loop
+		swap				\ stack is ( flag, o_i )
+		if
+			exit
+		then
+	loop
+;
+
+20 1+
+1
+prob5 .

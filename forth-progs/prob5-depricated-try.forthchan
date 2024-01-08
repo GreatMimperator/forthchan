@@ -1,0 +1,70 @@
+: swap-second-third
+	rot
+	1 roll 
+;
+
+: is-prime-by-found-primes 
+	\ ( num, count, [array of [prime, power]])
+	over	\ dupl count
+	0
+	?do i
+		2 *	\ prime position
+		2 +	\ jmp to array begin
+		pick	\ take prime
+		2 pick	\ take number
+		swap	\ prime on top
+		mod	
+		0 <> if
+			drop	\ drop mod result
+			-1	\ false flag
+			exit
+		then
+		drop	\ drop mod result
+	loop
+	0	\ true flag
+;
+
+: find-prime-power ( number, prime )
+	-1
+	0 ?do i
+		rot swap	\ access number prime
+		2dup mod	\ 0 means can continue
+		0 <> if
+			2 roll	\ up power
+			exit
+		then
+		2 roll	\ drop i
+	loop
+;
+
+\ (number, prime, count[not used], [array of [prime, power]])
+: add-prime 
+	find-prime-power
+	rot
+	over	\ (prime, count, (prime, 1) - array part, [array before insert])
+;
+
+\ (prime, count[not used], [array of [prime, power]], number)
+: take-number-before-array
+	1 pick	\ count
+	1 - 2 *	\ last prime position
+	2 +	\ jump to array begin
+	2 +	\ number position
+	pick	\ take number
+;
+
+: decompose-prime-factors
+	dup	\ put number before array
+	0 swap	\ count of already found primes
+	2	\ first possible prime
+	?do i
+		is-prime-by-found-primes
+		if
+			take-number-before-array
+			add-prime
+		then
+	loop
+;
+
+20
+decompose-prime-factors

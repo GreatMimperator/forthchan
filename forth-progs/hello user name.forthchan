@@ -10,7 +10,7 @@
 	loop
 ;
 
-: cat
+: read-in-stack
 	-1 	\ counter
 	begin
 		1 +			\ increment counter
@@ -19,15 +19,19 @@
 		swap-second-third	\ place counter right after flag
 	until
 	swap drop 	\ ignore enter, after counter is on top
-	dup		\ save count for clearing stack buffer
+;
+
+: print-from-stack
+	dup		\ save count
 	0		\ loop from (count + 1) till 1 inclusive (cause I save count) 
 	swap
 	?do i
 		pick
 		emit
 	1 -loop
-	clear-stack
 ;
 
-cat
-cr
+." What is your name?" cr
+read-in-stack
+." Hello, " print-from-stack ." !" cr
+clear-stack

@@ -1,1 +1,18 @@
-." Hello world" cr
+: print-stack
+	-1
+	0
+	do
+		dup
+		if
+			leave
+		then
+		emit
+	loop
+;
+
+: add-hello-world-to-stack
+	0 33 100 108 114 111 119 32 111 108 108 101 72
+;
+
+add-hello-world-to-stack
+print-stack cr

@@ -1,0 +1,10 @@
+
+: smth
+	-1
+	1
+	do
+		key .
+	loop
+;
+
+smth

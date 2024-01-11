@@ -6,19 +6,18 @@
 			.s cr
 		do i				\ stack is ( i, flag, o_i, from, to )
 			.s
-			rot dup 2 roll .s mod		\ stack is ( o_i % i, o_i, flag )
+			pick 2 swap mod		    \ stack is ( o_i % i, flag, o_i )
 			.s cr
 			0 <> if
 				.s cr
-				swap drop -1	 	\ flag is false - not an answer
+				drop -1	 	\ flag is false - not an answer
 				.s cr
 				leave
 			then
-			swap
 		loop
 		swap				\ stack is ( flag, o_i )
 		if
-			exit
+			leave
 		then
 	loop
 ;

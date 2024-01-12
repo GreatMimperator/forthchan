@@ -1,31 +1,36 @@
-: swap-second-third
+:swap-second-third
 	rot
 	1 roll 
 ;
 
-: clear-stack
+:clear-stack
 	0
-	?do
+	do
 		drop
 	loop
 ;
 
-: cat
+:cat
 	-1 	\ counter
 	begin
 		1 +			\ increment counter
 		key			\ read ascii character
 		dup 13 =		\ check if key is enter
 		swap-second-third	\ place counter right after flag
+		if
+		    0
+		else
+		    1
+		then
 	until
 	swap drop 	\ ignore enter, after counter is on top
 	dup		\ save count for clearing stack buffer
 	0		\ loop from (count + 1) till 1 inclusive (cause I save count) 
 	swap
-	?do i
+	doi
 		pick
 		emit
-	1 -loop
+	1 mloop
 	clear-stack
 ;
 

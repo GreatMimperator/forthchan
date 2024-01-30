@@ -2,41 +2,32 @@
 """Транслятор forthchan в машинный код.
 """
 
+import re
+import struct
 import sys
 
-from isa import Opcode, Term, write_code
-import re
+from isa import Opcode, Instruction, Term, write_code
 
 
-def symbols():
-    """Полное множество символов языка brainfuck."""
-    return {"<", ">", "+", "-", ",", ".", "[", "]"}
-
-
-def symbol2opcode(symbol):
-    """Отображение операторов исходного кода в коды операций."""
-    return {
-        "<": Opcode.LEFT,
-        ">": Opcode.RIGHT,
-        "+": Opcode.INC,
-        "-": Opcode.DEC,
-        ",": Opcode.INPUT,
-        ".": Opcode.PRINT,
-    }.get(symbol)
+def is_int64(value: int) -> bool:
+    try:
+        packed_value = struct.pack('q', value)
+        return len(packed_value) == 8
+    except struct.error:
+        return False
 
 
 def is_correct_number(char_seq: str) -> bool:
     try:
-        int(char_seq)
-        return True
+        value = int(char_seq)
+        return is_int64(value)
     except ValueError:
         return False
 
 
 def is_sign_word(char_seq: str) -> bool:
-    if len(char_seq) != 0:
-        return False
-    return char_seq in ["+", "-", "/", "*"]
+    return len(char_seq) != 1 and \
+        char_seq in ["+", "-", "/", "*"]
 
 
 def is_equals_word(char_seq: str) -> bool:
@@ -44,8 +35,9 @@ def is_equals_word(char_seq: str) -> bool:
 
 
 def is_word(char_seq: str) -> bool:
-    return re.fullmatch(r"[a-zA-Z][a-zA-Z\-]*", char_seq) \
+    return re.fullmatch(r"[a-zA-Z][a-zA-Z\-\\_]*", char_seq) \
         is not None
+
 
 def is_comment_mark(char_seq: str) -> bool:
     return char_seq == "\\"
@@ -57,8 +49,9 @@ def is_correct_word_def_term(char_seq: str) -> bool:
     return char_seq == ";"
 
 
-def is_correct_char_sequence_print(char_seq: str) -> bool:
-    return re.fullmatch(r"\.\"[ !#-~]+\"", char_seq) is not None
+# def is_correct_char_sequence_print(char_seq: str) -> bool:
+#     return re.fullmatch(r"\.\"[ !#-~]+\"", char_seq) \
+#         is not None
 
 
 def is_for_cycle_begin(char_seq: str) -> bool:
@@ -77,354 +70,245 @@ def is_while_cycle_end(char_seq: str) -> bool:
     return char_seq == "until"
 
 
-def lines2terms(lines):
-    """Трансляция текста в последовательность операторов языка (токенов).
+def lines_to_terms(lines: list[str]) -> list[Term]:
+    """Трансляция текста в последовательность операторов языка (токенов)
 
-    Включает в себя:
+    Проверок корректности сочетания термов функция не выполняет"""
 
-    - отсеивание комментариев;
-    - проверка формальной корректности программы.
-    """
-    terms = []
+    terms: list[Term] = []
     for line_num, line in enumerate(lines, 1):
         for pos, char_seq in enumerate(re.split(r"\s+", line.rstrip()), 1):
             if is_correct_number(char_seq) or \
                     is_sign_word(char_seq) or \
                     is_equals_word(char_seq) or \
                     is_word(char_seq) or \
-                    is_correct_word_def_term(char_seq) or \
-                    is_correct_char_sequence_print(char_seq):
+                    is_correct_word_def_term(char_seq):
                 terms.append(Term(line_num, pos, char_seq))
             elif is_comment_mark(char_seq):
                 break
             else:
                 assert f"Problems with {line_num}:{pos} term"
-    cycles = []  # for and while
-    is_in_word_def = False
-    if_began_count = 0
-    in_else_count = 0
-    for term in terms:
-        # print(term.symbol)
-        if is_word(term.symbol):
-            if is_for_cycle_begin(term.symbol):
-                cycles.append("for")
-                print(cycles)
-            elif is_while_cycle_begin(term.symbol):
-                cycles.append("while")
-                print(cycles)
-            elif is_for_cycle_end(term.symbol):
-                print(cycles)
-                assert len(cycles) > 0, "Bad cycle def!"
-                if cycles.pop() != "for":
-                    assert "Bad cycle def!"
-            elif is_while_cycle_end(term.symbol):
-                print(cycles)
-                assert len(cycles) > 0, "Bad cycle def!"
-                if cycles.pop() != "while":
-                    assert "Bad cycle def!"
-            elif term.symbol == "if":
-                if_began_count += 1
-            elif term.symbol == "else":
-                assert in_else_count < if_began_count, "Bad if-else def!"
-                in_else_count += 1
-            elif term.symbol == "then":
-                if in_else_count > 0:
-                    in_else_count -= 1
-                assert if_began_count > 0, "Bad if def!"
-                if_began_count -= 1
-            elif term.symbol[0] == ":":
-                assert if_began_count == 0 and \
-                       not is_in_word_def and \
-                       len(cycles) == 0, "Bad word def context!"
-                is_in_word_def = True
-            elif term.symbol == ";":
-                assert if_began_count == 0 and \
-                       is_in_word_def and \
-                       len(cycles) == 0, "Bad closes in word def (cycles or if statements)"
-                is_in_word_def = False
-    assert len(cycles) == 0 and \
-           not is_in_word_def and \
-           if_began_count == 0, "Bad closes (cycles, if statements or words def)"
     return terms
 
 
-def exec_2dup(code, pc, term):
-    code.append({"index": pc,
-                 "opcode": Opcode.DUP,
-                 "term": term})
+def code_correctness_check(terms: list[Term]):
+    """Проверка формальной корректности кода"""
+    blocks = []  # for, while and if
+    is_in_word_def = False
+    for term in terms:
+        if is_word(term.name):
+            if is_for_cycle_begin(term.name):
+                blocks.append({"name": "for"})
+            elif is_while_cycle_begin(term.name):
+                blocks.append({"name": "while"})
+            elif term.name == "if":
+                blocks.append({"name": "if", "had_else": False})
+            elif is_for_cycle_end(term.name):
+                if blocks.pop()["name"] != "for":
+                    assert "Bad \"for\" cycle def!"
+            elif is_while_cycle_end(term.name):
+                if blocks.pop()["name"] != "while":
+                    assert "Bad \"while\" cycle def!"
+            elif term.name == "else":
+                if blocks[-1]["name"] != "if" or blocks[-1]["had_else"]:
+                    assert "Bad \"if\" cycle def!"
+                blocks[-1] = {"name": "if", "had_else": True}
+            elif term.name == "then":
+                if blocks.pop()["name"] != "if":
+                    assert "Bad \"if\" cycle def!"
+            elif term.name[0] == ":":
+                if len(blocks) != 0 or is_in_word_def:
+                    assert "Bad word def def!"
+                is_in_word_def = True
+            elif term.name == ";":
+                if len(blocks) != 0 or not is_in_word_def:
+                    assert "Bad word def def!"
+                is_in_word_def = False
+    if len(blocks) != 0 or is_in_word_def:
+        assert "Bad word def def!"
+
+
+def exec_2dup(code: list[Instruction], pc: int, term: Term) -> [list[Instruction], int]:
+    code.append(Instruction(pc, Opcode.DUP, None, term))
     pc += 1
-    code.append({"index": pc,
-                 "opcode": Opcode.NUMBER,
-                 "arg": 2,
-                 "term": term})
+    code.append(Instruction(pc, Opcode.NUMBER, 2, term))
     pc += 1
-    code.append({"index": pc,
-                 "opcode": Opcode.PICK,
-                 "term": term})
+    code.append(Instruction(pc, Opcode.PICK, None, term))
     pc += 1
-    code.append({"index": pc,
-                 "opcode": Opcode.SWAP,
-                 "term": term})
+    code.append(Instruction(pc, Opcode.SWAP, None, term))
     pc += 1
     return code, pc
 
 
-def exec_loop(code, is_inc: bool, pc, jmp_to, term):
+def exec_loop(code: list[Instruction], is_inc: bool, pc: int, jmp_to: int, term: Term) -> [list[Instruction], int]:
     if is_inc:
-        code.append({"index": pc,
-                     "opcode": Opcode.INCREMENT_RET,
-                     "term": term})
+        code.append(Instruction(pc, Opcode.INCREMENT_RET, None, term))
     else:
-        code.append({"index": pc,
-                     "opcode": Opcode.DECREMENT_RET,
-                     "term": term})
+        code.append(Instruction(pc, Opcode.DECREMENT_RET, None, term))
     pc += 1
-    code.append({"index": pc,
-                 "opcode": Opcode.PUSH_TO_OD,
-                 "term": term})
+    code.append(Instruction(pc, Opcode.EQ_NOT_CONSUMING_RET, None, term))
     pc += 1
-    code.append({"index": pc,
-                 "opcode": Opcode.PUSH_TO_OD,
-                 "term": term})
+    code.append(Instruction(pc, Opcode.EXEC_COND_JMP_RET, jmp_to - pc, term))
     pc += 1
-    code, pc = exec_2dup(code, pc, term)
-    code.append({"index": pc,
-                 "opcode": Opcode.EQ,
-                 "term": term})
+    code.append(Instruction(pc, Opcode.SHIFT_BACK_RET, None, term))
     pc += 1
-    code.append({"index": pc,
-                 "opcode": Opcode.POP_TO_RET,
-                 "term": term})
-    pc += 1
-    code.append({"index": pc,
-                 "opcode": Opcode.EXEC_COND_JMP_RET,
-                 "arg": jmp_to - pc,
-                 "term": term})
-    pc += 1
-    code.append({"index": pc,
-                 "opcode": Opcode.SHIFT_BACK_RET,
-                 "term": term})
-    pc += 1
-    code.append({"index": pc,
-                 "opcode": Opcode.SHIFT_BACK_RET,
-                 "term": term})
+    code.append(Instruction(pc, Opcode.SHIFT_BACK_RET, None, term))
     pc += 1
     return code, pc
 
 
-def exec_roll(code, pc, term):
-    code.append({"index": pc,
-                 "opcode": Opcode.PUSH_TO_RET,
-                 "term": term})
+def exec_roll(code: list[Instruction], pc: int, term: Term) -> [list[Instruction], int]:
+    code.append(Instruction(pc, Opcode.PUSH_TO_RET, None, term))
     pc += 1
-    code.append({"index": pc,
-                 "opcode": Opcode.PUSH_0_TO_RET,
-                 "term": term})
+    code.append(Instruction(pc, Opcode.PUSH_0_TO_RET, None, term))
     pc += 1
-    code.append({"index": pc,
-                 "opcode": Opcode.REDUCE_OD_SHP_TO_ITS_VALUE,
-                 "term": term})
+    code.append(Instruction(pc, Opcode.REDUCE_OD_SHP_TO_ITS_VALUE_MINUS_ONE, None, term))
     pc += 1
     cycle_first_term_pc = pc  # exec-do - no need in init and adding index stages, but need to save first cycle term pc
-    code.append({"index": pc,
-                 "opcode": Opcode.SHIFT_FORWARD,
-                 "term": term})
+    code.append(Instruction(pc, Opcode.SHIFT_FORWARD, None, term))
     pc += 1
-    code.append({"index": pc,
-                 "opcode": Opcode.SWAP,
-                 "term": term})
+    code.append(Instruction(pc, Opcode.SWAP, None, term))
     pc += 1
     # exec-loop begin
     return exec_loop(code, True, pc, cycle_first_term_pc, term)
 
 
-def do_init_exec(code, pc, term):
-    code.append({"index": pc,
-                 "opcode": Opcode.SWAP,
-                 "term": term})
+def do_init_exec(code: list[Instruction], pc: int, term: Term) -> [list[Instruction], int]:
+    code.append(Instruction(pc, Opcode.SWAP, None, term))
     pc += 1
-    code.append({"index": pc,
-                 "opcode": Opcode.POP_TO_RET,
-                 "term": term})
+    code.append(Instruction(pc, Opcode.POP_TO_RET, None, term))
     pc += 1
-    code.append({"index": pc,
-                 "opcode": Opcode.POP_TO_RET,
-                 "term": term})
+    code.append(Instruction(pc, Opcode.POP_TO_RET, None, term))
     pc += 1
     return code, pc
 
-def do_index_adding_exec(code, pc, term):
-    code.append({"index": pc,
-                 "opcode": Opcode.PUSH_TO_OD,
-                 "term": term})
+
+def do_index_adding_exec(code: list[Instruction], pc: int, term: Term) -> [list[Instruction], int]:
+    code.append(Instruction(pc, Opcode.PUSH_TO_OD, None, term))
     pc += 1
     return code, pc
 
-def emit_exec(code, pc, term):
-    code.append({"index": pc,
-                 "opcode": Opcode.WRITE_PORT,
-                 "arg": 0,
-                 "term": term})
+
+def emit_exec(code: list[Instruction], pc: int, term: Term) -> [list[Instruction], int]:
+    code.append(Instruction(pc, Opcode.WRITE_PORT, 0, term))
     pc += 1
     return code, pc
 
 
 def translate(lines):
-    """Трансляция текста программы в машинный код.
+    """Трансляция текста программы в машинный код"""
+    terms = lines_to_terms(lines)
+    code_correctness_check(terms)
 
-    Выполняется в два этапа:
+    word_def_pc: dict[str, int] = {}
+    word_jmp_pcs: dict[str, list[int]] = {}
 
-    1. Трансляция текста в последовательность операторов языка (токенов).
-
-    2. Генерация машинного кода.
-
-        - Прямое отображение части операторов в машинный код.
-
-        - Отображение операторов цикла в инструкции перехода с учётом
-    вложенности и адресации инструкций. Подробнее см. в документации к
-    `isa.Opcode`.
-
-    """
-    terms = lines2terms(lines)
-
-    word_def_pc = {}
-    word_jmp_pcs = {}
-
-    code = []
-    jmp_points = []
-    leaves_points = []
+    code: list[Instruction] = []
+    jmp_points: list[int] = []
+    leaves_points: list[list[int]] = []
+    last_word_def_jmp_pc = None
     pc = 0
     for term in terms:
-        if is_word(term.symbol):
+        if is_word(term.name):
             no_arg_opcode = None
-            if term.symbol == "mod":
+            if term.name == "mod":
                 no_arg_opcode = Opcode.MOD
-            elif term.symbol == "dup":
+            elif term.name == "dup":
                 no_arg_opcode = Opcode.DUP
-            elif term.symbol == "pick":
+            elif term.name == "pick":
                 no_arg_opcode = Opcode.PICK
-            elif term.symbol == "swap":
+            elif term.name == "swap":
                 no_arg_opcode = Opcode.SWAP
-            elif term.symbol == "drop":
-                no_arg_opcode = Opcode.DROP
+            elif term.name == "drop":
+                no_arg_opcode = Opcode.SHIFT_BACK
             if no_arg_opcode is not None:
-                code.append({"index": pc,
-                             "opcode": no_arg_opcode,
-                             "term": term})
+                code.append(Instruction(pc, no_arg_opcode, None, term))
                 pc += 1
                 continue
-            if term.symbol == "roll":
+            if term.name == "roll":
                 code, pc = exec_roll(code, pc, term)
-            elif term.symbol == "rot":
-                code.append({"index": pc,
-                             "opcode": Opcode.NUMBER,
-                             "arg": 2,
-                             "term": term})
+            elif term.name == "rot":
+                code.append(Instruction(pc, Opcode.NUMBER, 2, term))
                 pc += 1
                 code, pc = exec_roll(code, pc, term)
-            elif term.symbol == "dudup":
+            elif term.name == "dudup":
                 code, pc = exec_2dup(code, pc, term)
-            elif term.symbol == "key":
-                code.append({"index": pc,
-                             "opcode": Opcode.READ_PORT,
-                             "arg": 1,
-                             "term": term})
+            elif term.name == "key":
+                code.append(Instruction(pc, Opcode.READ_PORT, 0, term))
                 pc += 1
-            elif term.symbol == "emit":
+            elif term.name == "emit":
                 code, pc = emit_exec(code, pc, term)
-            elif term.symbol == "cr":
-                code.append({"index": pc,
-                             "opcode": Opcode.NUMBER,
-                             "arg": 13,
-                             "term": term})
+            elif term.name == "cr":
+                code.append(Instruction(pc, Opcode.NUMBER, 13, term))
                 pc += 1
                 code, pc = emit_exec(code, pc, term)
-
             # с переходами - открывающие блоки
-            elif term.symbol == "do":
+            elif term.name == "do":
                 code, pc = do_init_exec(code, pc, term)
                 jmp_points.append(pc)
                 leaves_points.append([])
-            elif term.symbol == "doi":
+            elif term.name == "doi":
                 code, pc = do_init_exec(code, pc, term)
                 jmp_points.append(pc)
                 code, pc = do_index_adding_exec(code, pc, term)
                 leaves_points.append([])
-            elif term.symbol == "begin":
+            elif term.name == "begin":
                 jmp_points.append(pc)
                 leaves_points.append([])
-            elif term.symbol == "if":
-                code.append({"index": pc,
-                             "opcode": Opcode.EXEC_IF,
-                             "term": term})
+            elif term.name == "if":
+                code.append(Instruction(pc, Opcode.EXEC_IF, None, term))
                 pc += 1
                 jmp_points.append(pc)
-                code.append({"index": pc,
-                             "opcode": Opcode.JMP,
-                             "arg": None,
-                             "term": term})
+                code.append(Instruction(pc, Opcode.JMP, None, term))
                 pc += 1
             # с переходами - переходные блоки
-            elif term.symbol == "else":
+            elif term.name == "else":
                 if_false_jmp_pc = jmp_points.pop()
                 jmp_points.append(pc)
-                code.append({"index": pc,
-                             "opcode": Opcode.JMP,
-                             "arg": None,
-                             "term": term})
+                code.append(Instruction(pc, Opcode.JMP, None, term))
                 pc += 1
-                code[if_false_jmp_pc]["arg"] = pc - if_false_jmp_pc
-            elif term.symbol == "leave":
+                code[if_false_jmp_pc].arg = pc - if_false_jmp_pc
+            elif term.name == "leave":
                 leaves_points[-1].append(pc)
-                code.append({"index": pc,
-                             "opcode": Opcode.JMP,
-                             "arg": None,
-                             "term": term})
+                code.append(Instruction(pc, Opcode.JMP, None, term))
                 pc += 1
             # с переходами - закрывающие блоки
-            elif term.symbol == "then":
+            elif term.name == "then":
                 if_true_jmp_pc = jmp_points.pop()
-                code[if_true_jmp_pc]["arg"] = pc - if_true_jmp_pc
-            elif term.symbol == "until":
+                code[if_true_jmp_pc].arg = pc - if_true_jmp_pc
+            elif term.name == "until":
+                code.append(Instruction(pc, Opcode.NUMBER, 0, term))
+                pc += 1
+                code.append(Instruction(pc, Opcode.N_EQ, None, term))
+                pc += 1
                 begin_jmp_pc = jmp_points.pop()
-                code.append({"index": pc,
-                             "opcode": Opcode.EXEC_COND_JMP,
-                             "arg": begin_jmp_pc - pc - 1,  # указывает на инструкцию до той, на которую нужно прыгнуть
-                             "term": term})
+                code.append(Instruction(pc, Opcode.EXEC_COND_JMP, begin_jmp_pc - pc - 1, term))
+                # указывает на инструкцию до той, на которую нужно прыгнуть
                 pc += 1
                 for leave_pc in leaves_points[-1]:
-                    code[leave_pc]["arg"] = pc - leave_pc
+                    code[leave_pc].arg = pc - leave_pc
                 leaves_points.pop()
-            elif term.symbol in ["mloop", "loop"]:
+            elif term.name in ["mloop", "loop"]:
                 do_jmp_pc = jmp_points.pop()
-                code, pc = exec_loop(code, term.symbol == "loop", pc, do_jmp_pc, term)
+                code, pc = exec_loop(code, term.name == "loop", pc, do_jmp_pc - 1, term)
                 for leave_pc in leaves_points[-1]:
-                    code[leave_pc]["arg"] = pc - leave_pc - 2  # -2 to delete (from, to) from stack
+                    code[leave_pc].arg = pc - leave_pc - 2  # -2 to delete (from, to) from stack
                 leaves_points.pop()
             else:  # если пользовательское слово
-                code.append({"index": pc,
-                             "opcode": Opcode.PUSH_INC_INC_IP_TO_PRA_SHP,
-                             "term": term})
+                code.append(Instruction(pc, Opcode.PUSH_INC_INC_IP_TO_PRA_SHP, None, term))
                 pc += 1
-                if term.symbol not in word_jmp_pcs:
-                    word_jmp_pcs[term.symbol] = []
-                word_jmp_pcs[term.symbol].append(pc)
-                code.append({"index": pc,
-                             "opcode": Opcode.JMP,
-                             "arg": None,
-                             "term": term})
+                if term.name not in word_jmp_pcs:
+                    word_jmp_pcs[term.name] = []
+                word_jmp_pcs[term.name].append(pc)
+                code.append(Instruction(pc, Opcode.JMP, None, term))
                 pc += 1
-
         else:
-            if is_correct_number(term.symbol):
-                code.append({"index": pc,
-                             "opcode": Opcode.NUMBER,
-                             "arg": int(term.symbol),
-                             "term": term})
+            if is_correct_number(term.name):
+                code.append(Instruction(pc, Opcode.NUMBER, int(term.name), term))
                 pc += 1
-            elif is_sign_word(term.symbol) or is_equals_word(term.symbol):
+            elif is_sign_word(term.name) or is_equals_word(term.name):
                 opcode = None
-                match term.symbol:
+                match term.name:
                     case "+":
                         opcode = Opcode.SUM
                     case "-":
@@ -437,36 +321,33 @@ def translate(lines):
                         opcode = Opcode.EQ
                     case "<>":
                         opcode = Opcode.N_EQ
-                code.append({"index": pc,
-                             "opcode": opcode,
-                             "term": term})
+                code.append(Instruction(pc, opcode, None, term))
                 pc += 1
-            elif is_correct_word_def_term(term.symbol):
-                if term.symbol == ";":
-                    code.append({"index": pc,
-                                 "opcode": Opcode.JMP_POP_PRA_SHP,
-                                 "term": term})
+            elif is_correct_word_def_term(term.name):
+                if term.name == ";":
+                    code.append(Instruction(pc, Opcode.JMP_POP_PRA_SHP, None, term))
                     pc += 1
+                    code[last_word_def_jmp_pc].arg = pc - last_word_def_jmp_pc
                 else:
-                    word = term.symbol[1:]
+                    last_word_def_jmp_pc = pc
+                    code.append(Instruction(pc, Opcode.JMP, None, term))
+                    pc += 1
+                    word = term.name[1:]
                     word_def_pc[word] = pc
-            elif is_correct_char_sequence_print(term.symbol):
-                print("smth")
-                print(term.symbol[2:-1])
+            else:
+                assert "Somehow term not matched"
 
-    print(word_def_pc)
-    print(word_jmp_pcs)
     for word, pcs in word_jmp_pcs.items():
         def_pc = word_def_pc[word]
         for pc in pcs:
-            code[pc]["arg"] = def_pc - pc
+            code[pc].arg = def_pc - pc
 
     # Добавляем инструкцию остановки процессора в конец программы.
-    code.append({"index": len(code), "opcode": Opcode.HALT})
+    code.append(Instruction(len(code), Opcode.HALT, None, Term(-1, -1, '')))
     return code
 
 
-def main(source, target):
+def main(source: str, target: str):
     """Функция запуска транслятора. Параметры -- исходный и целевой файлы."""
     with open(source, encoding="utf-8") as f:
         source = f.read().splitlines()

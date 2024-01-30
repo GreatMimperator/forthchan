@@ -12,13 +12,13 @@
 ```json
 [
     {
-        "index": 0,
-        "opcode": "jz",
-        "arg": 5,
+        "index": 4,
+        "opcode": "jmp",
+        "arg": -4,
         "term": [
-            1,
+            4,
             5,
-            "]"
+            "loop"
         ]
     },
 ]
@@ -33,20 +33,18 @@
 """
 
 import json
-from collections import namedtuple
 from enum import Enum
 
 
 class Opcode(str, Enum):
-    """
-    Opcode для инструкций.
-    """
+    """Коды инструкций"""
 
     SUM = "sum"
     DIFF = "diff"
     DIV = "div"
     MUL = "mul"
     EQ = "eq"
+    EQ_NOT_CONSUMING_RET = "eq not consuming ret"
     N_EQ = "not eq"
     MOD = "mod"
     DUP = "dup"
@@ -56,7 +54,7 @@ class Opcode(str, Enum):
     SWAP = "swap"
     PUSH_TO_RET = "push to ret"
     POP_TO_RET = "pop to ret"
-    REDUCE_OD_SHP_TO_ITS_VALUE = "reduce od shp to its value"
+    REDUCE_OD_SHP_TO_ITS_VALUE_MINUS_ONE = "reduce od shp to its value minus one"
     PUSH_0_TO_RET = "push 0 to ret"
     NUMBER = "number"
     JMP = "jmp"
@@ -68,6 +66,7 @@ class Opcode(str, Enum):
     DECREMENT_RET = "decrement ret"
     EXEC_COND_JMP_RET = "exec cond jmp ret"
     SHIFT_BACK_RET = "shift back ret"
+    SHIFT_FORWARD_RET = "shift forward ret"
     PUSH_INC_INC_IP_TO_PRA_SHP = "push inc inc ip to pra shp"
     JMP_POP_PRA_SHP = "jmp pop pra shp"
     HALT = "halt"
@@ -75,54 +74,62 @@ class Opcode(str, Enum):
     WRITE_PORT = "write port"
 
     def __str__(self):
-        """Переопределение стандартного поведения `__str__` для `Enum`: вместо
-        `Opcode.HALT` вернуть `halt`.
-        """
         return str(self.value)
 
 
-class Term(namedtuple("Term", "line pos symbol")):
-    """Описание выражения из исходного текста программы.
+class Term:
+    """Описание выражения из исходного текста программы"""
 
-    Сделано через класс, чтобы был docstring.
-    """
+    line_number: int
+    "Номер строки"
+
+    line_position: int
+    "Позиция начала команды (высокоуровневая, не путать с инструкцией) в строчке"
+
+    name: str
+    "Название команды"
+
+    def __init__(self, line_number: int, line_position: int, name: str):
+        self.line_number = line_number
+        self.line_position = line_position
+        self.name = name
 
 
 class Instruction:
-    index: int
-    opcode: str
-    arg: int
-    term: Term
+    """Описание инструкции процессора"""
 
-    def __init__(self, index: int, opcode: str, arg: int, term: Term):
+    index: int
+    "Индекс инструкции в программе"
+
+    opcode: Opcode
+    "Код инструкции"
+
+    arg: int | None
+    "Аргумент инструкции, если есть"
+
+    term: Term
+    "Описание команды высокоуровневого языка, разложенного в эту (и возможно несколько других) инструкцию"
+
+    def __init__(self, index: int, opcode: Opcode, arg: int | None, term: Term):
         self.index = index
         self.opcode = opcode
         self.arg = arg
         self.term = term
 
-
-def write_code(filename, code):
-    """Записать машинный код в файл."""
+def write_code(filename: str, code: list[Instruction]):
+    """Записать код из инструкций в файл."""
     with open(filename, "w", encoding="utf-8") as file:
-        # Почему не: `file.write(json.dumps(code, indent=4))`?
-        # Чтобы одна инструкция была на одну строку.
-        buf = []
-        for instr in code:
-            buf.append(json.dumps(instr))
-        file.write("[" + ",\n ".join(buf) + "]")
+        code_as_json: list[str] = []
+        for instruction in code:
+            code_as_json.append(json.dumps(instruction, default=lambda o: o.__dict__))
+        file.write("[" + ",\n ".join(code_as_json) + "]")
 
 
-def read_code(filename):
-    """Прочесть машинный код из файла.
-
-    Так как в файле хранятся не только простейшие типы (`Opcode`, `Term`), мы
-    также выполняем конвертацию в объекты классов вручную (возможно, следует
-    переписать через `JSONDecoder`, но это скорее усложнит код).
-
-    """
+def read_code(filename: str) -> list[Instruction]:
+    """Прочесть машинный код из файла"""
     with open(filename, encoding="utf-8") as file:
         code_json_objects = json.loads(file.read())
-    code = []
+    code: list[Instruction] = []
     for instruction_json in code_json_objects:
         index = int(instruction_json["index"])
         opcode = Opcode(instruction_json["opcode"])
@@ -130,6 +137,8 @@ def read_code(filename):
         if "arg" in instruction_json:
             arg = int(instruction_json["arg"])
         assert len(instruction_json["term"]) == 3
-        term = Term(instruction_json["term"][0], instruction_json["term"][1], instruction_json["term"][2])
+        term = Term(instruction_json["term"]["line_number"],
+                    instruction_json["term"]["line_position"],
+                    instruction_json["term"]["name"])
         code.append(Instruction(index, opcode, arg, term))
     return code

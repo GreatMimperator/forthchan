@@ -1,17 +1,14 @@
-: prob5 ( from, to )
+:prob \ ( from, to )
+    \ 1 pick \ to
 	-1
-	2 pick	\ start with to	
-	do i	\ o_i, stack is ( o_i, from, to)
+	\ swap \ start with to
+	232792560
+	doi	\ o_i, stack is ( o_i, from, to)
 		0 3 pick 3 pick		\ adding flag before and dupl from to
-			.s cr
-		do i				\ stack is ( i, flag, o_i, from, to )
-			.s
-			pick 2 swap mod		    \ stack is ( o_i % i, flag, o_i )
-			.s cr
+		doi				\ stack is ( i, flag, o_i, from, to )
+			2 pick swap mod		    \ stack is ( o_i % i, flag, o_i )
 			0 <> if
-				.s cr
-				drop -1	 	\ flag is false - not an answer
-				.s cr
+				drop -1 swap	 	\ flag is false - not an answer
 				leave
 			then
 		loop
@@ -19,9 +16,9 @@
 		if
 			leave
 		then
+		drop  \ drop o_i
 	loop
 ;
 
-20 1+
-1
-prob5 .
+20 1
+prob

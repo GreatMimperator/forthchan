@@ -1,4 +1,4 @@
-: print-stack
+:print_stack
 	-1
 	0
 	do
@@ -10,9 +10,9 @@
 	loop
 ;
 
-: add-hello-world-to-stack
+:add_hello_world_to_stack
 	0 33 100 108 114 111 119 32 111 108 108 101 72
 ;
 
-add-hello-world-to-stack
-print-stack cr
+add_hello_world_to_stack
+print_stack cr

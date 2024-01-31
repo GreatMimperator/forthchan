@@ -142,6 +142,9 @@ class DataPath:
                 self.data_memory[self.OD_SH_pointer - 1] %= self.data_memory[self.OD_SH_pointer]
             case Opcode.DUP:
                 self.data_memory[self.OD_SH_pointer + 1] = self.data_memory[self.OD_SH_pointer]
+            case Opcode.PUT:
+                wma = self.OD_SH_pointer - self.data_memory[self.OD_SH_pointer] - 2
+                self.data_memory[wma] = self.data_memory[self.OD_SH_pointer - 1]
             case Opcode.PICK:
                 match self.instruction_stage_number:
                     case 1:
@@ -214,7 +217,7 @@ class DataPath:
                 pass
             case Opcode.SUM | Opcode.DIFF | Opcode.DIV | \
                  Opcode.MUL | Opcode.EQ | Opcode.EQ_NOT_CONSUMING_RET | Opcode.N_EQ | \
-                 Opcode.MOD | Opcode.DUP | Opcode.SHIFT_BACK | \
+                 Opcode.MOD | Opcode.DUP | Opcode.PUT | Opcode.SHIFT_BACK | \
                  Opcode.SHIFT_FORWARD | Opcode.PUSH_TO_RET | Opcode.POP_TO_RET | \
                  Opcode.REDUCE_OD_SHP_TO_ITS_VALUE_MINUS_ONE | Opcode.PUSH_0_TO_RET | \
                  Opcode.NUMBER | Opcode.PUSH_TO_OD | Opcode.DUP_RET | \
@@ -249,7 +252,7 @@ class DataPath:
         match sel:
             case Opcode.SUM | Opcode.DIFF | Opcode.DIV | \
                  Opcode.MUL | Opcode.EQ | Opcode.N_EQ | Opcode.MOD | \
-                 Opcode.DUP | Opcode.SHIFT_BACK | \
+                 Opcode.DUP | Opcode.PUT | Opcode.SHIFT_BACK | \
                  Opcode.SHIFT_FORWARD | Opcode.REDUCE_OD_SHP_TO_ITS_VALUE_MINUS_ONE | Opcode.NUMBER | \
                  Opcode.JMP | Opcode.EXEC_IF | Opcode.EXEC_COND_JMP | \
                  Opcode.PUSH_TO_OD | Opcode.READ_PORT | Opcode.WRITE_PORT | Opcode.HALT:
@@ -298,6 +301,8 @@ class DataPath:
             case Opcode.DUP | Opcode.SHIFT_FORWARD | Opcode.NUMBER | \
                  Opcode.PUSH_TO_OD | Opcode.READ_PORT:
                 self.OD_SH_pointer += 1
+            case Opcode.PUT:
+                self.OD_SH_pointer -= 2
             case Opcode.PICK:
                 match self.instruction_stage_number:
                     case 1:
@@ -423,7 +428,8 @@ class ControlUnit:
                     self.tick()
             case Opcode.SUM | Opcode.DIFF | Opcode.DIV | \
                  Opcode.MUL | Opcode.EQ | Opcode.N_EQ | \
-                 Opcode.MOD | Opcode.DUP | Opcode.NUMBER:
+                 Opcode.MOD | Opcode.DUP | Opcode.PUT | \
+                 Opcode.NUMBER:
                 self.data_path.signal_data_memory_write(instruction)
                 self.data_path.signal_latch_OD_SH_pointer(instruction)
                 self.ip_latch(instruction)

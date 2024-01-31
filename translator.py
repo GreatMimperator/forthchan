@@ -215,6 +215,8 @@ def translate(lines):
                 no_arg_opcode = Opcode.MOD
             elif term.name == "dup":
                 no_arg_opcode = Opcode.DUP
+            elif term.name == "put":
+                no_arg_opcode = Opcode.PUT
             elif term.name == "pick":
                 no_arg_opcode = Opcode.PICK
             elif term.name == "swap":

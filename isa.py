@@ -48,6 +48,7 @@ class Opcode(str, Enum):
     N_EQ = "not eq"
     MOD = "mod"
     DUP = "dup"
+    PUT = "put"
     PICK = "pick"
     SHIFT_BACK = "shift back"
     SHIFT_FORWARD = "shift forward"

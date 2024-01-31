@@ -135,11 +135,12 @@ def read_code(filename: str) -> list[Instruction]:
         index = int(instruction_json["index"])
         opcode = Opcode(instruction_json["opcode"])
         arg = None
-        if "arg" in instruction_json:
+        if instruction_json["arg"] is not None:
             arg = int(instruction_json["arg"])
-        assert len(instruction_json["term"]) == 3
-        term = Term(instruction_json["term"]["line_number"],
-                    instruction_json["term"]["line_position"],
-                    instruction_json["term"]["name"])
+        term_as_dict = instruction_json["term"]
+        assert len(term_as_dict) == 3
+        term = Term(term_as_dict["line_number"],
+                    term_as_dict["line_position"],
+                    term_as_dict["name"])
         code.append(Instruction(index, opcode, arg, term))
     return code

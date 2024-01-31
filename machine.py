@@ -352,19 +352,23 @@ class ControlUnit:
     def ip_latch(self, instruction: Instruction):
         self.data_path.signal_latch_instruction_pointer(instruction)
 
-    def decode_and_execute_instruction(self):
-        """Основной цикл процессора. Декодирует и выполняет инструкцию"""
+    def next_tick_execute(self) -> bool:
+        """Основной цикл процессора. Декодирует и выполняет тик инструкции
+        (возвращает истину если тик был последним в инструкции)"""
         instruction = self.current_instruction()
 
+        is_last_instruction_tick = False
         match instruction.opcode:
             case Opcode.HALT:
                 if not self.is_in_interruption:
                     raise StopIteration()
                 else:
+                    self.data_path.instruction_stage_number = self.data_path.data_memory[self.data_path.PRA_SH_pointer]
+                    self.data_path.PRA_SH_pointer += 1
                     self.data_path.instruction_pointer = self.data_path.data_memory[self.data_path.PRA_SH_pointer]
                     self.data_path.PRA_SH_pointer += 1
                     self.is_in_interruption = False
-                    self.tick()
+                    is_last_instruction_tick = True
             case Opcode.SUM | Opcode.DIFF | Opcode.DIV | \
                  Opcode.MUL | Opcode.EQ | Opcode.N_EQ | \
                  Opcode.MOD | Opcode.DUP | Opcode.PUT | \
@@ -372,116 +376,126 @@ class ControlUnit:
                 self.data_path.signal_data_memory_write(instruction)
                 self.data_path.signal_latch_OD_SH_pointer(instruction)
                 self.ip_latch(instruction)
-                self.tick()
+                is_last_instruction_tick = True
             case Opcode.EQ_NOT_CONSUMING_RET:
                 self.data_path.signal_data_memory_write(instruction)
                 self.data_path.signal_latch_PRA_SH_pointer(instruction)
                 self.ip_latch(instruction)
-                self.tick()
+                is_last_instruction_tick = True
             case Opcode.PICK:
-                self.data_path.signal_data_memory_write(instruction)
-                self.data_path.signal_latch_OD_SH_pointer(instruction)
-                self.data_path.signal_latch_PRA_SH_pointer(instruction)
-                self.tick()
-                self.data_path.signal_data_memory_write(instruction)
-                self.data_path.signal_latch_OD_SH_pointer(instruction)
-                self.data_path.signal_latch_PRA_SH_pointer(instruction)
-                self.ip_latch(instruction)
-                self.tick()
+                match self.data_path.instruction_stage_number:
+                    case 1:
+                        self.data_path.signal_data_memory_write(instruction)
+                        self.data_path.signal_latch_OD_SH_pointer(instruction)
+                        self.data_path.signal_latch_PRA_SH_pointer(instruction)
+                    case 2:
+                        self.data_path.signal_data_memory_write(instruction)
+                        self.data_path.signal_latch_OD_SH_pointer(instruction)
+                        self.data_path.signal_latch_PRA_SH_pointer(instruction)
+                        self.ip_latch(instruction)
+                        is_last_instruction_tick = True
             case Opcode.SHIFT_BACK | Opcode.SHIFT_FORWARD:
                 self.data_path.signal_latch_OD_SH_pointer(instruction)
                 self.ip_latch(instruction)
-                self.tick()
+                is_last_instruction_tick = True
             case Opcode.SWAP:
-                self.data_path.signal_data_memory_write(instruction)
-                self.data_path.signal_latch_PRA_SH_pointer(instruction)
-                self.data_path.signal_latch_OD_SH_pointer(instruction)
-                self.tick()
-                self.data_path.signal_data_memory_write(instruction)
-                self.data_path.signal_latch_OD_SH_pointer(instruction)
-                self.tick()
-                self.data_path.signal_data_memory_write(instruction)
-                self.data_path.signal_latch_PRA_SH_pointer(instruction)
-                self.ip_latch(instruction)
-                self.tick()
+                match self.data_path.instruction_stage_number:
+                    case 1:
+                        self.data_path.signal_data_memory_write(instruction)
+                        self.data_path.signal_latch_PRA_SH_pointer(instruction)
+                        self.data_path.signal_latch_OD_SH_pointer(instruction)
+                    case 2:
+                        self.data_path.signal_data_memory_write(instruction)
+                        self.data_path.signal_latch_OD_SH_pointer(instruction)
+                    case 3:
+                        self.data_path.signal_data_memory_write(instruction)
+                        self.data_path.signal_latch_PRA_SH_pointer(instruction)
+                        self.ip_latch(instruction)
+                        is_last_instruction_tick = True
             case Opcode.PUSH_TO_RET:
                 self.data_path.signal_data_memory_write(instruction)
                 self.data_path.signal_latch_PRA_SH_pointer(instruction)
                 self.ip_latch(instruction)
-                self.tick()
+                is_last_instruction_tick = True
             case Opcode.POP_TO_RET:
                 self.data_path.signal_data_memory_write(instruction)
                 self.data_path.signal_latch_PRA_SH_pointer(instruction)
                 self.data_path.signal_latch_OD_SH_pointer(instruction)
                 self.ip_latch(instruction)
-                self.tick()
+                is_last_instruction_tick = True
             case Opcode.REDUCE_OD_SHP_TO_ITS_VALUE_MINUS_ONE:
                 self.data_path.signal_latch_OD_SH_pointer(instruction)
                 self.ip_latch(instruction)
-                self.tick()
+                is_last_instruction_tick = True
             case Opcode.PUSH_0_TO_RET:
                 self.data_path.signal_data_memory_write(instruction)
                 self.data_path.signal_latch_PRA_SH_pointer(instruction)
                 self.ip_latch(instruction)
-                self.tick()
+                is_last_instruction_tick = True
             case Opcode.JMP:
                 self.ip_latch(instruction)
-                self.tick()
+                is_last_instruction_tick = True
             case Opcode.EXEC_IF | Opcode.EXEC_COND_JMP:
                 self.ip_latch(instruction)
                 self.data_path.signal_latch_OD_SH_pointer(instruction)
-                self.tick()
+                is_last_instruction_tick = True
             case Opcode.PUSH_TO_OD:
                 self.data_path.signal_data_memory_write(instruction)
                 self.data_path.signal_latch_OD_SH_pointer(instruction)
                 self.ip_latch(instruction)
-                self.tick()
+                is_last_instruction_tick = True
             case Opcode.DUP_RET:
                 self.data_path.signal_data_memory_write(instruction)
                 self.data_path.signal_latch_PRA_SH_pointer(instruction)
                 self.ip_latch(instruction)
-                self.tick()
+                is_last_instruction_tick = True
             case Opcode.INCREMENT_RET | Opcode.DECREMENT_RET:
-                self.data_path.signal_data_memory_write(instruction)
-                self.data_path.signal_latch_PRA_SH_pointer(instruction)
-                self.tick()
-                self.data_path.signal_data_memory_write(instruction)
-                self.data_path.signal_latch_PRA_SH_pointer(instruction)
-                self.ip_latch(instruction)
-                self.tick()
+                match self.data_path.instruction_stage_number:
+                    case 1:
+                        self.data_path.signal_data_memory_write(instruction)
+                        self.data_path.signal_latch_PRA_SH_pointer(instruction)
+                    case 2:
+                        self.data_path.signal_data_memory_write(instruction)
+                        self.data_path.signal_latch_PRA_SH_pointer(instruction)
+                        self.ip_latch(instruction)
+                        is_last_instruction_tick = True
             case Opcode.EXEC_COND_JMP_RET:
                 self.ip_latch(instruction)
                 self.data_path.signal_latch_PRA_SH_pointer(instruction)
-                self.tick()
+                is_last_instruction_tick = True
             case Opcode.SHIFT_BACK_RET:
                 self.data_path.signal_latch_PRA_SH_pointer(instruction)
                 self.ip_latch(instruction)
-                self.tick()
+                is_last_instruction_tick = True
             case Opcode.SHIFT_FORWARD_RET:
                 self.data_path.signal_latch_PRA_SH_pointer(instruction)
                 self.ip_latch(instruction)
-                self.tick()
+                is_last_instruction_tick = True
             case Opcode.PUSH_INC_INC_IP_TO_PRA_SHP:
                 self.data_path.signal_data_memory_write(instruction)
                 self.data_path.signal_latch_PRA_SH_pointer(instruction)
                 self.ip_latch(instruction)
-                self.tick()
+                is_last_instruction_tick = True
             case Opcode.JMP_POP_PRA_SHP:
                 self.ip_latch(instruction)
                 self.data_path.signal_latch_PRA_SH_pointer(instruction)
-                self.tick()
+                is_last_instruction_tick = True
             case Opcode.WRITE_PORT:
                 self.data_path.signal_latch_port_value(instruction)
                 self.data_path.signal_latch_OD_SH_pointer(instruction)
                 self.ip_latch(instruction)
-                self.tick()
+                is_last_instruction_tick = True
             case Opcode.READ_PORT:
                 self.data_path.signal_data_memory_write(instruction)
                 self.data_path.signal_latch_port_value(instruction)
                 self.data_path.signal_latch_OD_SH_pointer(instruction)
                 self.ip_latch(instruction)
-                self.tick()
-        self.data_path.signal_reset_instruction_stage_number()
+                is_last_instruction_tick = True
+        if is_last_instruction_tick:
+            self.data_path.signal_reset_instruction_stage_number()
+        else:
+            self.tick()
+        return is_last_instruction_tick
 
     def __repr__(self):
         """Вернуть строковое представление состояния процессора."""
@@ -513,6 +527,9 @@ class ControlUnit:
         self.data_path.PRA_SH_pointer -= 1
         self.data_path.data_memory[self.data_path.PRA_SH_pointer] = self.data_path.instruction_pointer
         self.data_path.instruction_pointer = write_handler_start_pc
+        self.data_path.PRA_SH_pointer -= 1
+        self.data_path.data_memory[self.data_path.PRA_SH_pointer] = self.data_path.instruction_stage_number
+        self.data_path.instruction_stage_number = 1
 
 
 def simulation(data_memory_size: int,
@@ -550,11 +567,12 @@ def simulation(data_memory_size: int,
                 instr_counter += 1
                 logging.debug("Write interruption!!! %s", control_unit)
                 continue
-            control_unit.decode_and_execute_instruction()
-            instr_counter += 1
+            is_last_tick_gone = control_unit.next_tick_execute()
+            if is_last_tick_gone:
+                instr_counter += 1
             logging.debug("%s", control_unit)
             if data_path.ports[0].ready and data_path.ports[0].ready != ready_before:
-                print("Printed:", data_path.ports[0].data)
+                logging.debug("Printed:", data_path.ports[0].data)
                 data_path.ports[0].ready = False
                 control_unit.is_in_interruption = True
                 data_path.write_into_port(MAIN_PORT_NUMBER, trimmed_input_tokens[instr_counter])
@@ -565,7 +583,6 @@ def simulation(data_memory_size: int,
     except StopIteration:
         pass
 
-    logging.debug("%s", control_unit)
     if instr_counter >= limit:
         logging.warning("Limit exceeded!")
     # logging.info("output_buffer: %s", repr("".join(data_path.output_buffer)))
@@ -575,8 +592,8 @@ def simulation(data_memory_size: int,
 
 def main(code_file: str, input_file: str, ports_interruption_handlers_files: list[str]):
     """Функция запуска модели процессора
-    input_file - это файл, в котором каждая строчка представляет собой пару из индекса инструкции, перед которой выполняется ввод,
-    и сам вводимый символ"""
+    input_file - это файл, в котором каждая строчка представляет собой пару из индекса тика,
+    перед которым выполняется ввод, и сам вводимый символ"""
     program = read_code(code_file)
     input_tokens: list[tuple[int, int]] = []
     with open(input_file, 'r', encoding="utf-8") as file:

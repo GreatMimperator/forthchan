@@ -17,17 +17,6 @@ import sys
 from isa import Opcode, read_code, Term, Instruction
 
 
-class HistoricalInput:
-    instruction_index: int
-    port_index: int
-    data_to_put: int
-
-    def __init__(self, instruction_index: int, port_index: int, data_to_put: int):
-        self.instruction_index = instruction_index
-        self.port_index = port_index
-        self.data_to_put = data_to_put
-
-
 class Port:
     ready: bool = False
     data: int = None
@@ -345,41 +334,7 @@ class ControlUnit:
     управляет состоянием модели процессора, включая обработку данных (DataPath).
 
     Согласно варианту, любая инструкция может быть закодирована в одно слово.
-    Следовательно, индекс памяти команд эквивалентен номеру инструкции.
-
-    ```text
-    +------------------(+1)-------+
-    |                             |
-    |   +-----+                   |
-    +-->|     |     +---------+   |    +---------+
-        | MUX |---->| program |---+--->| program |
-    +-->|     |     | counter |        | memory  |
-    |   +-----+     +---------+        +---------+
-    |      ^                               |
-    |      | sel_next                      | current instruction
-    |      |                               |
-    +---------------(select-arg)-----------+
-           |                               |      +---------+
-           |                               |      |  step   |
-           |                               |  +---| counter |
-           |                               |  |   +---------+
-           |                               v  v        ^
-           |                       +-------------+     |
-           +-----------------------| instruction |-----+
-                                   |   decoder   |
-                                   |             |<-------+
-                                   +-------------+        |
-                                           |              |
-                                           | signals      |
-                                           v              |
-                                     +----------+  zero   |
-                                     |          |---------+
-                                     | DataPath |
-                      input -------->|          |----------> output
-                                     +----------+
-    ```
-
-    """
+    Следовательно, индекс памяти команд эквивалентен номеру инструкции."""
 
     data_path: DataPath = None
 
@@ -398,23 +353,7 @@ class ControlUnit:
         self.data_path.signal_latch_instruction_pointer(instruction)
 
     def decode_and_execute_instruction(self):
-        """Основной цикл процессора. Декодирует и выполняет инструкцию.
-
-        Обработка инструкции:
-
-        1. Проверить `Opcode`.
-
-        2. Вызвать методы, имитирующие необходимые управляющие сигналы.
-
-        3. Продвинуть модельное время вперёд на один такт (`tick`).
-
-        4. (если необходимо) повторить шаги 2-3.
-
-        5. Перейти к следующей инструкции.
-
-        Обработка функций управления потоком исполнения вынесена в
-        `decode_and_execute_control_flow_instruction`.
-        """
+        """Основной цикл процессора. Декодирует и выполняет инструкцию"""
         instruction = self.current_instruction()
 
         match instruction.opcode:
@@ -551,7 +490,8 @@ class ControlUnit:
             self.data_path.instruction_pointer,
             self.data_path.OD_SH_pointer,
             self.data_path.PRA_SH_pointer,
-            " ".join([str(i) for i in self.data_path.data_memory[self.data_path.OD_STACK_START:self.data_path.OD_SH_pointer + 1]]),
+            " ".join([str(i) for i in
+                      self.data_path.data_memory[self.data_path.OD_STACK_START:self.data_path.OD_SH_pointer + 1]]),
             " ".join([str(i) for i in self.data_path.data_memory[self.data_path.PRA_SH_pointer:]]),
         )
 
@@ -563,12 +503,13 @@ class ControlUnit:
 
         if instr.term is not None:
             term = instr.term
-            instr_repr += "  ('{}'@{}:{})".format(term.symbol, term.line, term.pos)
+            instr_repr += "  ('{}'@{}:{})".format(term.name, term.line_number, term.line_position)
 
         return "{} \t{}".format(state_repr, instr_repr)
 
     def step_in_write_interruption(self, port_number: int):
-        write_handler_start_pc = self.data_path.data_memory[self.data_path.interruption_procedures_points_table_begin + port_number]
+        write_handler_start_pc = self.data_path.data_memory[
+            self.data_path.interruption_procedures_points_table_begin + port_number]
         self.data_path.PRA_SH_pointer -= 1
         self.data_path.data_memory[self.data_path.PRA_SH_pointer] = self.data_path.instruction_pointer
         self.data_path.instruction_pointer = write_handler_start_pc
@@ -582,20 +523,17 @@ def simulation(data_memory_size: int,
     """Подготовка модели и запуск симуляции процессора.
 
     Длительность моделирования ограничена:
-
     - количеством выполненных инструкций (`limit`);
-
-    - количеством данных ввода (`input_tokens`, если ввод используется), через
-      исключение `EOFError`;
-
     - инструкцией `Halt`, через исключение `StopIteration`.
     """
-    data_path = DataPath(data_memory_size, list(map(lambda x: InterruptablePort(x[0], x[1]), ports_description)), program)
+    data_path = DataPath(data_memory_size,
+                         list(map(lambda x: InterruptablePort(x[0], x[1]), ports_description)),
+                         program)
     control_unit = ControlUnit(data_path)
     instr_counter = 0
     # key is instruction number (to interrupt before),
     # only one because it is possible to process only one interruption in one time
-    trimmed_input_tokens = {}
+    trimmed_input_tokens: dict[int, int] = {}
     for instruction_number, value in input_tokens:
         if instruction_number not in trimmed_input_tokens:
             trimmed_input_tokens[instruction_number] = value
@@ -624,11 +562,6 @@ def simulation(data_memory_size: int,
                 instr_counter += 1
                 logging.debug("read interruption!!! %s", control_unit)
                 continue
-
-
-
-    except EOFError:
-        logging.warning("Input buffer is empty!")
     except StopIteration:
         pass
 
@@ -641,9 +574,9 @@ def simulation(data_memory_size: int,
 
 
 def main(code_file: str, input_file: str, ports_interruption_handlers_files: list[str]):
-    """Функция запуска модели процессора. Параметры -- имена файлов с машинным
-    кодом и с входными данными для симуляции.
-    """
+    """Функция запуска модели процессора
+    input_file - это файл, в котором каждая строчка представляет собой пару из индекса инструкции, перед которой выполняется ввод,
+    и сам вводимый символ"""
     program = read_code(code_file)
     input_tokens: list[tuple[int, int]] = []
     with open(input_file, 'r', encoding="utf-8") as file:
@@ -667,7 +600,7 @@ def main(code_file: str, input_file: str, ports_interruption_handlers_files: lis
         ports_description,
         program,
         input_tokens,
-        10000000
+        100
     )
 
     # print("".join(output))
@@ -679,7 +612,7 @@ if __name__ == "__main__":
     assert len(sys.argv) >= 4 and (len(sys.argv) - 3) % 2 == 0, \
         "Wrong arguments: machine.py <code_file> <input_file> " \
         "<emit-port-interruption-handler> <key-port-interruption-handler> " \
-        "[<output-port-interruption-handler>, <input-port-interruption-handler]"
+        "[<output-port-interruption-handler>, <input-port-interruption-handler]*"
     _, code_file, input_file = sys.argv[:3]
     ports_interruption_handlers_files = sys.argv[3:]
     main(code_file, input_file, ports_interruption_handlers_files)

@@ -26,12 +26,12 @@ def is_correct_number(char_seq: str) -> bool:
 
 
 def is_sign_word(char_seq: str) -> bool:
-    return len(char_seq) != 1 and \
+    return len(char_seq) == 1 and \
         char_seq in ["+", "-", "/", "*"]
 
 
 def is_equals_word(char_seq: str) -> bool:
-    return char_seq in ["<>", "="]
+    return char_seq in ["<>", "=", ">", "<"]
 
 
 def is_word(char_seq: str) -> bool:
@@ -148,7 +148,7 @@ def exec_loop(code: list[Instruction], is_inc: bool, pc: int, jmp_to: int, term:
     pc += 1
     code.append(Instruction(pc, Opcode.EQ_NOT_CONSUMING_RET, None, term))
     pc += 1
-    code.append(Instruction(pc, Opcode.EXEC_COND_JMP_RET, jmp_to - pc, term))
+    code.append(Instruction(pc, Opcode.EXEC_COND_JMP_RET, jmp_to - pc - 1, term))
     pc += 1
     code.append(Instruction(pc, Opcode.SHIFT_BACK_RET, None, term))
     pc += 1
@@ -160,7 +160,7 @@ def exec_loop(code: list[Instruction], is_inc: bool, pc: int, jmp_to: int, term:
 def exec_roll(code: list[Instruction], pc: int, term: Term) -> [list[Instruction], int]:
     code.append(Instruction(pc, Opcode.PUSH_TO_RET, None, term))
     pc += 1
-    code.append(Instruction(pc, Opcode.PUSH_0_TO_RET, None, term))
+    code.append(Instruction(pc, Opcode.PUSH_m1_TO_RET, None, term))
     pc += 1
     code.append(Instruction(pc, Opcode.REDUCE_OD_SHP_TO_ITS_VALUE_MINUS_ONE, None, term))
     pc += 1
@@ -190,7 +190,7 @@ def do_index_adding_exec(code: list[Instruction], pc: int, term: Term) -> [list[
 
 
 def emit_exec(code: list[Instruction], pc: int, term: Term) -> [list[Instruction], int]:
-    code.append(Instruction(pc, Opcode.WRITE_PORT, 0, term))
+    code.append(Instruction(pc, Opcode.START_WRITE_PORT, 0, term))
     pc += 1
     return code, pc
 
@@ -235,8 +235,17 @@ def translate(lines):
                 code, pc = exec_roll(code, pc, term)
             elif term.name == "dudup":
                 code, pc = exec_2dup(code, pc, term)
+            elif term.name == "stkey":
+                code.append(Instruction(pc, Opcode.START_READ_PORT, 0, term))
+                pc += 1
             elif term.name == "key":
                 code.append(Instruction(pc, Opcode.READ_PORT, 0, term))
+                pc += 1
+            elif term.name == "wrote":
+                code.append(Instruction(pc, Opcode.HAS_PORT_WROTE, 0, term))
+                pc += 1
+            elif term.name == "transferred":
+                code.append(Instruction(pc, Opcode.HAS_PORT_TRANSFERRED, 0, term))
                 pc += 1
             elif term.name == "emit":
                 code, pc = emit_exec(code, pc, term)
@@ -292,7 +301,7 @@ def translate(lines):
                 leaves_points.pop()
             elif term.name in ["mloop", "loop"]:
                 do_jmp_pc = jmp_points.pop()
-                code, pc = exec_loop(code, term.name == "loop", pc, do_jmp_pc - 1, term)
+                code, pc = exec_loop(code, term.name == "loop", pc, do_jmp_pc, term)
                 for leave_pc in leaves_points[-1]:
                     code[leave_pc].arg = pc - leave_pc - 2  # -2 to delete (from, to) from stack
                 leaves_points.pop()
@@ -321,6 +330,10 @@ def translate(lines):
                         opcode = Opcode.DIV
                     case "=":
                         opcode = Opcode.EQ
+                    case ">":
+                        opcode = Opcode.IS_OVER
+                    case "<":
+                        opcode = Opcode.IS_LOWER
                     case "<>":
                         opcode = Opcode.N_EQ
                 code.append(Instruction(pc, opcode, None, term))

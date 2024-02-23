@@ -1,2 +1,8 @@
-[{"index": 0, "opcode": "number", "arg": 8888, "term": {"line_number": 1, "line_position": 1, "name": "8888"}},
- {"index": 1, "opcode": "halt", "arg": null, "term": {"line_number": -1, "line_position": -1, "name": ""}}]
+[{"index": 0, "opcode": "dup", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "dup"}},
+ {"index": 1, "opcode": "number", "arg": 119, "term": {"line_number": 2, "line_position": 1, "name": "119"}},
+ {"index": 2, "opcode": "eq", "arg": null, "term": {"line_number": 2, "line_position": 2, "name": "="}},
+ {"index": 3, "opcode": "exec if", "arg": null, "term": {"line_number": 2, "line_position": 3, "name": "if"}},
+ {"index": 4, "opcode": "jmp", "arg": 3, "term": {"line_number": 2, "line_position": 3, "name": "if"}},
+ {"index": 5, "opcode": "shift back", "arg": null, "term": {"line_number": 3, "line_position": 2, "name": "drop"}},
+ {"index": 6, "opcode": "number", "arg": 7777, "term": {"line_number": 3, "line_position": 3, "name": "7777"}},
+ {"index": 7, "opcode": "halt", "arg": null, "term": {"line_number": -1, "line_position": -1, "name": ""}}]

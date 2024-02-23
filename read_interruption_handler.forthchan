@@ -1,1 +1,4 @@
-8888
+dup
+119 = if
+    drop 7777
+then

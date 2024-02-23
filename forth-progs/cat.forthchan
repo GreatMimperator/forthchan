@@ -1,37 +1,51 @@
-:swap-second-third
+:swap_second_third
 	rot
-	1 roll 
+	1 roll
 ;
 
-:clear-stack
+:clear_stack
 	0
 	do
 		drop
 	loop
 ;
 
+:transfer_await
+    begin
+        transferred
+    0 <> until
+;
+
+:print_string \ input - link to string start
+    begin
+        dup 1 + pick
+        swap 1 - swap
+        dup emit
+        transfer_await
+    0 <> until
+    drop    \ drop link
+;
+
 :cat
 	-1 	\ counter
 	begin
 		1 +			\ increment counter
-		key			\ read ascii character
-		dup 13 =		\ check if key is enter
-		swap-second-third	\ place counter right after flag
-		if
-		    0
-		else
-		    1
-		then
-	until
-	swap drop 	\ ignore enter, after counter is on top
-	dup		\ save count for clearing stack buffer
-	0		\ loop from (count + 1) till 1 inclusive (cause I save count) 
-	swap
-	doi
-		pick
-		emit
-	1 mloop
-	clear-stack
+		begin
+		    wrote
+		0 <> until
+		stkey			\ start read ascii character
+		begin
+		    transferred
+		0 <> until
+		key
+		dup 96 =		\ check if key is `
+		swap_second_third	\ place counter right after flag
+	0 <> until
+	swap drop 	\ ignore `, after counter is on top
+	0 swap      \ put 0 as end of line, count is not a link to string start
+    dup 1 +
+    print_string
+	clear_stack
 ;
 
 cat

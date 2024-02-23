@@ -44,6 +44,8 @@ class Opcode(str, Enum):
     DIV = "div"
     MUL = "mul"
     EQ = "eq"
+    IS_OVER = "is over"
+    IS_LOWER = "is lower"
     EQ_NOT_CONSUMING_RET = "eq not consuming ret"
     N_EQ = "not eq"
     MOD = "mod"
@@ -56,7 +58,7 @@ class Opcode(str, Enum):
     PUSH_TO_RET = "push to ret"
     POP_TO_RET = "pop to ret"
     REDUCE_OD_SHP_TO_ITS_VALUE_MINUS_ONE = "reduce od shp to its value minus one"
-    PUSH_0_TO_RET = "push 0 to ret"
+    PUSH_m1_TO_RET = "push minus 1 to ret"
     NUMBER = "number"
     JMP = "jmp"
     EXEC_IF = "exec if"
@@ -71,8 +73,11 @@ class Opcode(str, Enum):
     PUSH_INC_INC_IP_TO_PRA_SHP = "push inc inc ip to pra shp"
     JMP_POP_PRA_SHP = "jmp pop pra shp"
     HALT = "halt"
+    START_READ_PORT = "start read port"
     READ_PORT = "read port"
-    WRITE_PORT = "write port"
+    START_WRITE_PORT = "start write port"
+    HAS_PORT_WROTE = "has port wrote"
+    HAS_PORT_TRANSFERRED = "has port transferred"
 
     def __str__(self):
         return str(self.value)

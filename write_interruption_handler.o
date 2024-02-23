@@ -1,2 +1,1 @@
-[{"index": 0, "opcode": "number", "arg": 1337, "term": {"line_number": 1, "line_position": 1, "name": "1337"}},
- {"index": 1, "opcode": "halt", "arg": null, "term": {"line_number": -1, "line_position": -1, "name": ""}}]
+[{"index": 0, "opcode": "halt", "arg": null, "term": {"line_number": -1, "line_position": -1, "name": ""}}]

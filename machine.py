@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """Модель процессора, позволяющая выполнить машинный код полученный из программы
-на языке Brainfuck.
+на языке Forthchan.
 
 Модель включает в себя три основных компонента:
 
@@ -18,8 +18,12 @@ from isa import Opcode, read_code, Term, Instruction
 
 
 class Port:
-    ready: bool = False
-    data: int = None
+    write_flag: bool = False
+    read_flag: bool = False
+    reading: bool = False
+    writing: bool = False
+    data: int = 0
+    bit_index_slave: int = 0
 
 
 class InterruptablePort:
@@ -70,6 +74,9 @@ class DataPath:
     ports: list[Port] = []
     "Порты"
 
+    port_communication_register: int = 0
+    "Через этот регистр идет общение с портами"
+
     def __init__(self, memory_size: int, ports_description: list[InterruptablePort], program: list[Instruction]):
         assert memory_size > 0, "Data_memory size should be non-zero"
         self.data_memory_size = memory_size
@@ -117,6 +124,16 @@ class DataPath:
                     self.data_memory[self.OD_SH_pointer - 1] = 0
                 else:
                     self.data_memory[self.OD_SH_pointer - 1] = -1
+            case Opcode.IS_OVER:
+                if self.data_memory[self.OD_SH_pointer - 1] > self.data_memory[self.OD_SH_pointer]:
+                    self.data_memory[self.OD_SH_pointer - 1] = 0
+                else:
+                    self.data_memory[self.OD_SH_pointer - 1] = -1
+            case Opcode.IS_LOWER:
+                if self.data_memory[self.OD_SH_pointer - 1] < self.data_memory[self.OD_SH_pointer]:
+                    self.data_memory[self.OD_SH_pointer - 1] = 0
+                else:
+                    self.data_memory[self.OD_SH_pointer - 1] = -1
             case Opcode.EQ_NOT_CONSUMING_RET:
                 if self.data_memory[self.PRA_SH_pointer + 1] == self.data_memory[self.PRA_SH_pointer]:
                     self.data_memory[self.PRA_SH_pointer - 1] = 0
@@ -158,7 +175,7 @@ class DataPath:
                 self.data_memory[self.PRA_SH_pointer - 1] = self.data_memory[self.OD_SH_pointer]
             case Opcode.REDUCE_OD_SHP_TO_ITS_VALUE_MINUS_ONE:
                 pass
-            case Opcode.PUSH_0_TO_RET:
+            case Opcode.PUSH_m1_TO_RET:
                 self.data_memory[self.PRA_SH_pointer - 1] = 0
             case Opcode.NUMBER:
                 self.data_memory[self.OD_SH_pointer + 1] = arg
@@ -183,7 +200,7 @@ class DataPath:
                     case 1:
                         self.data_memory[self.PRA_SH_pointer - 1] = self.data_memory[self.PRA_SH_pointer]
                     case 2:
-                        self.data_memory[self.PRA_SH_pointer] = self.data_memory[self.PRA_SH_pointer + 1] - 1
+                        self.data_memory[self.PRA_SH_pointer + 1] = self.data_memory[self.PRA_SH_pointer] - 1
             case Opcode.EXEC_COND_JMP_RET:
                 pass
             case Opcode.SHIFT_BACK_RET, Opcode.SHIFT_FORWARD_RET:
@@ -195,9 +212,13 @@ class DataPath:
             case Opcode.HALT:
                 pass
             case Opcode.READ_PORT:
-                self.data_memory[self.OD_SH_pointer + 1] = self.ports[arg].data
-            case Opcode.WRITE_PORT:
+                self.data_memory[self.OD_SH_pointer + 1] = self.port_communication_register
+            case Opcode.START_READ_PORT | Opcode.START_WRITE_PORT:
                 pass
+            case Opcode.HAS_PORT_TRANSFERRED:
+                self.data_memory[self.OD_SH_pointer + 1] = 0 if not self.ports[arg].reading and not self.ports[arg].writing else -1
+            case Opcode.HAS_PORT_WROTE:
+                self.data_memory[self.OD_SH_pointer + 1] = 0 if self.ports[arg].write_flag else -1
 
     def signal_latch_instruction_pointer(self, instruction: Instruction):
         sel = instruction.opcode
@@ -205,13 +226,13 @@ class DataPath:
             case Opcode.HALT:
                 pass
             case Opcode.SUM | Opcode.DIFF | Opcode.DIV | \
-                 Opcode.MUL | Opcode.EQ | Opcode.EQ_NOT_CONSUMING_RET | Opcode.N_EQ | \
+                 Opcode.MUL | Opcode.EQ | Opcode.IS_OVER | Opcode.IS_LOWER | Opcode.EQ_NOT_CONSUMING_RET | Opcode.N_EQ | \
                  Opcode.MOD | Opcode.DUP | Opcode.PUT | Opcode.SHIFT_BACK | \
                  Opcode.SHIFT_FORWARD | Opcode.PUSH_TO_RET | Opcode.POP_TO_RET | \
-                 Opcode.REDUCE_OD_SHP_TO_ITS_VALUE_MINUS_ONE | Opcode.PUSH_0_TO_RET | \
+                 Opcode.REDUCE_OD_SHP_TO_ITS_VALUE_MINUS_ONE | Opcode.PUSH_m1_TO_RET | \
                  Opcode.NUMBER | Opcode.PUSH_TO_OD | Opcode.DUP_RET | \
                  Opcode.SHIFT_BACK_RET | Opcode.SHIFT_FORWARD_RET | Opcode.PUSH_INC_INC_IP_TO_PRA_SHP | Opcode.READ_PORT | \
-                 Opcode.WRITE_PORT:
+                 Opcode.START_READ_PORT | Opcode.START_WRITE_PORT | Opcode.HAS_PORT_WROTE | Opcode.HAS_PORT_TRANSFERRED:
                 self.instruction_pointer += 1
             case Opcode.PICK | Opcode.INCREMENT_RET | Opcode.DECREMENT_RET:
                 if self.instruction_stage_number == 2:
@@ -240,11 +261,12 @@ class DataPath:
         sel = instruction.opcode
         match sel:
             case Opcode.SUM | Opcode.DIFF | Opcode.DIV | \
-                 Opcode.MUL | Opcode.EQ | Opcode.N_EQ | Opcode.MOD | \
+                 Opcode.MUL | Opcode.EQ | Opcode.IS_OVER | Opcode.IS_LOWER | Opcode.N_EQ | Opcode.MOD | \
                  Opcode.DUP | Opcode.PUT | Opcode.SHIFT_BACK | \
                  Opcode.SHIFT_FORWARD | Opcode.REDUCE_OD_SHP_TO_ITS_VALUE_MINUS_ONE | Opcode.NUMBER | \
                  Opcode.JMP | Opcode.EXEC_IF | Opcode.EXEC_COND_JMP | \
-                 Opcode.PUSH_TO_OD | Opcode.READ_PORT | Opcode.WRITE_PORT | Opcode.HALT:
+                 Opcode.PUSH_TO_OD | Opcode.READ_PORT | Opcode.START_READ_PORT | Opcode.START_WRITE_PORT | \
+                 Opcode.HAS_PORT_WROTE | Opcode.HAS_PORT_TRANSFERRED | Opcode.HALT:
                 pass
             case Opcode.PICK:
                 match self.instruction_stage_number:
@@ -260,7 +282,7 @@ class DataPath:
                         pass
                     case 3:
                         self.PRA_SH_pointer += 1
-            case Opcode.PUSH_0_TO_RET | Opcode.PUSH_TO_RET | Opcode.POP_TO_RET | \
+            case Opcode.PUSH_m1_TO_RET | Opcode.PUSH_TO_RET | Opcode.POP_TO_RET | \
                  Opcode.DUP_RET | Opcode.PUSH_INC_INC_IP_TO_PRA_SHP:
                 self.PRA_SH_pointer -= 1
             case Opcode.INCREMENT_RET | Opcode.DECREMENT_RET:
@@ -277,18 +299,18 @@ class DataPath:
     def signal_latch_OD_SH_pointer(self, instruction: Instruction):
         sel = instruction.opcode
         match sel:
-            case Opcode.PUSH_TO_RET | Opcode.PUSH_0_TO_RET | Opcode.JMP | \
+            case Opcode.PUSH_TO_RET | Opcode.PUSH_m1_TO_RET | Opcode.JMP | \
                  Opcode.DUP_RET | Opcode.INCREMENT_RET | Opcode.DECREMENT_RET | \
                  Opcode.EXEC_COND_JMP_RET | Opcode.SHIFT_BACK_RET | Opcode.SHIFT_FORWARD_RET | Opcode.PUSH_INC_INC_IP_TO_PRA_SHP | \
-                 Opcode.JMP_POP_PRA_SHP | Opcode.HALT:
+                 Opcode.JMP_POP_PRA_SHP | Opcode.START_READ_PORT | Opcode.HALT:
                 pass
             case Opcode.SUM | Opcode.DIFF | Opcode.DIV | \
-                 Opcode.MUL | Opcode.EQ | Opcode.N_EQ | \
+                 Opcode.MUL | Opcode.EQ | Opcode.IS_OVER | Opcode.IS_LOWER | Opcode.N_EQ | \
                  Opcode.MOD | Opcode.SHIFT_BACK | Opcode.POP_TO_RET | \
-                 Opcode.EXEC_IF | Opcode.EXEC_COND_JMP | Opcode.WRITE_PORT:
+                 Opcode.EXEC_IF | Opcode.EXEC_COND_JMP | Opcode.START_WRITE_PORT:
                 self.OD_SH_pointer -= 1
             case Opcode.DUP | Opcode.SHIFT_FORWARD | Opcode.NUMBER | \
-                 Opcode.PUSH_TO_OD | Opcode.READ_PORT:
+                 Opcode.PUSH_TO_OD | Opcode.READ_PORT | Opcode.HAS_PORT_WROTE | Opcode.HAS_PORT_TRANSFERRED:
                 self.OD_SH_pointer += 1
             case Opcode.PUT:
                 self.OD_SH_pointer -= 2
@@ -315,18 +337,101 @@ class DataPath:
     def signal_reset_instruction_stage_number(self):
         self.instruction_stage_number = 1
 
-    def signal_latch_port_value(self, instruction: Instruction):
+    def signal_latch_port(self, instruction: Instruction):
         port_number = instruction.arg
         match instruction.opcode:
+            case Opcode.START_READ_PORT:
+                self.ports[port_number].reading = True
+            case Opcode.START_WRITE_PORT:
+                self.ports[port_number].writing = True
             case Opcode.READ_PORT:
-                self.ports[port_number].ready = False
-            case Opcode.WRITE_PORT:
-                self.ports[port_number].data = self.data_memory[self.OD_SH_pointer]
-                self.ports[port_number].ready = True
+                self.ports[port_number].write_flag = False
+            case Opcode.HAS_PORT_WROTE | Opcode.HAS_PORT_TRANSFERRED:
+                pass
+
+    def signal_port_communication_register(self, instruction: Instruction):
+        match instruction.opcode:
+            case Opcode.START_READ_PORT | Opcode.READ_PORT | Opcode.HAS_PORT_WROTE | Opcode.HAS_PORT_TRANSFERRED:
+                pass
+            case Opcode.START_WRITE_PORT:
+                self.port_communication_register = self.data_memory[self.OD_SH_pointer]
 
     def write_into_port(self, port_number, value):
         self.ports[port_number].data = value
-        self.ports[port_number].ready = True
+        self.ports[port_number].write_flag = True
+
+
+class MasterSPI:
+    data_path: DataPath
+    "Data path, от которого нам нужны устройства (порты) и регистр для передачи данных"
+
+    slave_select: int
+    "Выбор микросхемы для ввода вывода"
+
+    master_out_slave_in: bool
+    "Выход с мастера на ведомый (сигнал, кодирующийся как true = 1, false = 0)"
+
+    master_in_slave_out: bool
+    "Выход с ведомого на мастер (сигнал, кодирующийся как true = 1, false = 0)"
+
+    bit_index: int
+    "Индекс передаваемого сигнала"
+
+    def __init__(self, data_path: DataPath):
+        self.slave_select = 0
+        self.bit_index = 0
+        self.data_path = data_path
+
+    def tick(self):
+        self.tick_rise()
+        self.tick_fall()
+
+    def tick_rise(self):
+        self.master_out_slave_in = bit_to_signal((self.data_path.port_communication_register >> self.bit_index) % 2)
+        self.master_in_slave_out = bit_to_signal((self.data_path.ports[self.slave_select].data >> self.bit_index) % 2)
+
+    def tick_fall(self):
+        selected_port = self.data_path.ports[self.slave_select]
+        bit_value = 2 ** self.bit_index
+        if selected_port.reading:
+            port_bit = (selected_port.data >> self.bit_index) % 2
+            if port_bit != self.master_out_slave_in:
+                if port_bit == 0:
+                    self.data_path.port_communication_register += bit_value
+                else:
+                    self.data_path.port_communication_register -= bit_value
+        if selected_port.writing:
+            reg_bit = (self.data_path.port_communication_register >> self.bit_index) % 2
+            if reg_bit != self.master_in_slave_out:
+                if reg_bit != 0:
+                    self.data_path.ports[self.slave_select].data += bit_value
+                else:
+                    self.data_path.ports[self.slave_select].data -= bit_value
+        if selected_port.reading or selected_port.writing:
+            self.bit_index += 1
+            logging.debug(self)
+            if self.bit_index == 64:
+                self.bit_index = 0
+                self.data_path.ports[self.slave_select].reading = False
+                if selected_port.writing:
+                    self.data_path.ports[self.slave_select].read_flag = True
+                self.data_path.ports[self.slave_select].writing = False
+
+
+    def __repr__(self):
+        """Вернуть строковое представление состояния передачи."""
+        state_repr = "MOSI: {:2}, MISO: {:2}, SS: {}, bit_index: {}, port_communication_register: {}, SS data: {}, " \
+                     "SS reading: {}, SS writing: {}".format(
+            1 if self.master_out_slave_in else 0,
+            1 if self.master_in_slave_out else 0,
+            self.slave_select,
+            self.bit_index,
+            self.data_path.port_communication_register,
+            self.data_path.ports[self.slave_select].data,
+            self.data_path.ports[self.slave_select].reading,
+            self.data_path.ports[self.slave_select].writing
+        )
+        return state_repr
 
 
 class ControlUnit:
@@ -336,12 +441,15 @@ class ControlUnit:
     Согласно варианту, любая инструкция может быть закодирована в одно слово.
     Следовательно, индекс памяти команд эквивалентен номеру инструкции."""
 
-    data_path: DataPath = None
+    data_path: DataPath
+
+    masterSPI: MasterSPI = None
 
     is_in_interruption: bool = False
 
     def __init__(self, data_path: DataPath):
         self.data_path = data_path
+        self.masterSPI = MasterSPI(data_path)
 
     def current_instruction(self):
         return self.data_path.data_memory[self.data_path.instruction_pointer]
@@ -368,9 +476,10 @@ class ControlUnit:
                     self.data_path.instruction_pointer = self.data_path.data_memory[self.data_path.PRA_SH_pointer]
                     self.data_path.PRA_SH_pointer += 1
                     self.is_in_interruption = False
-                    is_last_instruction_tick = True
+                    logging.debug("Interruption exit!!!")
+                    return True
             case Opcode.SUM | Opcode.DIFF | Opcode.DIV | \
-                 Opcode.MUL | Opcode.EQ | Opcode.N_EQ | \
+                 Opcode.MUL | Opcode.EQ | Opcode.IS_OVER | Opcode.IS_LOWER | Opcode.N_EQ | \
                  Opcode.MOD | Opcode.DUP | Opcode.PUT | \
                  Opcode.NUMBER:
                 self.data_path.signal_data_memory_write(instruction)
@@ -427,7 +536,7 @@ class ControlUnit:
                 self.data_path.signal_latch_OD_SH_pointer(instruction)
                 self.ip_latch(instruction)
                 is_last_instruction_tick = True
-            case Opcode.PUSH_0_TO_RET:
+            case Opcode.PUSH_m1_TO_RET:
                 self.data_path.signal_data_memory_write(instruction)
                 self.data_path.signal_latch_PRA_SH_pointer(instruction)
                 self.ip_latch(instruction)
@@ -480,14 +589,29 @@ class ControlUnit:
                 self.ip_latch(instruction)
                 self.data_path.signal_latch_PRA_SH_pointer(instruction)
                 is_last_instruction_tick = True
-            case Opcode.WRITE_PORT:
-                self.data_path.signal_latch_port_value(instruction)
+            case Opcode.START_WRITE_PORT:
+                self.data_path.signal_latch_port(instruction)
+                self.data_path.signal_port_communication_register(instruction)
                 self.data_path.signal_latch_OD_SH_pointer(instruction)
+                self.ip_latch(instruction)
+                is_last_instruction_tick = True
+            case Opcode.START_READ_PORT:
+                self.data_path.signal_latch_port(instruction)
                 self.ip_latch(instruction)
                 is_last_instruction_tick = True
             case Opcode.READ_PORT:
                 self.data_path.signal_data_memory_write(instruction)
-                self.data_path.signal_latch_port_value(instruction)
+                self.data_path.signal_latch_port(instruction)
+                self.data_path.signal_latch_OD_SH_pointer(instruction)
+                self.ip_latch(instruction)
+                is_last_instruction_tick = True
+            case Opcode.HAS_PORT_WROTE:
+                self.data_path.signal_data_memory_write(instruction)
+                self.data_path.signal_latch_OD_SH_pointer(instruction)
+                self.ip_latch(instruction)
+                is_last_instruction_tick = True
+            case Opcode.HAS_PORT_TRANSFERRED:
+                self.data_path.signal_data_memory_write(instruction)
                 self.data_path.signal_latch_OD_SH_pointer(instruction)
                 self.ip_latch(instruction)
                 is_last_instruction_tick = True
@@ -521,33 +645,52 @@ class ControlUnit:
 
         return "{} \t{}".format(state_repr, instr_repr)
 
-    def step_in_write_interruption(self, port_number: int):
-        write_handler_start_pc = self.data_path.data_memory[
-            self.data_path.interruption_procedures_points_table_begin + port_number]
+    def step_in_port_interruption(self, port_number: int, is_write_interruption: bool):
+        port_interruption_memory_index = self.data_path.interruption_procedures_points_table_begin + 2 * port_number
+        if is_write_interruption:
+            handler_start_pc = self.data_path.data_memory[port_interruption_memory_index]
+        else:
+            handler_start_pc = self.data_path.data_memory[port_interruption_memory_index + 1]
+        # tick 1
         self.data_path.PRA_SH_pointer -= 1
         self.data_path.data_memory[self.data_path.PRA_SH_pointer] = self.data_path.instruction_pointer
-        self.data_path.instruction_pointer = write_handler_start_pc
+        self.data_path.instruction_pointer = handler_start_pc
+        # tick 2
         self.data_path.PRA_SH_pointer -= 1
         self.data_path.data_memory[self.data_path.PRA_SH_pointer] = self.data_path.instruction_stage_number
         self.data_path.instruction_stage_number = 1
+
+
+def signal_to_bit(signal: bool) -> int:
+    return 1 if signal else 0
+
+
+def bit_to_signal(bit: int) -> bool:
+    match bit:
+        case 0:
+            return False
+        case 1:
+            return True
+        case _:
+            raise Exception("Bit should be 0 or 1")
 
 
 def simulation(data_memory_size: int,
                ports_description: list[tuple[list[Instruction], list[Instruction]]],
                program: list[Instruction],
                input_tokens: list[tuple[int, int]],
-               limit: int):
+               ticks_limit: int):
     """Подготовка модели и запуск симуляции процессора.
 
     Длительность моделирования ограничена:
-    - количеством выполненных инструкций (`limit`);
+    - количеством выполненных тиков (`ticks_limit`);
     - инструкцией `Halt`, через исключение `StopIteration`.
     """
     data_path = DataPath(data_memory_size,
                          list(map(lambda x: InterruptablePort(x[0], x[1]), ports_description)),
                          program)
     control_unit = ControlUnit(data_path)
-    instr_counter = 0
+    ticks_counter = 0
     # key is instruction number (to interrupt before),
     # only one because it is possible to process only one interruption in one time
     trimmed_input_tokens: dict[int, int] = {}
@@ -558,33 +701,42 @@ def simulation(data_memory_size: int,
     MAIN_PORT_NUMBER = 0
     logging.debug("%s", control_unit)
     try:
-        while instr_counter < limit:
-            ready_before = data_path.ports[0].ready
-            if instr_counter in trimmed_input_tokens and not control_unit.is_in_interruption:
+        while ticks_counter < ticks_limit:
+            if ticks_counter in trimmed_input_tokens:
+                if data_path.ports[MAIN_PORT_NUMBER].writing or data_path.ports[MAIN_PORT_NUMBER].reading:
+                    logging.debug("WRITE OF SYMBOL \"%s\" is IGNORED (WRITTEN BUT NOT READ BEFORE)",
+                                  chr(trimmed_input_tokens[ticks_counter]))
+                elif not control_unit.is_in_interruption:
+                    control_unit.is_in_interruption = True
+                    data_path.write_into_port(MAIN_PORT_NUMBER, trimmed_input_tokens[ticks_counter])
+                    control_unit.step_in_port_interruption(MAIN_PORT_NUMBER, True)
+                    ticks_counter += 2  # ticks for port interruption
+                    logging.debug("Write interruption!!! %s", control_unit)
+                    continue
+                else:
+                    logging.debug("WRITE OF SYMBOL \"%s\" is IGNORED (IN INTERRUPTION)!!!",
+                                  chr(trimmed_input_tokens[ticks_counter]))
+            t = control_unit.next_tick_execute()
+            control_unit.masterSPI.tick()
+            ticks_counter += 1
+            if t:
+                logging.debug("%s", control_unit)
+            if data_path.ports[MAIN_PORT_NUMBER].read_flag:
+                char_to_print = chr(data_path.ports[MAIN_PORT_NUMBER].data)
+                logging.debug("Printed: %s", char_to_print)
+                print(char_to_print, end="")
+                data_path.ports[MAIN_PORT_NUMBER].read_flag = False
                 control_unit.is_in_interruption = True
-                data_path.write_into_port(MAIN_PORT_NUMBER, trimmed_input_tokens[instr_counter])
-                control_unit.step_in_write_interruption(MAIN_PORT_NUMBER)  # 1 instruction
-                instr_counter += 1
-                logging.debug("Write interruption!!! %s", control_unit)
-                continue
-            is_last_tick_gone = control_unit.next_tick_execute()
-            if is_last_tick_gone:
-                instr_counter += 1
-            logging.debug("%s", control_unit)
-            if data_path.ports[0].ready and data_path.ports[0].ready != ready_before:
-                logging.debug("Printed:", data_path.ports[0].data)
-                data_path.ports[0].ready = False
-                control_unit.is_in_interruption = True
-                data_path.write_into_port(MAIN_PORT_NUMBER, trimmed_input_tokens[instr_counter])
-                control_unit.step_in_write_interruption(MAIN_PORT_NUMBER)  # 1 instruction
-                instr_counter += 1
-                logging.debug("read interruption!!! %s", control_unit)
+                control_unit.step_in_port_interruption(MAIN_PORT_NUMBER, False)  # 1 instruction
+                logging.debug("Read interruption!!! %s", control_unit)
+                ticks_counter += 1
                 continue
     except StopIteration:
         pass
 
-    if instr_counter >= limit:
+    if ticks_counter >= ticks_limit:
         logging.warning("Limit exceeded!")
+    logging.info("ticks count: %s", ticks_counter)
     # logging.info("output_buffer: %s", repr("".join(data_path.output_buffer)))
     # return "".join(data_path.output_buffer), instr_counter, control_unit.current_tick()
     # return "smth"
@@ -617,7 +769,7 @@ def main(code_file: str, input_file: str, ports_interruption_handlers_files: lis
         ports_description,
         program,
         input_tokens,
-        100
+        100000
     )
 
     # print("".join(output))
@@ -625,6 +777,9 @@ def main(code_file: str, input_file: str, ports_interruption_handlers_files: lis
 
 
 if __name__ == "__main__":
+    logging.basicConfig(filename="log.log",
+                        filemode='a',
+                        level=logging.DEBUG)
     logging.getLogger().setLevel(logging.DEBUG)
     assert len(sys.argv) >= 4 and (len(sys.argv) - 3) % 2 == 0, \
         "Wrong arguments: machine.py <code_file> <input_file> " \

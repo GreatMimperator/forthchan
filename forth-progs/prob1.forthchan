@@ -1,0 +1,65 @@
+:read_number
+    -1 counter!
+	begin
+		counter? 1 + counter!			\ increment counter
+		begin
+		    wrote
+		0 <> until
+		stkey			\ start read ascii character
+		begin
+		    transferred
+		0 <> until
+		key
+		dup 96 =		\ check if key is `
+	0 <> until
+	drop 	\ ignore `, after counter is on top
+	0 result_number!
+	1 digit_power!
+	counter?
+	0
+	begin
+	    counter? 1 - counter!
+	    48 - digit_power? *
+	    result_number? + result_number!
+        digit_power? 10 * digit_power!
+	    counter?
+	0 <> until
+	result_number?  \ return
+;
+
+:print_int
+    input!
+    0 print_int_counter!
+    begin
+        print_int_counter? 1 + print_int_counter!
+        input? 10 mod
+        input? 10 / input!
+        input?
+    0 <> until
+    print_int_counter?
+    0
+    do
+        emit
+		begin
+		    transferred
+		0 <> until
+    loop
+;
+
+0 answer!
+read_number
+1
+doi
+    dup 3 mod
+    if
+        answer? + answer!
+    else
+        dup 5 mod
+        if
+            answer? + answer!
+        else
+            drop
+        then
+    then
+loop
+answer? print_int

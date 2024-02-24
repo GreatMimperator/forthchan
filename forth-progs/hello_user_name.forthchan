@@ -1,17 +1,7 @@
-:swap_second_third
-	rot
-	1 roll
-;
-
-:clear_stack_string
-    begin
-	0 <> until
-;
-
-:read_in_stack
-	-1 	\ counter
+:read_name
+    name& -1 + name_ch!
 	begin
-		1 +			\ increment counter
+		name_ch? 1 + name_ch!			\ increment counter
 		begin
 		    wrote
 		0 <> until
@@ -19,40 +9,13 @@
 		begin
 		    transferred
 		0 <> until
-		dup 96 =		\ check if key is `
-		swap_second_third	\ place counter right after flag
+		key
+		dup name_ch!
+		96 =		\ check if key is `
 	0 <> until
-	swap drop 	\ ignore `, after counter is on top
+	0 name_ch!      \ cstr
 ;
 
-:print_from_stack
-	dup		\ save count for clearing stack buffer
-	0		\ loop from (count + 1) till 1 inclusive (cause I save count)
-	swap
-	doi
-		pick
-		emit
-		begin
-		    transferred
-		0 <> until
-	mloop
-;
-
-:add_name_ask_to_stack
-    87 104 97 116 45 105 115 45 121 111 117 114 45 110 97 109 101 63 18 18
-;
-
-0 add_name_ask_to_stack cr
-print_from_stack clear_stack_string \ What is your name? + nl
-
-\ Нужно вводить в обратном порядке
-
-0 33 13 2 \ ! + nl
-0 read_in_stack \
-0 72 101 108 108 111 44 95 7  \ Hello,_
-
-\ Выводится в прямом
-
-print_from_stack clear_stack_string \ Hello,_
-print_from_stack clear_stack_string \ username
-print_from_stack clear_stack_string \ ! + nl
+"What is your name?" cr
+name-20 read_name
+"Hello, " name& print_string "!!!"

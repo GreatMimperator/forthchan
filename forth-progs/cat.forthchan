@@ -1,8 +1,3 @@
-:swap_second_third
-	rot
-	1 roll
-;
-
 :clear_stack
 	0
 	do
@@ -27,9 +22,9 @@
 ;
 
 :cat
-	-1 	\ counter
+    -1 counter!
 	begin
-		1 +			\ increment counter
+		counter? 1 + counter!			\ increment counter
 		begin
 		    wrote
 		0 <> until
@@ -39,11 +34,10 @@
 		0 <> until
 		key
 		dup 96 =		\ check if key is `
-		swap_second_third	\ place counter right after flag
 	0 <> until
-	swap drop 	\ ignore `, after counter is on top
-	0 swap      \ put 0 as end of line, count is not a link to string start
-    dup 1 +
+	drop 	\ ignore `, after counter is on top
+	0       \ put 0 as end of line, count is now a link to string start
+    counter? 1 +
     print_string
 	clear_stack
 ;

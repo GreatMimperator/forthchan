@@ -216,7 +216,7 @@ def do_index_adding_exec(code: list[Instruction], pc: int, term: Term) -> [list[
 
 
 def emit_exec(code: list[Instruction], pc: int, term: Term) -> [list[Instruction], int]:
-    code.append(Instruction(pc, Opcode.START_WRITE_PORT, 0, term))
+    code.append(Instruction(pc, Opcode.WRITE_PORT, 0, term))
     pc += 1
     return code, pc
 
@@ -231,7 +231,7 @@ def replace_complex_terms(terms: list[Term]) -> list[Term]:
             new_terms.extend(
                 map(lambda name: Term(term.line_number, term.line_position, name),
                     re.split(r"\s+",
-                             f"""_string-{len(string)}
+                             f"""_string-{len(string) + 1}
                     _string& _string_pointer!""")
                     )
             )
@@ -240,15 +240,15 @@ def replace_complex_terms(terms: list[Term]) -> list[Term]:
                     map(lambda name: Term(term.line_number, term.line_position, name),
                         re.split(r"\s+",
                                  f"""{ord(ch)}
-                        _string_pointer? put 
+                        _string_pointer? put_absolute 
                         _string_pointer? 1 + _string_pointer!""")
                         )
                 )
             new_terms.extend(
                 map(lambda name: Term(term.line_number, term.line_position, name),
                     re.split(r"\s+",
-                             f"""0 _string_pointer? put 
-                    _string?""")
+                             f"""0 _string_pointer? put_absolute 
+                    _string&""")
                     )
             )
             new_terms.extend(print_string_code_terms(term))
@@ -262,17 +262,18 @@ def replace_complex_terms(terms: list[Term]) -> list[Term]:
 def print_string_code_terms(term: Term) -> map:
     return map(lambda name: Term(term.line_number, term.line_position, name),
                re.split(r"\s+",
-                        """_string_pointer
+                        """_string_pointer!
                             begin
-                                 _string_pointer? pick
+                                 _string_pointer? pick_absolute
                                  dup
                                  if
-                                     leave
+                                    drop
+                                    leave
                                  then
-                                 emit
                                  begin
-                                     transferred
-                                 0 <> until
+                                    cant_emit
+                                 0 = until
+                                 emit
                                  _string_pointer? 1 + _string_pointer!
                             0 until""")
                )
@@ -332,8 +333,14 @@ def translate(lines):
                     no_arg_opcode = Opcode.MOD
                 case "put":
                     no_arg_opcode = Opcode.PUT
+                case "put_absolute":
+                    no_arg_opcode = Opcode.PUT_ABSOLUTE
                 case "pick":
                     no_arg_opcode = Opcode.PICK
+                case "pick_absolute":
+                    no_arg_opcode = Opcode.PICK_ABSOLUTE
+                case "sum_top_with_vdsp":
+                    no_arg_opcode = Opcode.SUM_TOP_WITH_VDSP
                 case "swap":
                     no_arg_opcode = Opcode.SWAP
                 case "drop":
@@ -342,10 +349,6 @@ def translate(lines):
                     no_arg_opcode = Opcode.DUP
                 case "dudup":
                     no_arg_opcode = Opcode.DUDUP
-                case "pick":
-                    no_arg_opcode = Opcode.PICK
-                case "pick":
-                    no_arg_opcode = Opcode.PICK
 
             if no_arg_opcode is not None:
                 code.append(Instruction(pc, no_arg_opcode, None, term))
@@ -355,26 +358,22 @@ def translate(lines):
             is_port_command = True
             MAIN_PORT_NUMBER = 0
             match term.name:
-                case "wrote":
-                    code.append(Instruction(pc, Opcode.HAS_PORT_WROTE, MAIN_PORT_NUMBER, term))
+                case "cant_emit":
+                    code.append(Instruction(pc, Opcode.HAS_PORT_FILLED_WITH_CPU, MAIN_PORT_NUMBER, term))
                     pc += 1
-                case "stkey":
-                    code.append(Instruction(pc, Opcode.START_READ_PORT, MAIN_PORT_NUMBER, term))
-                    pc += 1
-                case "transferred":
-                    code.append(Instruction(pc, Opcode.HAS_PORT_TRANSFERRED, MAIN_PORT_NUMBER, term))
+                case "has_input":
+                    code.append(Instruction(pc, Opcode.HAS_PORT_FILLED_WITH_DEVICE, MAIN_PORT_NUMBER, term))
                     pc += 1
                 case "key":
                     code.append(Instruction(pc, Opcode.READ_PORT, MAIN_PORT_NUMBER, term))
                     pc += 1
                 case "emit":
-                    code.append(Instruction(pc, Opcode.START_WRITE_PORT, MAIN_PORT_NUMBER, term))
+                    code.append(Instruction(pc, Opcode.WRITE_PORT, MAIN_PORT_NUMBER, term))
                     pc += 1
                 case "cr":
                     code.append(Instruction(pc, Opcode.NUMBER, 13, term))
                     pc += 1
-                    code.append(Instruction(pc, Opcode.START_WRITE_PORT, MAIN_PORT_NUMBER, term))
-                    pc += 1
+                    code, pc = emit_exec(code, pc, term)
                 case _:
                     is_port_command = False
             if is_port_command:

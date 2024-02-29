@@ -3,17 +3,13 @@
 	begin
 		name_ch? 1 + name_ch!			\ increment counter
 		begin
-		    wrote
-		0 <> until
-		stkey			\ start read ascii character
-		begin
-		    transferred
+            has_input
 		0 <> until
 		key
-		dup name_ch!
+		dup name_ch? put_absolute
 		96 =		\ check if key is `
 	0 <> until
-	0 name_ch!      \ cstr
+	0 name_ch? put_absolute      \ cstr
 ;
 
 "What is your name?" cr

@@ -3,11 +3,7 @@
 	begin
 		counter? 1 + counter!			\ increment counter
 		begin
-		    wrote
-		0 <> until
-		stkey			\ start read ascii character
-		begin
-		    transferred
+		    has_input
 		0 <> until
 		key
 		dup 96 =		\ check if key is `
@@ -15,8 +11,6 @@
 	drop 	\ ignore `, after counter is on top
 	0 result_number!
 	1 digit_power!
-	counter?
-	0
 	begin
 	    counter? 1 - counter!
 	    48 - digit_power? *
@@ -39,10 +33,11 @@
     print_int_counter?
     0
     do
-        emit
 		begin
-		    transferred
-		0 <> until
+		    cant_emit
+		0 = until
+		48 +
+        emit
     loop
 ;
 

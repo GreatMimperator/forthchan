@@ -1,4 +1,50 @@
--1
-1 2 3
-2 pick
-6 3 put
+:procedure
+;
+
+procedure
+
+1 variable!
+variable?
+variable&
+variable-10
+
+begin
+    variable? 1 + variable!
+    variable?
+5 = until
+
+wrote drop
+
+5 dup drop drop
+1 2 dudup
+
+10
+0
+doi
+    drop
+loop
+
+0
+if
+    1337
+else
+    666
+then
+drop
+1
+if
+    666
+else
+    1337
+then
+drop
+
+"Hello"
+"World"
+"Lol"
+
+33
+34
+35
+
+print_string

@@ -7,17 +7,21 @@
 
 :transfer_await
     begin
-        transferred
-    0 <> until
+        cant_emit
+    0 = until
 ;
 
-:print_string \ input - link to string start
+:print_string_from_stack \ input - link to string start
     begin
         dup 1 + pick
         swap 1 - swap
-        dup emit
+        dup
+        if
+            leave
+        then
+        emit
         transfer_await
-    0 <> until
+    0 until
     drop    \ drop link
 ;
 
@@ -26,19 +30,16 @@
 	begin
 		counter? 1 + counter!			\ increment counter
 		begin
-		    wrote
-		0 <> until
-		stkey			\ start read ascii character
-		begin
-		    transferred
+		    has_input
 		0 <> until
 		key
 		dup 96 =		\ check if key is `
 	0 <> until
 	drop 	\ ignore `, after counter is on top
 	0       \ put 0 as end of line, count is now a link to string start
+    counter?
+    print_string_from_stack
     counter? 1 +
-    print_string
 	clear_stack
 ;
 

@@ -1,21 +1,11 @@
-#!/usr/bin/python3
-"""Модель процессора, позволяющая выполнить машинный код полученный из программы
-на языке Forthchan.
-
-Модель включает в себя три основных компонента:
-
-- `DataPath` -- работа с памятью данных и вводом-выводом.
-
-- `ControlUnit` -- работа с памятью команд и их интерпретация.
-
-- и набор вспомогательных функций: `simulation`, `main`.
-"""
+from __future__ import annotations
 
 import logging
 import sys
+import typing
 from enum import Enum
 
-from isa import Opcode, read_code, Term, Instruction
+from isa import Instruction, Opcode, read_code
 
 
 class Port:
@@ -69,11 +59,7 @@ class LatchInput(str, Enum):
 
 
 def signal_convert(input_number: int):
-    if input_number == 0:
-        return 1
-    else:
-        return 0
-
+    return 1 if input_number == 0 else 0
 
 class DataPath:
     data_memory_size: int = None
@@ -90,42 +76,42 @@ class DataPath:
     instruction_pointer: int = None
     "Instruction Pointer - Указатель на текущую инструкцию"
 
-    TOP: int = "None"
+    top: int = "None"
     "Регистр, хранящий значение по OD SHP"
 
-    NEXT: int = "None"
+    next: int = "None"
     "Регистр, хранящий значение по OD SHP - 1"
 
-    PRA_SH_pointer: int = None
+    pra_shp_pointer: int = None
     "Procedure Return Addresses Stack Head Pointer - служебный стек"
 
-    OD_STACK_START: int = None
+    od_stack_start: int = None
     "Start of Operational Data Stack"
 
-    OD_SH_pointer: int = None
+    od_sh_pointer: int = None
     "Operational Data Stack Head Pointer - пользовательский стек"
 
     instruction_stage_number: int = None
     "Instruction Stage Number - счетчик стадий команды"
 
-    ports: list[Port] = []
+    ports: typing.ClassVar[list[Port]] = []
     "Порты"
 
     var_data_start_point: int = None
 
     class RegsState:
-        IP: int
-        OD_SHP: int
-        PRA_SHP: int
-        TOP: int
-        NEXT: int
+        ip: int
+        od_shp: int
+        pra_shp: int
+        top: int
+        next: int
 
-        def save(self, IP: int, OD_SHP: int, PRA_SHP: int, TOP: int, NEXT: int):
-            self.IP = IP
-            self.OD_SHP = OD_SHP
-            self.PRA_SHP = PRA_SHP
-            self.TOP = TOP
-            self.NEXT = NEXT
+        def save(self, ip: int, od_shp: int, pra_shp: int, top_reg: int, next_reg: int):
+            self.ip = ip
+            self.od_shp = od_shp
+            self.pra_shp = pra_shp
+            self.top = top_reg
+            self.next = next_reg
 
     cur_tick_regs_state: RegsState = RegsState()
 
@@ -151,25 +137,25 @@ class DataPath:
         self.var_data_start_point = self.interruption_procedures_points_table_begin + len(procedures_points_table)
         self.instruction_pointer = self.var_data_start_point + var_memory_size
         self.write_code(self.instruction_pointer, program)
-        self.OD_STACK_START = self.instruction_pointer + len(program)
-        self.OD_SH_pointer = self.OD_STACK_START
-        self.PRA_SH_pointer = memory_size - 1
+        self.od_stack_start = self.instruction_pointer + len(program)
+        self.od_sh_pointer = self.od_stack_start
+        self.pra_shp_pointer = memory_size - 1
         self.instruction_stage_number = 1
         logging.debug(
-            f"{self.interruption_procedures_points_table_begin}, {self.var_data_start_point}, {self.instruction_pointer}, {self.OD_SH_pointer}")
+            f"{self.interruption_procedures_points_table_begin}, {self.var_data_start_point}, {self.instruction_pointer}, {self.od_sh_pointer}")
 
     def write_code(self, memory_index: int, code: list[Instruction]):
         for instruction in code:
             self.data_memory[memory_index] = instruction
             memory_index += 1
 
-    def latch_IP(self, instruction: Instruction, latch_input: LatchInput):
+    def latch_ip(self, instruction: Instruction, latch_input: LatchInput):
         match latch_input:
             case LatchInput.TOP:
-                self.instruction_pointer = self.cur_tick_regs_state.TOP
+                self.instruction_pointer = self.cur_tick_regs_state.top
             case LatchInput.IP_CONV_SIG_SUM_INC:
-                top_conv_sig = 1 if self.cur_tick_regs_state.TOP == 0 else 0
-                pra_ma_out_conv_sig = 1 if self.data_memory[self.cur_tick_regs_state.PRA_SHP] == 0 else 0
+                top_conv_sig = 1 if self.cur_tick_regs_state.top == 0 else 0
+                pra_ma_out_conv_sig = 1 if self.data_memory[self.cur_tick_regs_state.pra_shp] == 0 else 0
                 match instruction.opcode:
                     case Opcode.EXEC_IF:
                         self.instruction_pointer += 1 + top_conv_sig
@@ -180,7 +166,7 @@ class DataPath:
                     case _:
                         raise "fatal"
             case LatchInput.IP_MINUS_TOP:
-                self.instruction_pointer -= self.cur_tick_regs_state.TOP
+                self.instruction_pointer -= self.cur_tick_regs_state.top
             case LatchInput.IP_PLUS_ARG:
                 self.instruction_pointer += instruction.arg
             case LatchInput.IP_INC:
@@ -188,129 +174,129 @@ class DataPath:
             case _:
                 raise "fatal"
 
-    def latch_OD_SHP(self, instruction: Instruction, latch_input: LatchInput):
+    def latch_od_shp(self, instruction: Instruction, latch_input: LatchInput):
         match latch_input:
             case LatchInput.OD_SHP_INC:
-                self.OD_SH_pointer += 1
+                self.od_sh_pointer += 1
             case LatchInput.OD_SHP_DEC:
-                self.OD_SH_pointer -= 1
+                self.od_sh_pointer -= 1
             case LatchInput.OD_SHP_MINUS_TWO:
-                self.OD_SH_pointer -= 2
+                self.od_sh_pointer -= 2
             case _:
                 raise "fatal"
 
-    def latch_PRA_SHP(self, instruction: Instruction, latch_input: LatchInput):
+    def latch_pra_shp(self, instruction: Instruction, latch_input: LatchInput):
         match latch_input:
             case LatchInput.PRA_SHP_INC:
-                self.PRA_SH_pointer += 1
+                self.pra_shp_pointer += 1
             case LatchInput.PRA_SHP_DEC:
-                self.PRA_SH_pointer -= 1
+                self.pra_shp_pointer -= 1
             case _:
                 raise "fatal"
         pass
 
-    def latch_TOP(self, instruction: Instruction, latch_input: LatchInput):
+    def latch_top(self, instruction: Instruction, latch_input: LatchInput):
         port_num = instruction.arg
         match latch_input:
             case LatchInput.ALU_OUT:
                 match instruction.opcode:
                     case Opcode.SUM:
-                        self.TOP = self.cur_tick_regs_state.NEXT + self.cur_tick_regs_state.TOP
+                        self.top = self.cur_tick_regs_state.next + self.cur_tick_regs_state.top
                     case Opcode.DIFF:
-                        self.TOP = self.cur_tick_regs_state.NEXT - self.cur_tick_regs_state.TOP
+                        self.top = self.cur_tick_regs_state.next - self.cur_tick_regs_state.top
                     case Opcode.DIV:
-                        self.TOP = self.cur_tick_regs_state.NEXT // self.cur_tick_regs_state.TOP
+                        self.top = self.cur_tick_regs_state.next // self.cur_tick_regs_state.top
                     case Opcode.MUL:
-                        self.TOP = self.cur_tick_regs_state.NEXT * self.cur_tick_regs_state.TOP
+                        self.top = self.cur_tick_regs_state.next * self.cur_tick_regs_state.top
                     case Opcode.MOD:
-                        self.TOP = self.cur_tick_regs_state.NEXT % self.cur_tick_regs_state.TOP
+                        self.top = self.cur_tick_regs_state.next % self.cur_tick_regs_state.top
                     case Opcode.EQ:
-                        self.TOP = 0 if self.cur_tick_regs_state.NEXT == self.cur_tick_regs_state.TOP else -1
+                        self.top = 0 if self.cur_tick_regs_state.next == self.cur_tick_regs_state.top else -1
                     case Opcode.NEQ:
-                        self.TOP = 0 if self.cur_tick_regs_state.NEXT != self.cur_tick_regs_state.TOP else -1
+                        self.top = 0 if self.cur_tick_regs_state.next != self.cur_tick_regs_state.top else -1
                     case Opcode.LESS:
-                        self.TOP = 0 if self.cur_tick_regs_state.NEXT < self.cur_tick_regs_state.TOP else -1
+                        self.top = 0 if self.cur_tick_regs_state.next < self.cur_tick_regs_state.top else -1
                     case Opcode.GR:
-                        self.TOP = 0 if self.cur_tick_regs_state.NEXT > self.cur_tick_regs_state.TOP else -1
+                        self.top = 0 if self.cur_tick_regs_state.next > self.cur_tick_regs_state.top else -1
                     case Opcode.LE:
-                        self.TOP = 0 if self.cur_tick_regs_state.NEXT <= self.cur_tick_regs_state.TOP else -1
+                        self.top = 0 if self.cur_tick_regs_state.next <= self.cur_tick_regs_state.top else -1
                     case Opcode.GE:
-                        self.TOP = 0 if self.cur_tick_regs_state.NEXT >= self.cur_tick_regs_state.TOP else -1
+                        self.top = 0 if self.cur_tick_regs_state.next >= self.cur_tick_regs_state.top else -1
                     case Opcode.SHIFT_BACK:
-                        self.TOP = self.cur_tick_regs_state.NEXT
+                        self.top = self.cur_tick_regs_state.next
                     case Opcode.EQ_NOT_CONSUMING_RET:
                         match self.instruction_stage_number:
                             case 1:
-                                self.TOP = 0 if (self.data_memory[self.cur_tick_regs_state.PRA_SHP + 1] ==
-                                                 self.data_memory[self.cur_tick_regs_state.PRA_SHP]) \
+                                self.top = 0 if (self.data_memory[self.cur_tick_regs_state.pra_shp + 1] ==
+                                                 self.data_memory[self.cur_tick_regs_state.pra_shp]) \
                                     else -1
                             case 3:
-                                self.TOP = self.data_memory[self.cur_tick_regs_state.OD_SHP]
+                                self.top = self.data_memory[self.cur_tick_regs_state.od_shp]
                             case _:
                                 raise "fatal"
                     case _:
                         raise "fatal"
             case LatchInput.HAS_DEVICE_FILLED_WITH_CPU:
-                self.TOP = 0 if self.ports[port_num].filled_with_cpu else -1
+                self.top = 0 if self.ports[port_num].filled_with_cpu else -1
             case LatchInput.HAS_PORT_FILLED_WITH_DEVICE:
-                self.TOP = 0 if self.ports[port_num].filled_with_device else -1
+                self.top = 0 if self.ports[port_num].filled_with_device else -1
             case LatchInput.NEXT:
-                self.TOP = self.cur_tick_regs_state.NEXT
+                self.top = self.cur_tick_regs_state.next
             case LatchInput.MA_OUT:
                 match instruction.opcode:
                     case Opcode.PUT | Opcode.PUT_ABSOLUTE:
-                        self.TOP = self.data_memory[self.cur_tick_regs_state.OD_SHP]
+                        self.top = self.data_memory[self.cur_tick_regs_state.od_shp]
                     case Opcode.PICK:
-                        self.TOP = self.data_memory[self.cur_tick_regs_state.OD_SHP - self.cur_tick_regs_state.TOP - 1]
+                        self.top = self.data_memory[self.cur_tick_regs_state.od_shp - self.cur_tick_regs_state.top - 1]
                     case Opcode.PICK_ABSOLUTE:
-                        self.TOP = self.data_memory[self.cur_tick_regs_state.TOP]
+                        self.top = self.data_memory[self.cur_tick_regs_state.top]
                     case Opcode.PUSH_TO_OD | Opcode.POP_TO_OD:
-                        self.TOP = self.data_memory[self.cur_tick_regs_state.PRA_SHP]
+                        self.top = self.data_memory[self.cur_tick_regs_state.pra_shp]
                     case Opcode.DUP_RET | Opcode.INCREMENT_RET | Opcode.DECREMENT_RET:
                         match self.instruction_stage_number:
                             case 1:
-                                self.TOP = self.data_memory[self.cur_tick_regs_state.PRA_SHP]
+                                self.top = self.data_memory[self.cur_tick_regs_state.pra_shp]
                             case 3:
-                                self.TOP = self.data_memory[self.cur_tick_regs_state.OD_SHP]
+                                self.top = self.data_memory[self.cur_tick_regs_state.od_shp]
                             case _:
                                 raise "fatal"
                     case Opcode.JMP_POP_PRA_SHP:
                         match self.instruction_stage_number:
                             case 1:
-                                self.TOP = self.data_memory[self.cur_tick_regs_state.PRA_SHP]
+                                self.top = self.data_memory[self.cur_tick_regs_state.pra_shp]
                             case 2:
-                                self.TOP = self.data_memory[self.cur_tick_regs_state.OD_SHP]
+                                self.top = self.data_memory[self.cur_tick_regs_state.od_shp]
                             case _:
                                 raise "fatal"
                     case Opcode.READ_VARDATA:
-                        self.TOP = self.data_memory[self.var_data_start_point + instruction.arg]
+                        self.top = self.data_memory[self.var_data_start_point + instruction.arg]
             case LatchInput.ARG:
-                self.TOP = instruction.arg
+                self.top = instruction.arg
             case LatchInput.VDSP_PLUS_TOP:
-                self.TOP = self.var_data_start_point + self.cur_tick_regs_state.TOP
+                self.top = self.var_data_start_point + self.cur_tick_regs_state.top
             case LatchInput.PORT_VALUE:
-                self.TOP = self.ports[instruction.arg].data
+                self.top = self.ports[instruction.arg].data
             case _:
                 raise "fatal"
 
-    def latch_NEXT(self, instruction: Instruction, latch_input: LatchInput):
+    def latch_next(self, instruction: Instruction, latch_input: LatchInput):
         match latch_input:
             case LatchInput.TOP:
-                self.NEXT = self.cur_tick_regs_state.TOP
+                self.next = self.cur_tick_regs_state.top
             case LatchInput.MA_MINUS_ONE_OUT:
                 match instruction.opcode:
                     case Opcode.PUT | Opcode.PUT_ABSOLUTE:
-                        self.NEXT = self.data_memory[self.cur_tick_regs_state.TOP - 1]
+                        self.next = self.data_memory[self.cur_tick_regs_state.top - 1]
                     case Opcode.PUSH_TO_OD | Opcode.POP_TO_OD:
-                        self.NEXT = self.data_memory[self.cur_tick_regs_state.OD_SHP - 1]
+                        self.next = self.data_memory[self.cur_tick_regs_state.od_shp - 1]
                     case Opcode.EXEC_IF | Opcode.EXEC_COND_JMP:
-                        self.NEXT = self.data_memory[self.cur_tick_regs_state.OD_SHP - 1 - 1]
+                        self.next = self.data_memory[self.cur_tick_regs_state.od_shp - 1 - 1]
                     case Opcode.WRITE_VARDATA | Opcode.WRITE_PORT:
-                        self.NEXT = self.data_memory[self.cur_tick_regs_state.OD_SHP - 1 - 1]
+                        self.next = self.data_memory[self.cur_tick_regs_state.od_shp - 1 - 1]
                     case Opcode.WRITE_VARDATA_USER_LINK:
-                        self.NEXT = self.data_memory[self.cur_tick_regs_state.OD_SHP - 1]
+                        self.next = self.data_memory[self.cur_tick_regs_state.od_shp - 1]
                     case Opcode.POP_TO_RET:
-                        self.NEXT = self.data_memory[self.cur_tick_regs_state.OD_SHP - 1]
+                        self.next = self.data_memory[self.cur_tick_regs_state.od_shp - 1]
                     case _:
                         logging.debug(instruction.opcode)
                         raise instruction.opcode
@@ -320,86 +306,93 @@ class DataPath:
                     case Opcode.SUM | Opcode.DIFF | Opcode.DIV | Opcode.MUL | \
                          Opcode.MOD | Opcode.EQ | Opcode.NEQ | Opcode.LESS | \
                          Opcode.GR | Opcode.LE | Opcode.GE:
-                        self.NEXT = self.data_memory[self.cur_tick_regs_state.OD_SHP - 2]
+                        self.next = self.data_memory[self.cur_tick_regs_state.od_shp - 2]
                     case Opcode.SHIFT_BACK:
-                        self.NEXT = self.data_memory[self.cur_tick_regs_state.OD_SHP - 1]
+                        self.next = self.data_memory[self.cur_tick_regs_state.od_shp - 1]
             case _:
                 raise "fatal"
 
     def latch_memory_data(self, instruction: Instruction, latch_input: LatchInput):
         match latch_input:
+            case LatchInput.HAS_PORT_FILLED_WITH_DEVICE | LatchInput.HAS_DEVICE_FILLED_WITH_CPU | LatchInput.PORT_VALUE:
+                self.port_latch_on_memory_data(instruction, latch_input)
             case LatchInput.ARG:
-                match instruction.opcode:
-                    case Opcode.NUMBER:
-                        self.data_memory[self.cur_tick_regs_state.OD_SHP + 1] = instruction.arg
+                self.data_memory[self.cur_tick_regs_state.od_shp + 1] = instruction.arg
             case LatchInput.TOP:
-                match instruction.opcode:
-                    case Opcode.SUM | Opcode.DIFF | Opcode.DIV | Opcode.MUL | \
-                         Opcode.MOD | Opcode.EQ | Opcode.NEQ | Opcode.LESS | \
-                         Opcode.GR | Opcode.LE | Opcode.GE:
-                        self.data_memory[self.cur_tick_regs_state.OD_SHP] = self.cur_tick_regs_state.TOP
-                    case Opcode.PICK | Opcode.PICK_ABSOLUTE:
-                        self.data_memory[self.cur_tick_regs_state.OD_SHP] = self.cur_tick_regs_state.TOP
-                    case Opcode.SWAP:
-                        match self.instruction_stage_number:
-                            case 1:
-                                self.data_memory[self.cur_tick_regs_state.OD_SHP - 1] = self.cur_tick_regs_state.TOP
-                            case 2:
-                                self.data_memory[self.cur_tick_regs_state.OD_SHP] = self.cur_tick_regs_state.TOP
-                    case Opcode.PUSH_TO_RET | Opcode.POP_TO_RET:
-                        self.data_memory[self.cur_tick_regs_state.PRA_SHP - 1] = self.cur_tick_regs_state.TOP
-                    case Opcode.PUSH_TO_OD | Opcode.POP_TO_OD:
-                        self.data_memory[self.cur_tick_regs_state.OD_SHP] = self.cur_tick_regs_state.TOP
-                    case Opcode.DUP_RET:
-                        self.data_memory[self.cur_tick_regs_state.PRA_SHP + 1] = self.cur_tick_regs_state.TOP
-                    case Opcode.DUP:
-                        self.data_memory[self.cur_tick_regs_state.OD_SHP + 1] = self.cur_tick_regs_state.TOP
-                    case Opcode.DUDUP:
-                        self.data_memory[self.cur_tick_regs_state.OD_SHP + 1] = self.cur_tick_regs_state.TOP
-                    case Opcode.EQ_NOT_CONSUMING_RET:
-                        self.data_memory[self.cur_tick_regs_state.PRA_SHP] = self.cur_tick_regs_state.TOP
-                    case Opcode.WRITE_VARDATA:
-                        self.data_memory[self.var_data_start_point + instruction.arg] = self.cur_tick_regs_state.TOP
-                    case Opcode.READ_VARDATA:
-                        self.data_memory[self.cur_tick_regs_state.OD_SHP + 1] = self.cur_tick_regs_state.TOP
-                    case _:
-                        raise "fatal"
+                self.top_latch_on_memory_data(instruction)
             case LatchInput.NEXT:
-                match instruction.opcode:
-                    case Opcode.PUT:
-                        self.data_memory[
-                            self.cur_tick_regs_state.OD_SHP - self.cur_tick_regs_state.TOP - 2] = self.cur_tick_regs_state.NEXT
-                    case Opcode.PUT_ABSOLUTE:
-                        self.data_memory[self.cur_tick_regs_state.TOP] = self.cur_tick_regs_state.NEXT
-                    case Opcode.DUDUP:
-                        self.data_memory[self.cur_tick_regs_state.OD_SHP + 1] = self.cur_tick_regs_state.NEXT
-                    case _:
-                        raise "fatal"
+                self.next_latch_on_memory_data(instruction)
             case LatchInput.ALU_OUT:
                 match instruction.opcode:
                     case Opcode.INCREMENT_RET:
-                        self.data_memory[self.cur_tick_regs_state.PRA_SHP] = self.cur_tick_regs_state.TOP + 1
+                        self.data_memory[self.cur_tick_regs_state.pra_shp] = self.cur_tick_regs_state.top + 1
                     case Opcode.DECREMENT_RET:
-                        self.data_memory[self.cur_tick_regs_state.PRA_SHP] = self.cur_tick_regs_state.TOP - 1
+                        self.data_memory[self.cur_tick_regs_state.pra_shp] = self.cur_tick_regs_state.top - 1
                     case _:
                         raise "fatal"
             case LatchInput.IP_PLUS_TWO:
-                match instruction.opcode:
-                    case Opcode.PUSH_INC_INC_IP_TO_PRA_SHP:
-                        self.data_memory[self.cur_tick_regs_state.PRA_SHP - 1] = self.cur_tick_regs_state.IP + 2
-                    case _:
-                        raise "fatal"
-            case LatchInput.HAS_DEVICE_FILLED_WITH_CPU:
-                self.data_memory[self.cur_tick_regs_state.OD_SHP + 1] = 0 if self.ports[
-                    instruction.arg].filled_with_cpu else -1
-            case LatchInput.HAS_PORT_FILLED_WITH_DEVICE:
-                self.data_memory[self.cur_tick_regs_state.OD_SHP + 1] = 0 if self.ports[
-                    instruction.arg].filled_with_cpu else -1
+                self.data_memory[self.cur_tick_regs_state.pra_shp - 1] = self.cur_tick_regs_state.ip + 2
             case LatchInput.VDSP_PLUS_TOP:
                 self.data_memory[
-                    self.cur_tick_regs_state.OD_SHP] = self.var_data_start_point + self.cur_tick_regs_state.TOP
+                    self.cur_tick_regs_state.od_shp] = self.var_data_start_point + self.cur_tick_regs_state.top
+            case _:
+                raise "fatal"
+
+    def top_latch_on_memory_data(self, instruction: Instruction):
+        match instruction.opcode:
+            case Opcode.SUM | Opcode.DIFF | Opcode.DIV | Opcode.MUL | \
+                 Opcode.MOD | Opcode.EQ | Opcode.NEQ | Opcode.LESS | \
+                 Opcode.GR | Opcode.LE | Opcode.GE:
+                self.data_memory[self.cur_tick_regs_state.od_shp] = self.cur_tick_regs_state.top
+            case Opcode.PICK | Opcode.PICK_ABSOLUTE:
+                self.data_memory[self.cur_tick_regs_state.od_shp] = self.cur_tick_regs_state.top
+            case Opcode.SWAP:
+                match self.instruction_stage_number:
+                    case 1:
+                        self.data_memory[self.cur_tick_regs_state.od_shp - 1] = self.cur_tick_regs_state.top
+                    case 2:
+                        self.data_memory[self.cur_tick_regs_state.od_shp] = self.cur_tick_regs_state.top
+            case Opcode.PUSH_TO_RET | Opcode.POP_TO_RET:
+                self.data_memory[self.cur_tick_regs_state.pra_shp - 1] = self.cur_tick_regs_state.top
+            case Opcode.PUSH_TO_OD | Opcode.POP_TO_OD:
+                self.data_memory[self.cur_tick_regs_state.od_shp] = self.cur_tick_regs_state.top
+            case Opcode.DUP_RET:
+                self.data_memory[self.cur_tick_regs_state.pra_shp + 1] = self.cur_tick_regs_state.top
+            case Opcode.DUP:
+                self.data_memory[self.cur_tick_regs_state.od_shp + 1] = self.cur_tick_regs_state.top
+            case Opcode.DUDUP:
+                self.data_memory[self.cur_tick_regs_state.od_shp + 1] = self.cur_tick_regs_state.top
+            case Opcode.EQ_NOT_CONSUMING_RET:
+                self.data_memory[self.cur_tick_regs_state.pra_shp] = self.cur_tick_regs_state.top
+            case Opcode.WRITE_VARDATA:
+                self.data_memory[self.var_data_start_point + instruction.arg] = self.cur_tick_regs_state.top
+            case Opcode.READ_VARDATA:
+                self.data_memory[self.cur_tick_regs_state.od_shp + 1] = self.cur_tick_regs_state.top
+            case _:
+                raise "fatal"
+
+    def next_latch_on_memory_data(self, instruction: Instruction):
+        match instruction.opcode:
+            case Opcode.PUT:
+                self.data_memory[
+                    self.cur_tick_regs_state.od_shp - self.cur_tick_regs_state.top - 2] = self.cur_tick_regs_state.next
+            case Opcode.PUT_ABSOLUTE:
+                self.data_memory[self.cur_tick_regs_state.top] = self.cur_tick_regs_state.next
+            case Opcode.DUDUP:
+                self.data_memory[self.cur_tick_regs_state.od_shp + 1] = self.cur_tick_regs_state.next
+            case _:
+                raise "fatal"
+
+    def port_latch_on_memory_data(self, instruction: Instruction, latch_input: LatchInput):
+        match latch_input:
+            case LatchInput.HAS_DEVICE_FILLED_WITH_CPU:
+                self.data_memory[self.cur_tick_regs_state.od_shp + 1] = 0 if self.ports[
+                    instruction.arg].filled_with_cpu else -1
+            case LatchInput.HAS_PORT_FILLED_WITH_DEVICE:
+                self.data_memory[self.cur_tick_regs_state.od_shp + 1] = 0 if self.ports[
+                    instruction.arg].filled_with_cpu else -1
             case LatchInput.PORT_VALUE:
-                self.data_memory[self.cur_tick_regs_state.OD_SHP + 1] = self.ports[instruction.arg].data
+                self.data_memory[self.cur_tick_regs_state.od_shp + 1] = self.ports[instruction.arg].data
             case _:
                 raise "fatal"
 
@@ -432,7 +425,7 @@ class DataPath:
             case Opcode.WRITE_PORT:
                 match latch_input:
                     case LatchInput.TOP:
-                        self.ports[instruction.arg].data = self.cur_tick_regs_state.TOP
+                        self.ports[instruction.arg].data = self.cur_tick_regs_state.top
                     case _:
                         raise "fatal exception"
             case _:
@@ -467,10 +460,10 @@ class ControlUnit:
         instruction = self.current_instruction()
         self.data_path.cur_tick_regs_state.save(
             self.data_path.instruction_pointer,
-            self.data_path.OD_SH_pointer,
-            self.data_path.PRA_SH_pointer,
-            self.data_path.TOP,
-            self.data_path.NEXT
+            self.data_path.od_sh_pointer,
+            self.data_path.pra_shp_pointer,
+            self.data_path.top,
+            self.data_path.next
         )
 
         self.ticks_counter += 1
@@ -481,10 +474,10 @@ class ControlUnit:
                 if not self.is_in_interruption:
                     raise StopIteration()
                 else:
-                    self.data_path.instruction_stage_number = self.data_path.data_memory[self.data_path.PRA_SH_pointer]
-                    self.data_path.PRA_SH_pointer += 1
-                    self.data_path.instruction_pointer = self.data_path.data_memory[self.data_path.PRA_SH_pointer]
-                    self.data_path.PRA_SH_pointer += 1
+                    self.data_path.instruction_stage_number = self.data_path.data_memory[self.data_path.pra_shp_pointer]
+                    self.data_path.pra_shp_pointer += 1
+                    self.data_path.instruction_pointer = self.data_path.data_memory[self.data_path.pra_shp_pointer]
+                    self.data_path.pra_shp_pointer += 1
                     self.is_in_interruption = False
                     logging.debug("Interruption exit!!!")
                     return True
@@ -493,230 +486,230 @@ class ControlUnit:
                  Opcode.GR | Opcode.LE | Opcode.GE:
                 match self.data_path.instruction_stage_number:
                     case 1:
-                        self.data_path.latch_TOP(instruction, LatchInput.ALU_OUT)
-                        self.data_path.latch_NEXT(instruction, LatchInput.MA_OUT)
-                        self.data_path.latch_OD_SHP(instruction, LatchInput.OD_SHP_DEC)
+                        self.data_path.latch_top(instruction, LatchInput.ALU_OUT)
+                        self.data_path.latch_next(instruction, LatchInput.MA_OUT)
+                        self.data_path.latch_od_shp(instruction, LatchInput.OD_SHP_DEC)
                     case 2:
                         self.data_path.latch_memory_data(instruction, LatchInput.TOP)
-                        self.data_path.latch_IP(instruction, LatchInput.IP_INC)
+                        self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                         is_last_instruction_tick = True
             case Opcode.SHIFT_BACK:
-                self.data_path.latch_TOP(instruction, LatchInput.NEXT)
-                self.data_path.latch_NEXT(instruction, LatchInput.MA_OUT)
-                self.data_path.latch_OD_SHP(instruction, LatchInput.OD_SHP_DEC)
-                self.data_path.latch_IP(instruction, LatchInput.IP_INC)
+                self.data_path.latch_top(instruction, LatchInput.NEXT)
+                self.data_path.latch_next(instruction, LatchInput.MA_OUT)
+                self.data_path.latch_od_shp(instruction, LatchInput.OD_SHP_DEC)
+                self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                 is_last_instruction_tick = True
             case Opcode.SHIFT_BACK_RET:
-                self.data_path.latch_PRA_SHP(instruction, LatchInput.PRA_SHP_INC)
-                self.data_path.latch_IP(instruction, LatchInput.IP_INC)
+                self.data_path.latch_pra_shp(instruction, LatchInput.PRA_SHP_INC)
+                self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                 is_last_instruction_tick = True
             case Opcode.PUT | Opcode.PUT_ABSOLUTE:
                 match self.data_path.instruction_stage_number:
                     case 1:
                         self.data_path.latch_memory_data(instruction, LatchInput.NEXT)
-                        self.data_path.latch_OD_SHP(instruction, LatchInput.OD_SHP_MINUS_TWO)
+                        self.data_path.latch_od_shp(instruction, LatchInput.OD_SHP_MINUS_TWO)
                     case 2:
-                        self.data_path.latch_TOP(instruction, LatchInput.MA_OUT)
-                        self.data_path.latch_NEXT(instruction, LatchInput.MA_MINUS_ONE_OUT)
-                        self.data_path.latch_IP(instruction, LatchInput.IP_INC)
+                        self.data_path.latch_top(instruction, LatchInput.MA_OUT)
+                        self.data_path.latch_next(instruction, LatchInput.MA_MINUS_ONE_OUT)
+                        self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                         is_last_instruction_tick = True
             case Opcode.PICK | Opcode.PICK_ABSOLUTE:
                 match self.data_path.instruction_stage_number:
                     case 1:
-                        self.data_path.latch_TOP(instruction, LatchInput.MA_OUT)
+                        self.data_path.latch_top(instruction, LatchInput.MA_OUT)
                     case 2:
                         self.data_path.latch_memory_data(instruction, LatchInput.TOP)
-                        self.data_path.latch_IP(instruction, LatchInput.IP_INC)
+                        self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                         is_last_instruction_tick = True
             case Opcode.SWAP:
                 match self.data_path.instruction_stage_number:
                     case 1:
-                        self.data_path.latch_NEXT(instruction, LatchInput.TOP)
-                        self.data_path.latch_TOP(instruction, LatchInput.NEXT)
+                        self.data_path.latch_next(instruction, LatchInput.TOP)
+                        self.data_path.latch_top(instruction, LatchInput.NEXT)
                         self.data_path.latch_memory_data(instruction, LatchInput.TOP)
                     case 2:
                         self.data_path.latch_memory_data(instruction, LatchInput.TOP)
-                        self.data_path.latch_IP(instruction, LatchInput.IP_INC)
+                        self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                         is_last_instruction_tick = True
             case Opcode.PUSH_TO_RET:
                 self.data_path.latch_memory_data(instruction, LatchInput.TOP)
-                self.data_path.latch_PRA_SHP(instruction, LatchInput.PRA_SHP_DEC)
-                self.data_path.latch_IP(instruction, LatchInput.IP_INC)
+                self.data_path.latch_pra_shp(instruction, LatchInput.PRA_SHP_DEC)
+                self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                 is_last_instruction_tick = True
             case Opcode.POP_TO_RET:
                 match self.data_path.instruction_stage_number:
                     case 1:
                         self.data_path.latch_memory_data(instruction, LatchInput.TOP)
-                        self.data_path.latch_PRA_SHP(instruction, LatchInput.PRA_SHP_DEC)
-                        self.data_path.latch_TOP(instruction, LatchInput.NEXT)
-                        self.data_path.latch_OD_SHP(instruction, LatchInput.OD_SHP_DEC)
+                        self.data_path.latch_pra_shp(instruction, LatchInput.PRA_SHP_DEC)
+                        self.data_path.latch_top(instruction, LatchInput.NEXT)
+                        self.data_path.latch_od_shp(instruction, LatchInput.OD_SHP_DEC)
                     case 2:
-                        self.data_path.latch_NEXT(instruction, LatchInput.MA_MINUS_ONE_OUT)
-                        self.data_path.latch_IP(instruction, LatchInput.IP_INC)
+                        self.data_path.latch_next(instruction, LatchInput.MA_MINUS_ONE_OUT)
+                        self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                         is_last_instruction_tick = True
             case Opcode.PUSH_TO_OD | Opcode.POP_TO_OD:
                 match self.data_path.instruction_stage_number:
                     case 1:
-                        self.data_path.latch_TOP(instruction, LatchInput.MA_OUT)
-                        self.data_path.latch_OD_SHP(instruction, LatchInput.OD_SHP_INC)
+                        self.data_path.latch_top(instruction, LatchInput.MA_OUT)
+                        self.data_path.latch_od_shp(instruction, LatchInput.OD_SHP_INC)
                         if instruction.opcode == Opcode.POP_TO_OD:
-                            self.data_path.latch_PRA_SHP(instruction, LatchInput.PRA_SHP_INC)
+                            self.data_path.latch_pra_shp(instruction, LatchInput.PRA_SHP_INC)
                     case 2:
                         self.data_path.latch_memory_data(instruction, LatchInput.TOP)
                     case 3:
-                        self.data_path.latch_NEXT(instruction, LatchInput.MA_MINUS_ONE_OUT)
-                        self.data_path.latch_IP(instruction, LatchInput.IP_INC)
+                        self.data_path.latch_next(instruction, LatchInput.MA_MINUS_ONE_OUT)
+                        self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                         is_last_instruction_tick = True
             case Opcode.NUMBER:
-                self.data_path.latch_NEXT(instruction, LatchInput.TOP)
+                self.data_path.latch_next(instruction, LatchInput.TOP)
                 self.data_path.latch_memory_data(instruction, LatchInput.ARG)
-                self.data_path.latch_TOP(instruction, LatchInput.ARG)
-                self.data_path.latch_OD_SHP(instruction, LatchInput.OD_SHP_INC)
-                self.data_path.latch_IP(instruction, LatchInput.IP_INC)
+                self.data_path.latch_top(instruction, LatchInput.ARG)
+                self.data_path.latch_od_shp(instruction, LatchInput.OD_SHP_INC)
+                self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                 is_last_instruction_tick = True
             case Opcode.JMP:
-                self.data_path.latch_IP(instruction, LatchInput.IP_PLUS_ARG)
+                self.data_path.latch_ip(instruction, LatchInput.IP_PLUS_ARG)
                 is_last_instruction_tick = True
             case Opcode.EXEC_IF | Opcode.EXEC_COND_JMP:
-                self.data_path.latch_NEXT(instruction, LatchInput.MA_MINUS_ONE_OUT)
-                self.data_path.latch_IP(instruction, LatchInput.IP_CONV_SIG_SUM_INC)
-                self.data_path.latch_TOP(instruction, LatchInput.NEXT)
-                self.data_path.latch_OD_SHP(instruction, LatchInput.OD_SHP_DEC)
+                self.data_path.latch_next(instruction, LatchInput.MA_MINUS_ONE_OUT)
+                self.data_path.latch_ip(instruction, LatchInput.IP_CONV_SIG_SUM_INC)
+                self.data_path.latch_top(instruction, LatchInput.NEXT)
+                self.data_path.latch_od_shp(instruction, LatchInput.OD_SHP_DEC)
                 is_last_instruction_tick = True
             case Opcode.EXEC_COND_JMP_RET:
-                self.data_path.latch_IP(instruction, LatchInput.IP_CONV_SIG_SUM_INC)
-                self.data_path.latch_PRA_SHP(instruction, LatchInput.PRA_SHP_INC)
+                self.data_path.latch_ip(instruction, LatchInput.IP_CONV_SIG_SUM_INC)
+                self.data_path.latch_pra_shp(instruction, LatchInput.PRA_SHP_INC)
                 is_last_instruction_tick = True
             case Opcode.DUP_RET:
                 match self.data_path.instruction_stage_number:
                     case 1:
-                        self.data_path.latch_TOP(instruction, LatchInput.MA_OUT)
+                        self.data_path.latch_top(instruction, LatchInput.MA_OUT)
                     case 2:
                         self.data_path.latch_memory_data(instruction, LatchInput.TOP)
-                        self.data_path.latch_PRA_SHP(instruction, LatchInput.PRA_SHP_INC)
+                        self.data_path.latch_pra_shp(instruction, LatchInput.PRA_SHP_INC)
                     case 3:
-                        self.data_path.latch_TOP(instruction, LatchInput.MA_OUT)
-                        self.data_path.latch_IP(instruction, LatchInput.IP_INC)
+                        self.data_path.latch_top(instruction, LatchInput.MA_OUT)
+                        self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                         is_last_instruction_tick = True
             case Opcode.DUP:
-                self.data_path.latch_NEXT(instruction, LatchInput.TOP)
+                self.data_path.latch_next(instruction, LatchInput.TOP)
                 self.data_path.latch_memory_data(instruction, LatchInput.TOP)
-                self.data_path.latch_OD_SHP(instruction, LatchInput.OD_SHP_INC)
-                self.data_path.latch_IP(instruction, LatchInput.IP_INC)
+                self.data_path.latch_od_shp(instruction, LatchInput.OD_SHP_INC)
+                self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                 is_last_instruction_tick = True
             case Opcode.DUDUP:
                 match self.data_path.instruction_stage_number:
                     case 1:
                         self.data_path.latch_memory_data(instruction, LatchInput.NEXT)
-                        self.data_path.latch_OD_SHP(instruction, LatchInput.OD_SHP_INC)
+                        self.data_path.latch_od_shp(instruction, LatchInput.OD_SHP_INC)
                     case 2:
                         self.data_path.latch_memory_data(instruction, LatchInput.TOP)
-                        self.data_path.latch_OD_SHP(instruction, LatchInput.OD_SHP_INC)
-                        self.data_path.latch_IP(instruction, LatchInput.IP_INC)
+                        self.data_path.latch_od_shp(instruction, LatchInput.OD_SHP_INC)
+                        self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                         is_last_instruction_tick = True
             case Opcode.INCREMENT_RET | Opcode.DECREMENT_RET:
                 match self.data_path.instruction_stage_number:
                     case 1:
-                        self.data_path.latch_TOP(instruction, LatchInput.MA_OUT)
+                        self.data_path.latch_top(instruction, LatchInput.MA_OUT)
                     case 2:
                         self.data_path.latch_memory_data(instruction, LatchInput.ALU_OUT)
                     case 3:
-                        self.data_path.latch_TOP(instruction, LatchInput.MA_OUT)
-                        self.data_path.latch_IP(instruction, LatchInput.IP_INC)
+                        self.data_path.latch_top(instruction, LatchInput.MA_OUT)
+                        self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                         is_last_instruction_tick = True
             case Opcode.JMP_POP_PRA_SHP:
                 match self.data_path.instruction_stage_number:
                     case 1:
-                        self.data_path.latch_TOP(instruction, LatchInput.MA_OUT)
-                        self.data_path.latch_PRA_SHP(instruction, LatchInput.PRA_SHP_INC)
+                        self.data_path.latch_top(instruction, LatchInput.MA_OUT)
+                        self.data_path.latch_pra_shp(instruction, LatchInput.PRA_SHP_INC)
                     case 2:
-                        self.data_path.latch_IP(instruction, LatchInput.TOP)
-                        self.data_path.latch_TOP(instruction, LatchInput.MA_OUT)
+                        self.data_path.latch_ip(instruction, LatchInput.TOP)
+                        self.data_path.latch_top(instruction, LatchInput.MA_OUT)
                         is_last_instruction_tick = True
             case Opcode.PUSH_INC_INC_IP_TO_PRA_SHP:
                 self.data_path.latch_memory_data(instruction, LatchInput.IP_PLUS_TWO)
-                self.data_path.latch_PRA_SHP(instruction, LatchInput.PRA_SHP_DEC)
-                self.data_path.latch_IP(instruction, LatchInput.IP_INC)
+                self.data_path.latch_pra_shp(instruction, LatchInput.PRA_SHP_DEC)
+                self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                 is_last_instruction_tick = True
             case Opcode.EQ_NOT_CONSUMING_RET:
                 match self.data_path.instruction_stage_number:
                     case 1:
-                        self.data_path.latch_TOP(instruction, LatchInput.ALU_OUT)
-                        self.data_path.latch_PRA_SHP(instruction, LatchInput.PRA_SHP_DEC)
+                        self.data_path.latch_top(instruction, LatchInput.ALU_OUT)
+                        self.data_path.latch_pra_shp(instruction, LatchInput.PRA_SHP_DEC)
                     case 2:
                         self.data_path.latch_memory_data(instruction, LatchInput.TOP)
                     case 3:
-                        self.data_path.latch_TOP(instruction, LatchInput.MA_OUT)
-                        self.data_path.latch_IP(instruction, LatchInput.IP_INC)
+                        self.data_path.latch_top(instruction, LatchInput.MA_OUT)
+                        self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                         is_last_instruction_tick = True
             case Opcode.READ_VARDATA:
                 match self.data_path.instruction_stage_number:
                     case 1:
-                        self.data_path.latch_NEXT(instruction, LatchInput.TOP)
-                        self.data_path.latch_TOP(instruction, LatchInput.MA_OUT)
+                        self.data_path.latch_next(instruction, LatchInput.TOP)
+                        self.data_path.latch_top(instruction, LatchInput.MA_OUT)
                     case 2:
                         self.data_path.latch_memory_data(instruction, LatchInput.TOP)
-                        self.data_path.latch_OD_SHP(instruction, LatchInput.OD_SHP_INC)
-                        self.data_path.latch_IP(instruction, LatchInput.IP_INC)
+                        self.data_path.latch_od_shp(instruction, LatchInput.OD_SHP_INC)
+                        self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                         is_last_instruction_tick = True
             case Opcode.WRITE_VARDATA:
                 match self.data_path.instruction_stage_number:
                     case 1:
                         self.data_path.latch_memory_data(instruction, LatchInput.TOP)
-                        self.data_path.latch_TOP(instruction, LatchInput.NEXT)
+                        self.data_path.latch_top(instruction, LatchInput.NEXT)
                     case 2:
-                        self.data_path.latch_NEXT(instruction, LatchInput.MA_MINUS_ONE_OUT)
-                        self.data_path.latch_OD_SHP(instruction, LatchInput.OD_SHP_DEC)
-                        self.data_path.latch_IP(instruction, LatchInput.IP_INC)
+                        self.data_path.latch_next(instruction, LatchInput.MA_MINUS_ONE_OUT)
+                        self.data_path.latch_od_shp(instruction, LatchInput.OD_SHP_DEC)
+                        self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                         is_last_instruction_tick = True
             case Opcode.READ_VARDATA_USER_LINK:
-                self.data_path.latch_TOP(instruction, LatchInput.MA_OUT)
-                self.data_path.latch_IP(instruction, LatchInput.IP_INC)
+                self.data_path.latch_top(instruction, LatchInput.MA_OUT)
+                self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                 is_last_instruction_tick = True
             case Opcode.WRITE_VARDATA_USER_LINK:
                 match self.data_path.instruction_stage_number:
                     case 1:
                         self.data_path.latch_memory_data(instruction, LatchInput.NEXT)
-                        self.data_path.latch_OD_SHP(instruction, LatchInput.OD_SHP_MINUS_TWO)
+                        self.data_path.latch_od_shp(instruction, LatchInput.OD_SHP_MINUS_TWO)
                     case 2:
-                        self.data_path.latch_TOP(instruction, LatchInput.MA_OUT)
-                        self.data_path.latch_NEXT(instruction, LatchInput.MA_MINUS_ONE_OUT)
-                        self.data_path.latch_IP(instruction, LatchInput.IP_INC)
+                        self.data_path.latch_top(instruction, LatchInput.MA_OUT)
+                        self.data_path.latch_next(instruction, LatchInput.MA_MINUS_ONE_OUT)
+                        self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                         is_last_instruction_tick = True
             case Opcode.SUM_TOP_WITH_VDSP:
-                self.data_path.latch_TOP(instruction, LatchInput.VDSP_PLUS_TOP)
+                self.data_path.latch_top(instruction, LatchInput.VDSP_PLUS_TOP)
                 self.data_path.latch_memory_data(instruction, LatchInput.VDSP_PLUS_TOP)
-                self.data_path.latch_IP(instruction, LatchInput.IP_INC)
+                self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                 is_last_instruction_tick = True
             case Opcode.READ_PORT:
-                self.data_path.latch_NEXT(instruction, LatchInput.TOP)
-                self.data_path.latch_TOP(instruction, LatchInput.PORT_VALUE)
+                self.data_path.latch_next(instruction, LatchInput.TOP)
+                self.data_path.latch_top(instruction, LatchInput.PORT_VALUE)
                 self.data_path.latch_memory_data(instruction, LatchInput.PORT_VALUE)
                 self.data_path.latch_port_flags(instruction, LatchInput.FALSE)
-                self.data_path.latch_OD_SHP(instruction, LatchInput.OD_SHP_INC)
-                self.data_path.latch_IP(instruction, LatchInput.IP_INC)
+                self.data_path.latch_od_shp(instruction, LatchInput.OD_SHP_INC)
+                self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                 is_last_instruction_tick = True
             case Opcode.WRITE_PORT:
                 self.data_path.latch_port_value(instruction, LatchInput.TOP)
-                self.data_path.latch_TOP(instruction, LatchInput.NEXT)
-                self.data_path.latch_NEXT(instruction, LatchInput.MA_MINUS_ONE_OUT)
+                self.data_path.latch_top(instruction, LatchInput.NEXT)
+                self.data_path.latch_next(instruction, LatchInput.MA_MINUS_ONE_OUT)
                 self.data_path.latch_port_flags(instruction, LatchInput.TRUE)
-                self.data_path.latch_OD_SHP(instruction, LatchInput.OD_SHP_DEC)
-                self.data_path.latch_IP(instruction, LatchInput.IP_INC)
+                self.data_path.latch_od_shp(instruction, LatchInput.OD_SHP_DEC)
+                self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                 is_last_instruction_tick = True
             case Opcode.HAS_PORT_FILLED_WITH_CPU | Opcode.HAS_PORT_FILLED_WITH_DEVICE:
-                self.data_path.latch_NEXT(instruction, LatchInput.TOP)
+                self.data_path.latch_next(instruction, LatchInput.TOP)
                 match instruction.opcode:
                     case Opcode.HAS_PORT_FILLED_WITH_CPU:
                         self.data_path.latch_memory_data(instruction, LatchInput.HAS_DEVICE_FILLED_WITH_CPU)
-                        self.data_path.latch_TOP(instruction, LatchInput.HAS_DEVICE_FILLED_WITH_CPU)
+                        self.data_path.latch_top(instruction, LatchInput.HAS_DEVICE_FILLED_WITH_CPU)
                     case Opcode.HAS_PORT_FILLED_WITH_DEVICE:
                         self.data_path.latch_memory_data(instruction, LatchInput.HAS_PORT_FILLED_WITH_DEVICE)
-                        self.data_path.latch_TOP(instruction, LatchInput.HAS_PORT_FILLED_WITH_DEVICE)
+                        self.data_path.latch_top(instruction, LatchInput.HAS_PORT_FILLED_WITH_DEVICE)
                     case _:
                         raise "fatal exception"
-                self.data_path.latch_OD_SHP(instruction, LatchInput.OD_SHP_INC)
-                self.data_path.latch_IP(instruction, LatchInput.IP_INC)
+                self.data_path.latch_od_shp(instruction, LatchInput.OD_SHP_INC)
+                self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                 is_last_instruction_tick = True
 
         if is_last_instruction_tick:
@@ -729,23 +722,23 @@ class ControlUnit:
         """Вернуть строковое представление состояния процессора."""
         top = "None"
         next = "None"
-        OD_SH_size = self.data_path.OD_SH_pointer - self.data_path.OD_STACK_START
+        OD_SH_size = self.data_path.od_sh_pointer - self.data_path.od_stack_start
         if OD_SH_size > 0:
-            top = self.data_path.TOP
+            top = self.data_path.top
         if OD_SH_size > 1:
-            next = self.data_path.NEXT
+            next = self.data_path.next
         mem = self.data_path.data_memory[self.data_path.var_data_start_point: self.data_path.var_data_start_point + 41]
         state_repr = "ticks: {:6} ISN: {:3} IP: {:3} OD_SHP: {:3} PRA_SHP: {:3} TOP: {:4} NEXT: {:4} els below OD_SHP: {}, els over PRA_SHP: {}, VDStartP: {}".format(
             self.ticks_counter,
             self.data_path.instruction_stage_number,
             self.data_path.instruction_pointer,
-            self.data_path.OD_SH_pointer,
-            self.data_path.PRA_SH_pointer,
+            self.data_path.od_sh_pointer,
+            self.data_path.pra_shp_pointer,
             top,
             next,
             " ".join([str(i) for i in
-                      self.data_path.data_memory[self.data_path.OD_STACK_START:self.data_path.OD_SH_pointer + 1]]),
-            " ".join([str(i) for i in self.data_path.data_memory[self.data_path.PRA_SH_pointer:]]),
+                      self.data_path.data_memory[self.data_path.od_stack_start:self.data_path.od_sh_pointer + 1]]),
+            " ".join([str(i) for i in self.data_path.data_memory[self.data_path.pra_shp_pointer:]]),
             self.data_path.var_data_start_point
         )
 
@@ -753,13 +746,13 @@ class ControlUnit:
         instr_repr = instr.opcode
 
         if instr.arg is not None:
-            instr_repr += " {}".format(instr.arg)
+            instr_repr += f" {instr.arg}"
 
         if instr.term is not None:
             term = instr.term
-            instr_repr += "  ('{}'@{}:{})".format(term.name, term.line_number, term.line_position)
+            instr_repr += f"  ('{term.name}'@{term.line_number}:{term.line_position})"
 
-        return "{} \t{}\t{}".format(state_repr, instr_repr, mem)
+        return f"{state_repr} \t{instr_repr}\t{mem}"
 
     def step_in_port_interruption(self, port_number: int, is_write_interruption: bool):
         port_interruption_memory_index = self.data_path.interruption_procedures_points_table_begin + 2 * port_number
@@ -768,12 +761,12 @@ class ControlUnit:
         else:
             handler_start_pc = self.data_path.data_memory[port_interruption_memory_index + 1]
         # tick 1
-        self.data_path.PRA_SH_pointer -= 1
-        self.data_path.data_memory[self.data_path.PRA_SH_pointer] = self.data_path.instruction_pointer
+        self.data_path.pra_shp_pointer -= 1
+        self.data_path.data_memory[self.data_path.pra_shp_pointer] = self.data_path.instruction_pointer
         self.data_path.instruction_pointer = handler_start_pc
         # tick 2
-        self.data_path.PRA_SH_pointer -= 1
-        self.data_path.data_memory[self.data_path.PRA_SH_pointer] = self.data_path.instruction_stage_number
+        self.data_path.pra_shp_pointer -= 1
+        self.data_path.data_memory[self.data_path.pra_shp_pointer] = self.data_path.instruction_stage_number
         self.data_path.instruction_stage_number = 1
 
 
@@ -829,7 +822,7 @@ def simulation(data_memory_size: int,
                     logging.debug("Write interruption!!! %s", control_unit)
                     continue
                 else:
-                    logging.debug("WRITE OF SYMBOL \"%s\" is IGNORED (IN INTERRUPTION)!!!",
+                    logging.debug('WRITE OF SYMBOL "%s" is IGNORED (IN INTERRUPTION)!!!',
                                   chr(trimmed_input_tokens[control_unit.ticks_counter]))
             t = control_unit.next_tick_execute()
             if t:
@@ -837,7 +830,10 @@ def simulation(data_memory_size: int,
             if data_path.ports[MAIN_PORT_NUMBER].filled_with_cpu:
                 char_to_print = chr(data_path.ports[MAIN_PORT_NUMBER].data)
                 logging.debug("Printed: %s", char_to_print)
-                print(char_to_print, end="", flush=True)
+                if ord(char_to_print) == 13:
+                    print()
+                else:
+                    print(char_to_print, end="", flush=True)
                 data_path.ports[MAIN_PORT_NUMBER].filled_with_cpu = False
                 control_unit.is_in_interruption = True
                 control_unit.step_in_port_interruption(MAIN_PORT_NUMBER, False)  # 1 instruction
@@ -861,7 +857,7 @@ def main(code_file: str, input_file: str, ports_interruption_handlers_files: lis
     перед которым выполняется ввод, и сам вводимый символ"""
     program = read_code(code_file)
     input_tokens: list[tuple[int, int]] = []
-    with open(input_file, 'r', encoding="utf-8") as file:
+    with open(input_file, encoding="utf-8") as file:
         lines = file.readlines()
         for line in lines:
             sp = line.strip().split(" ")
@@ -892,7 +888,7 @@ def main(code_file: str, input_file: str, ports_interruption_handlers_files: lis
 
 if __name__ == "__main__":
     logging.basicConfig(filename="log.log",
-                        filemode='a',
+                        filemode="w",
                         level=logging.DEBUG)
     logging.getLogger().setLevel(logging.DEBUG)
     assert len(sys.argv) >= 4 and (len(sys.argv) - 3) % 2 == 0, \

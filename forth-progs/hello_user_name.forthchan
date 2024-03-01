@@ -12,6 +12,6 @@
 	0 name_ch? put_absolute      \ cstr
 ;
 
-"What is your name?" cr
+"What is your name?"
 name-20 read_name
 "Hello, " name& print_string "!!!"

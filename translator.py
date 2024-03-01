@@ -1,17 +1,15 @@
-#!/usr/bin/python3
-"""Транслятор forthchan в машинный код.
-"""
+from __future__ import annotations
 
 import re
 import struct
 import sys
 
-from isa import Opcode, Instruction, Term, write_code
+from isa import Instruction, Opcode, Term, write_code
 
 
 def is_int64(value: int) -> bool:
     try:
-        packed_value = struct.pack('q', value)
+        packed_value = struct.pack("q", value)
         return len(packed_value) == 8
     except struct.error:
         return False
@@ -40,17 +38,17 @@ def is_user_word(char_seq: str) -> bool:
 
 
 def is_compiler_word(char_seq: str) -> bool:
-    return len(char_seq) > 1 and char_seq[0] == '_' and is_user_word(char_seq[1:])
+    return len(char_seq) > 1 and char_seq[0] == "_" and is_user_word(char_seq[1:])
 
 
 def is_string_imm_printing(char_seq: str) -> bool:
-    return char_seq[0] == "\"" and char_seq[-1] == "\""
+    return char_seq[0] == '"' and char_seq[-1] == '"'
 
 
 def is_variable_operation(char_seq: str) -> bool:
     parts = char_seq.split("-")
     if len(parts) == 1:
-        return len(char_seq) > 0 and (is_compiler_word(char_seq[:-1]) or is_user_word(char_seq[:-1])) and (char_seq[-1] in ['!', '?', '&'])
+        return len(char_seq) > 0 and (is_compiler_word(char_seq[:-1]) or is_user_word(char_seq[:-1])) and (char_seq[-1] in ["!", "?", "&"])
     elif len(parts) == 2:
         return (is_user_word(parts[0]) or is_compiler_word(parts[0])) and is_correct_number(parts[1])
     else:
@@ -101,13 +99,13 @@ def lines_to_terms(lines: list[str]) -> list[Term]:
 
     terms: list[Term] = []
     for line_num, line in enumerate(lines, 1):
-        d_quotes_sep = re.split("\"", line.rstrip())
+        d_quotes_sep = re.split('"', line.rstrip())
         assert len(d_quotes_sep) % 2 == 1  # их должно быть четное кол-во
         pos = 0
         for d_quotes_sep_part_num, sep_part_char_seq in enumerate(d_quotes_sep):
             if d_quotes_sep_part_num % 2 == 1:  # если это часть для печати (то, что между кавычками)
                 pos += 1
-                terms.append(Term(line_num, pos, f"\"{sep_part_char_seq}\""))
+                terms.append(Term(line_num, pos, f'"{sep_part_char_seq}"'))
             else:  # если это не тело для печати
                 if len(sep_part_char_seq.strip()) == 0:
                     continue
@@ -147,17 +145,17 @@ def code_correctness_check(terms: list[Term]):
                 blocks.append({"name": "if", "had_else": False})
             elif is_for_cycle_end(term.name):
                 if blocks.pop()["name"] != "for":
-                    assert "Bad \"for\" cycle def!"
+                    assert 'Bad "for" cycle def!'
             elif is_while_cycle_end(term.name):
                 if blocks.pop()["name"] != "while":
-                    assert "Bad \"while\" cycle def!"
+                    assert 'Bad "while" cycle def!'
             elif term.name == "else":
                 if blocks[-1]["name"] != "if" or blocks[-1]["had_else"]:
-                    assert "Bad \"if\" cycle def!"
+                    assert 'Bad "if" cycle def!'
                 blocks[-1] = {"name": "if", "had_else": True}
             elif term.name == "then":
                 if blocks.pop()["name"] != "if":
-                    assert "Bad \"if\" cycle def!"
+                    assert 'Bad "if" cycle def!'
             elif term.name[0] == ":":
                 if len(blocks) != 0 or is_in_word_def:
                     assert "Bad word def def!"
@@ -240,14 +238,14 @@ def replace_complex_terms(terms: list[Term]) -> list[Term]:
                     map(lambda name: Term(term.line_number, term.line_position, name),
                         re.split(r"\s+",
                                  f"""{ord(ch)}
-                        _string_pointer? put_absolute 
+                        _string_pointer? put_absolute
                         _string_pointer? 1 + _string_pointer!""")
                         )
                 )
             new_terms.extend(
                 map(lambda name: Term(term.line_number, term.line_position, name),
                     re.split(r"\s+",
-                             f"""0 _string_pointer? put_absolute 
+                             """0 _string_pointer? put_absolute
                     _string&""")
                     )
             )
@@ -518,11 +516,11 @@ def translate(lines):
         for term_desc in terms_desc:
             max_size = max(max_size, term_desc["size"])
         var_busy_cells_count += max_size
-        print("\t", variable_name, max_size)
+        print(variable_name, max_size)
     print(f"Total busy static memory cells: {var_busy_cells_count}")
 
     # Добавляем инструкцию остановки процессора в конец программы.
-    code.append(Instruction(len(code), Opcode.HALT, None, Term(-1, -1, '')))
+    code.append(Instruction(len(code), Opcode.HALT, None, Term(-1, -1, "")))
     return code
 
 
@@ -530,7 +528,6 @@ def main(source: str, target: str):
     """Функция запуска транслятора. Параметры -- исходный и целевой файлы."""
     with open(source, encoding="utf-8") as f:
         source = f.read().splitlines()
-    print(source)
     code = translate(source)
 
     write_code(target, code)

@@ -119,8 +119,6 @@ def read_code(filename: str) -> list[Instruction]:
             arg = int(instruction_json["arg"])
         term_as_dict = instruction_json["term"]
         assert len(term_as_dict) == 3
-        term = Term(term_as_dict["line_number"],
-                    term_as_dict["line_position"],
-                    term_as_dict["name"])
+        term = Term(term_as_dict["line_number"], term_as_dict["line_position"], term_as_dict["name"])
         code.append(Instruction(index, opcode, arg, term))
     return code

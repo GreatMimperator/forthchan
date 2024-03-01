@@ -24,8 +24,7 @@ def is_correct_number(char_seq: str) -> bool:
 
 
 def is_sign_word(char_seq: str) -> bool:
-    return len(char_seq) == 1 and \
-        char_seq in ["+", "-", "/", "*"]
+    return len(char_seq) == 1 and char_seq in ["+", "-", "/", "*"]
 
 
 def is_comparator_word(char_seq: str) -> bool:
@@ -33,8 +32,7 @@ def is_comparator_word(char_seq: str) -> bool:
 
 
 def is_user_word(char_seq: str) -> bool:
-    return re.fullmatch(r"[a-zA-Z][a-zA-Z\-\\_]*", char_seq) \
-        is not None
+    return re.fullmatch(r"[a-zA-Z][a-zA-Z\-\\_]*", char_seq) is not None
 
 
 def is_compiler_word(char_seq: str) -> bool:
@@ -48,8 +46,11 @@ def is_string_imm_printing(char_seq: str) -> bool:
 def is_variable_operation(char_seq: str) -> bool:
     parts = char_seq.split("-")
     if len(parts) == 1:
-        return len(char_seq) > 0 and (is_compiler_word(char_seq[:-1]) or is_user_word(char_seq[:-1])) and (
-                char_seq[-1] in ["!", "?", "&"])
+        return (
+            len(char_seq) > 0
+            and (is_compiler_word(char_seq[:-1]) or is_user_word(char_seq[:-1]))
+            and (char_seq[-1] in ["!", "?", "&"])
+        )
     if len(parts) == 2:
         return (is_user_word(parts[0]) or is_compiler_word(parts[0])) and is_correct_number(parts[1])
     assert "wrong variable term"
@@ -117,14 +118,16 @@ def not_quote_line_to_term(pos: int, char_seq: str, line_num: int) -> [int, list
     is_comment_mark_flag = False
     for code_char_seq in re.split(r"\s+", char_seq.strip()):
         pos += 1
-        if is_correct_number(code_char_seq) or \
-                is_sign_word(code_char_seq) or \
-                is_comparator_word(code_char_seq) or \
-                is_user_word(code_char_seq) or \
-                is_system_variable_operation(code_char_seq) or \
-                is_variable_operation(code_char_seq) or \
-                is_correct_word_def_term(code_char_seq) or \
-                is_string_imm_printing(code_char_seq):
+        if (
+            is_correct_number(code_char_seq)
+            or is_sign_word(code_char_seq)
+            or is_comparator_word(code_char_seq)
+            or is_user_word(code_char_seq)
+            or is_system_variable_operation(code_char_seq)
+            or is_variable_operation(code_char_seq)
+            or is_correct_word_def_term(code_char_seq)
+            or is_string_imm_printing(code_char_seq)
+        ):
             terms.append(Term(line_num, pos, code_char_seq))
         elif is_comment_mark(code_char_seq):
             is_comment_mark_flag = True
@@ -267,27 +270,36 @@ def replace_complex_terms(terms: list[Term]) -> list[Term]:
         elif is_string_imm_printing(term.name):
             string = term.name[1:-1]
             new_terms.extend(
-                map(lambda name: Term(term.line_number, term.line_position, name),
-                    re.split(r"\s+",
-                             f"""_string-{len(string) + 1}
-                    _string& _string_pointer!""")
-                    )
+                map(
+                    lambda name: Term(term.line_number, term.line_position, name),
+                    re.split(
+                        r"\s+",
+                        f"""_string-{len(string) + 1}
+                    _string& _string_pointer!""",
+                    ),
+                )
             )
             for ch in string:
                 new_terms.extend(
-                    map(lambda name: Term(term.line_number, term.line_position, name),
-                        re.split(r"\s+",
-                                 f"""{ord(ch)}
+                    map(
+                        lambda name: Term(term.line_number, term.line_position, name),
+                        re.split(
+                            r"\s+",
+                            f"""{ord(ch)}
                         _string_pointer? put_absolute
-                        _string_pointer? 1 + _string_pointer!""")
-                        )
+                        _string_pointer? 1 + _string_pointer!""",
+                        ),
+                    )
                 )
             new_terms.extend(
-                map(lambda name: Term(term.line_number, term.line_position, name),
-                    re.split(r"\s+",
-                             """0 _string_pointer? put_absolute
-                    _string&""")
-                    )
+                map(
+                    lambda name: Term(term.line_number, term.line_position, name),
+                    re.split(
+                        r"\s+",
+                        """0 _string_pointer? put_absolute
+                    _string&""",
+                    ),
+                )
             )
             new_terms.extend(print_string_code_terms(term))
         else:
@@ -296,9 +308,11 @@ def replace_complex_terms(terms: list[Term]) -> list[Term]:
 
 
 def print_string_code_terms(term: Term) -> map:
-    return map(lambda name: Term(term.line_number, term.line_position, name),
-               re.split(r"\s+",
-                        """_string_pointer!
+    return map(
+        lambda name: Term(term.line_number, term.line_position, name),
+        re.split(
+            r"\s+",
+            """_string_pointer!
                             begin
                                  _string_pointer? pick_absolute
                                  dup
@@ -311,8 +325,9 @@ def print_string_code_terms(term: Term) -> map:
                                  0 = until
                                  emit
                                  _string_pointer? 1 + _string_pointer!
-                            0 until""")
-               )
+                            0 until""",
+        ),
+    )
 
 
 def translate(lines):
@@ -332,15 +347,9 @@ def translate(lines):
     last_word_def_jmp_pc = None
     pc = 0
     for term in terms:
-        last_word_def_jmp_pc, pc = term_instruction_append(term,
-                                                           code,
-                                                           word_def_pc,
-                                                           jmp_points,
-                                                           leaves_points,
-                                                           word_jmp_pcs,
-                                                           vars_pcs,
-                                                           last_word_def_jmp_pc,
-                                                           pc)
+        last_word_def_jmp_pc, pc = term_instruction_append(
+            term, code, word_def_pc, jmp_points, leaves_points, word_jmp_pcs, vars_pcs, last_word_def_jmp_pc, pc
+        )
 
     for word, pcs in word_jmp_pcs.items():
         def_pc = word_def_pc[word]
@@ -363,15 +372,17 @@ def translate(lines):
     return code
 
 
-def term_instruction_append(term: Term,
-                            code: list[Instruction],
-                            word_def_pc: dict[str, int],
-                            jmp_points: list[int],
-                            leaves_points: list[list[int]],
-                            word_jmp_pcs: dict[str, list[int]],
-                            vars_pcs: dict[str, list[dict[str, int]]],
-                            last_word_def_jmp_pc: int | None,
-                            pc: int) -> [int, int]:
+def term_instruction_append(
+    term: Term,
+    code: list[Instruction],
+    word_def_pc: dict[str, int],
+    jmp_points: list[int],
+    leaves_points: list[list[int]],
+    word_jmp_pcs: dict[str, list[int]],
+    vars_pcs: dict[str, list[dict[str, int]]],
+    last_word_def_jmp_pc: int | None,
+    pc: int,
+) -> [int, int]:
     if is_correct_number(term.name):
         code.append(Instruction(pc, Opcode.NUMBER, int(term.name), term))
         pc += 1
@@ -391,11 +402,9 @@ def term_instruction_append(term: Term,
     return last_word_def_jmp_pc, pc
 
 
-def word_def_append(term: Term,
-                    code: list[Instruction],
-                    word_def_pc: dict[str, int],
-                    last_word_def_jmp_pc: int,
-                    pc: int) -> [int, int]:
+def word_def_append(
+    term: Term, code: list[Instruction], word_def_pc: dict[str, int], last_word_def_jmp_pc: int, pc: int
+) -> [int, int]:
     if term.name == ";":
         code.append(Instruction(pc, Opcode.JMP_POP_PRA_SHP, None, term))
         pc += 1
@@ -444,12 +453,14 @@ def var_op_append(term: Term, code: list[Instruction], vars_pcs: dict[str, list[
     return pc
 
 
-def word_append(term: Term,
-                code: list[Instruction],
-                jmp_points: list[int],
-                leaves_points: list[list[int]],
-                word_jmp_pcs: dict[str, list[int]],
-                pc: int) -> int:
+def word_append(
+    term: Term,
+    code: list[Instruction],
+    jmp_points: list[int],
+    leaves_points: list[list[int]],
+    word_jmp_pcs: dict[str, list[int]],
+    pc: int,
+) -> int:
     is_built_in, pc = if_built_in_common_commands_append(term, code, pc)
     if is_built_in:
         return pc
@@ -557,11 +568,9 @@ def if_port_command_append(term: Term, code: list[Instruction], pc: int) -> [boo
     return is_port_command, pc
 
 
-def if_jmp_command_append(term: Term,
-                          jmp_points: list[int],
-                          leaves_points: list[list[int]],
-                          code: list[Instruction],
-                          pc: int) -> [bool, int]:
+def if_jmp_command_append(
+    term: Term, jmp_points: list[int], leaves_points: list[list[int]], code: list[Instruction], pc: int
+) -> [bool, int]:
     is_opening, pc = if_opening_jmp_command_append(term, jmp_points, leaves_points, code, pc)
     if is_opening:
         return True, pc
@@ -574,12 +583,9 @@ def if_jmp_command_append(term: Term,
     return is_closing, pc
 
 
-def if_opening_jmp_command_append(term: Term,
-                                  jmp_points: list[int],
-                                  leaves_points: list[list[int]],
-                                  code: list[Instruction],
-                                  pc: int) -> \
-        [bool, int]:
+def if_opening_jmp_command_append(
+    term: Term, jmp_points: list[int], leaves_points: list[list[int]], code: list[Instruction], pc: int
+) -> [bool, int]:
     is_opening_block_command = True
     match term.name:
         case "do":
@@ -605,12 +611,9 @@ def if_opening_jmp_command_append(term: Term,
     return is_opening_block_command, pc
 
 
-def if_middle_jmp_command_append(term: Term,
-                                 jmp_points: list[int],
-                                 leaves_points: list[list[int]],
-                                 code: list[Instruction],
-                                 pc: int) -> \
-        [bool, int]:
+def if_middle_jmp_command_append(
+    term: Term, jmp_points: list[int], leaves_points: list[list[int]], code: list[Instruction], pc: int
+) -> [bool, int]:
     is_jmp_described_commands = True
     match term.name:
         case "else":
@@ -628,12 +631,9 @@ def if_middle_jmp_command_append(term: Term,
     return is_jmp_described_commands, pc
 
 
-def if_closing_jmp_command_append(term: Term,
-                                  jmp_points: list[int],
-                                  leaves_points: list[list[int]],
-                                  code: list[Instruction],
-                                  pc: int) -> \
-        [bool, int]:
+def if_closing_jmp_command_append(
+    term: Term, jmp_points: list[int], leaves_points: list[list[int]], code: list[Instruction], pc: int
+) -> [bool, int]:
     is_closing_block_commands = True
     match term.name:
         case "then":

@@ -35,7 +35,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/home/imperator/Documents/university/labs/arch-comp/3-lab/venv"
+VIRTUAL_ENV="/home/imperator/Documents/university/labs/arch-comp/forthchan/venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

@@ -33,7 +33,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/home/imperator/Documents/university/labs/arch-comp/3-lab/venv"
+set -gx VIRTUAL_ENV "/home/imperator/Documents/university/labs/arch-comp/forthchan/venv"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH

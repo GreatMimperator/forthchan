@@ -28,8 +28,10 @@ def test_translator_and_machine(golden, caplog):
 
         stdout = subprocess.check_output(f"python translator.py {source} {target}", shell=True).decode()
         stdout += "============================================================\n"
-        stdout += subprocess.check_output(f"python machine.py {target} {input_stream} {read_interruption_handler} {write_interruption_handler}", shell=True).decode()
-
+        stdout += subprocess.check_output(
+            f"python machine.py {target} {input_stream} {read_interruption_handler} {write_interruption_handler}",
+            shell=True,
+        ).decode()
 
         with open(target, encoding="utf-8") as file:
             code = file.read()

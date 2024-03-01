@@ -6,17 +6,17 @@ on:
       - master
     paths:
       - ".github/workflows/*"
-      - "Translator-Model/**"
+      - "**"
   pull_request:
     branches:
       - master
     paths:
       - ".github/workflows/*"
-      - "Translator-Model/**"
+      - "**"
 
 defaults:
   run:
-    working-directory: ./Translator-Model
+    working-directory: .
 
 jobs:
   test:

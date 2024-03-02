@@ -518,5 +518,6 @@ $ poetry run ruff format .                                                      
 | ФИО                            | алг     | LoC | code байт | code инстр. | инстр. | такт. | вариант                                                                         |
 | Зенин Мирон Александрович      | alice   | 17   | -        | 350         | 1502   | 2280  | forth | stack | neum | hw | tick | struct | trap | port | cstr | prob2          |
 | Зенин Мирон Александрович      | cat     | 47   | -        | 80          | 1336   | 1336  | forth | stack | neum | hw | tick | struct | trap | port | cstr | prob2          |
-| Зенин Мирон Александрович      | hello   | 1    | -        | 116         | 399    | 621   | forth | stack | neum | hw | tick | struct | trap | port | cstr | prob2         |
+| Зенин Мирон Александрович      | hello   | 1    | -        | 116         | 399    | 621   | forth | stack | neum | hw | tick | struct | trap | port | cstr | prob2          |
 | Зенин Мирон Александрович      | prob2   | 62   | -        | 126         | 1760   | 2636  | forth | stack | neum | hw | tick | struct | trap | port | cstr | prob2          |
+```

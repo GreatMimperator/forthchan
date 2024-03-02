@@ -1,4 +1,4 @@
-![изображение](https://github.com/GreatMimperator/forthchan/assets/93261336/5e48b18d-e161-4fb4-b954-a33776cdd3dc)# Forthchan
+# Forthchan
 Зенин Мирон Александрович, Группа P33101  
 Вариант: `forth | stack | neum | hw | tick | struct | trap | port | cstr | prob2`  
 Без усложнения  

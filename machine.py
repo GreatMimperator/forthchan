@@ -63,16 +63,8 @@ def signal_convert(input_number: int):
 
 
 class DataPath:
-    data_memory_size: int = None
-    "Размер памяти данных."
-
     data_memory: list[int | Instruction] = None
     "Память данных. Инициализируется нулевыми значениями."
-
-    interruption_procedures_points_table_begin: int = None
-    """Указывает на точку начала перечисления указателей на процедуры обработчиков прерываний
-    (формат WRWRWR... для 0, 1, 2... портов).
-    До него располагаются сами эти процедуры, обязательно оканчивающиеся HALT-ом"""
 
     instruction_pointer: int = None
     "Instruction Pointer - Указатель на текущую инструкцию"
@@ -87,7 +79,7 @@ class DataPath:
     "Procedure Return Addresses Stack Head Pointer - служебный стек"
 
     od_stack_start: int = None
-    "Start of Operational Data Stack"
+    "Start of Operational Data Stack - не регистр, нужен для логов"
 
     od_sh_pointer: int = None
     "Operational Data Stack Head Pointer - пользовательский стек"
@@ -124,11 +116,10 @@ class DataPath:
         program: list[Instruction],
     ):
         assert memory_size > 0, "Data_memory size should be non-zero"
-        self.data_memory_size = memory_size
         self.data_memory = [0] * memory_size
         assert len(ports_description) != 0, "Not enough ports for built-in instructions"
         procedures_points_table: list[int] = []
-        procedure_start_point = 0
+        procedure_start_point = 2 * len(ports_description)
         for port_description in ports_description:
             procedures_points_table.append(procedure_start_point)
             self.write_code(procedure_start_point, port_description.interrupt_code_on_write)
@@ -137,19 +128,16 @@ class DataPath:
             self.write_code(procedure_start_point, port_description.interrupt_code_on_read)
             procedure_start_point += len(port_description.interrupt_code_on_read)
             self.ports.append(port_description.port)
-        self.interruption_procedures_points_table_begin = procedure_start_point
         for i in range(0, len(procedures_points_table)):
-            self.data_memory[self.interruption_procedures_points_table_begin + i] = procedures_points_table[i]
-        self.var_data_start_point = self.interruption_procedures_points_table_begin + len(procedures_points_table)
+            self.data_memory[i] = procedures_points_table[i]
+        self.var_data_start_point = procedure_start_point
         self.instruction_pointer = self.var_data_start_point + var_memory_size
         self.write_code(self.instruction_pointer, program)
         self.od_stack_start = self.instruction_pointer + len(program)
         self.od_sh_pointer = self.od_stack_start
         self.pra_shp_pointer = memory_size - 1
         self.instruction_stage_number = 1
-        logging.debug(
-            f"{self.interruption_procedures_points_table_begin}, {self.var_data_start_point}, {self.instruction_pointer}, {self.od_sh_pointer}"
-        )
+        logging.debug(f"{self.var_data_start_point}, {self.instruction_pointer}, {self.od_sh_pointer}")
 
     def write_code(self, memory_index: int, code: list[Instruction]):
         for instruction in code:
@@ -262,7 +250,7 @@ class DataPath:
                         self.top = self.data_memory[self.cur_tick_regs_state.od_shp - self.cur_tick_regs_state.top - 1]
                     case Opcode.PICK_ABSOLUTE:
                         self.top = self.data_memory[self.cur_tick_regs_state.top]
-                    case Opcode.PUSH_TO_OD | Opcode.POP_TO_OD:
+                    case Opcode.PUSH_TO_OD:
                         self.top = self.data_memory[self.cur_tick_regs_state.pra_shp]
                     case Opcode.DUP_RET | Opcode.INCREMENT_RET | Opcode.DECREMENT_RET:
                         match self.instruction_stage_number:
@@ -299,14 +287,12 @@ class DataPath:
                 match instruction.opcode:
                     case Opcode.PUT | Opcode.PUT_ABSOLUTE:
                         self.next = self.data_memory[self.cur_tick_regs_state.top - 1]
-                    case Opcode.PUSH_TO_OD | Opcode.POP_TO_OD:
+                    case Opcode.PUSH_TO_OD:
                         self.next = self.data_memory[self.cur_tick_regs_state.od_shp - 1]
                     case Opcode.EXEC_IF | Opcode.EXEC_COND_JMP:
                         self.next = self.data_memory[self.cur_tick_regs_state.od_shp - 1 - 1]
                     case Opcode.WRITE_VARDATA | Opcode.WRITE_PORT:
                         self.next = self.data_memory[self.cur_tick_regs_state.od_shp - 1 - 1]
-                    case Opcode.WRITE_VARDATA_USER_LINK:
-                        self.next = self.data_memory[self.cur_tick_regs_state.od_shp - 1]
                     case Opcode.POP_TO_RET:
                         self.next = self.data_memory[self.cur_tick_regs_state.od_shp - 1]
                     case _:
@@ -385,9 +371,9 @@ class DataPath:
                         self.data_memory[self.cur_tick_regs_state.od_shp - 1] = self.cur_tick_regs_state.top
                     case 2:
                         self.data_memory[self.cur_tick_regs_state.od_shp] = self.cur_tick_regs_state.top
-            case Opcode.PUSH_TO_RET | Opcode.POP_TO_RET:
+            case Opcode.POP_TO_RET:
                 self.data_memory[self.cur_tick_regs_state.pra_shp - 1] = self.cur_tick_regs_state.top
-            case Opcode.PUSH_TO_OD | Opcode.POP_TO_OD:
+            case Opcode.PUSH_TO_OD:
                 self.data_memory[self.cur_tick_regs_state.od_shp] = self.cur_tick_regs_state.top
             case Opcode.DUP_RET:
                 self.data_memory[self.cur_tick_regs_state.pra_shp + 1] = self.cur_tick_regs_state.top
@@ -481,6 +467,8 @@ class ControlUnit:
 
     ticks_counter: int = 0
 
+    instructions_counter: int = 0
+
     def __init__(self, data_path: DataPath):
         self.data_path = data_path
 
@@ -502,8 +490,6 @@ class ControlUnit:
             self.data_path.next,
         )
 
-        self.ticks_counter += 1
-
         is_last_instruction_tick = False
         match instruction.opcode:
             case Opcode.HALT:
@@ -513,6 +499,7 @@ class ControlUnit:
                 self.data_path.pra_shp_pointer += 1
                 self.data_path.instruction_pointer = self.data_path.data_memory[self.data_path.pra_shp_pointer]
                 self.data_path.pra_shp_pointer += 1
+                self.ticks_counter += 1  # 2 ticks to restore
                 self.is_in_interruption = False
                 logging.debug("Interruption exit!!!")
                 return True
@@ -550,10 +537,8 @@ class ControlUnit:
                 | Opcode.INCREMENT_RET
                 | Opcode.DECREMENT_RET
                 | Opcode.EQ_NOT_CONSUMING_RET
-                | Opcode.PUSH_TO_RET
                 | Opcode.POP_TO_RET
                 | Opcode.PUSH_TO_OD
-                | Opcode.POP_TO_OD
                 | Opcode.SHIFT_BACK_RET
             ):
                 is_last_instruction_tick = self.pra_maniputation_instractions_exec(instruction)
@@ -566,20 +551,16 @@ class ControlUnit:
             ):
                 is_last_instruction_tick = self.port_instructions_exec(instruction)
 
-            case (
-                Opcode.READ_VARDATA
-                | Opcode.READ_VARDATA_USER_LINK
-                | Opcode.WRITE_VARDATA
-                | Opcode.WRITE_VARDATA_USER_LINK
-                | Opcode.SUM_TOP_WITH_VDSP
-            ):
+            case Opcode.READ_VARDATA | Opcode.WRITE_VARDATA | Opcode.SUM_TOP_WITH_VDSP:
                 is_last_instruction_tick = self.vardata_instructions_exec(instruction)
 
             case _:
                 raise "fatal exception"
 
+        self.ticks_counter += 1
         if is_last_instruction_tick:
             self.data_path.signal_reset_instruction_stage_number()
+            self.instructions_counter += 1
         else:
             self.tick()
         return is_last_instruction_tick
@@ -693,11 +674,6 @@ class ControlUnit:
                         return True
                     case _:
                         raise "fatal exception"
-            case Opcode.PUSH_TO_RET:
-                self.data_path.latch_memory_data(instruction, LatchInput.TOP)
-                self.data_path.latch_pra_shp(instruction, LatchInput.PRA_SHP_DEC)
-                self.data_path.latch_ip(instruction, LatchInput.IP_INC)
-                return True
             case Opcode.POP_TO_RET:
                 match self.data_path.instruction_stage_number:
                     case 1:
@@ -711,13 +687,11 @@ class ControlUnit:
                         return True
                     case _:
                         raise "fatal exception"
-            case Opcode.PUSH_TO_OD | Opcode.POP_TO_OD:
+            case Opcode.PUSH_TO_OD:
                 match self.data_path.instruction_stage_number:
                     case 1:
                         self.data_path.latch_top(instruction, LatchInput.MA_OUT)
                         self.data_path.latch_od_shp(instruction, LatchInput.OD_SHP_INC)
-                        if instruction.opcode == Opcode.POP_TO_OD:
-                            self.data_path.latch_pra_shp(instruction, LatchInput.PRA_SHP_INC)
                     case 2:
                         self.data_path.latch_memory_data(instruction, LatchInput.TOP)
                     case 3:
@@ -790,20 +764,6 @@ class ControlUnit:
                     case 2:
                         self.data_path.latch_next(instruction, LatchInput.MA_MINUS_ONE_OUT)
                         self.data_path.latch_od_shp(instruction, LatchInput.OD_SHP_DEC)
-                        self.data_path.latch_ip(instruction, LatchInput.IP_INC)
-                        return True
-            case Opcode.READ_VARDATA_USER_LINK:
-                self.data_path.latch_top(instruction, LatchInput.MA_OUT)
-                self.data_path.latch_ip(instruction, LatchInput.IP_INC)
-                return True
-            case Opcode.WRITE_VARDATA_USER_LINK:
-                match self.data_path.instruction_stage_number:
-                    case 1:
-                        self.data_path.latch_memory_data(instruction, LatchInput.NEXT)
-                        self.data_path.latch_od_shp(instruction, LatchInput.OD_SHP_MINUS_TWO)
-                    case 2:
-                        self.data_path.latch_top(instruction, LatchInput.MA_OUT)
-                        self.data_path.latch_next(instruction, LatchInput.MA_MINUS_ONE_OUT)
                         self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                         return True
             case Opcode.SUM_TOP_WITH_VDSP:
@@ -891,8 +851,8 @@ class ControlUnit:
             top_reg = self.data_path.top
         if od_sh_size > 1:
             next_reg = self.data_path.next
-        mem = self.data_path.data_memory[self.data_path.var_data_start_point : self.data_path.var_data_start_point + 41]
-        state_repr = "ticks: {:6} ISN: {:3} IP: {:3} OD_SHP: {:3} PRA_SHP: {:3} TOP: {:4} NEXT: {:4} els below OD_SHP: {}, els over PRA_SHP: {}, VDStartP: {}".format(
+        state_repr = "instrs: {:6} ticks: {:6} ISN: {:3} IP: {:3} OD_SHP: {:3} PRA_SHP: {:3} TOP: {:4} NEXT: {:4} els below OD_SHP: {}, els over PRA_SHP: {}, VDStartP: {}".format(
+            self.instructions_counter,
             self.ticks_counter,
             self.data_path.instruction_stage_number,
             self.data_path.instruction_pointer,
@@ -922,10 +882,10 @@ class ControlUnit:
             term = instr.term
             instr_repr += f"  ('{term.name}'@{term.line_number}:{term.line_position})"
 
-        return f"{state_repr} \t{instr_repr}\t{mem}"
+        return f"{state_repr} \t{instr_repr}"
 
     def step_in_port_interruption(self, port_number: int, is_write_interruption: bool):
-        port_interruption_memory_index = self.data_path.interruption_procedures_points_table_begin + 2 * port_number
+        port_interruption_memory_index = 2 * port_number
         if is_write_interruption:
             handler_start_pc = self.data_path.data_memory[port_interruption_memory_index]
         else:
@@ -989,6 +949,7 @@ def simulation(
     if control_unit.ticks_counter >= ticks_limit:
         logging.warning("Limit exceeded!")
     logging.info("ticks count: %s", control_unit.ticks_counter)
+    logging.info("instructions count: %s", control_unit.instructions_counter)
 
 
 def do_simulation(control_unit: ControlUnit, trimmed_input_tokens: dict[int, int], ticks_limit: int):
@@ -1001,16 +962,15 @@ def do_simulation(control_unit: ControlUnit, trimmed_input_tokens: dict[int, int
                 control_unit.data_path.ports[main_port_number].data = trimmed_input_tokens[control_unit.ticks_counter]
                 control_unit.data_path.ports[main_port_number].filled_with_device = True
                 control_unit.step_in_port_interruption(main_port_number, True)
-                control_unit.ticks_counter += 2  # ticks for port interruption
+                control_unit.ticks_counter += 3  # ticks for port interruption
                 logging.debug("Write interruption!!! %s", control_unit)
                 continue
             logging.debug(
                 'WRITE OF SYMBOL "%s" is IGNORED (IN INTERRUPTION)!!!',
                 chr(trimmed_input_tokens[control_unit.ticks_counter]),
             )
-        t = control_unit.next_tick_execute()
-        if t:
-            logging.debug("%s", control_unit)
+        control_unit.next_tick_execute()
+        logging.debug("%s", control_unit)
         if data_path.ports[main_port_number].filled_with_cpu:
             char_to_print = chr(data_path.ports[main_port_number].data)
             logging.debug("Printed: %s", char_to_print)
@@ -1022,7 +982,7 @@ def do_simulation(control_unit: ControlUnit, trimmed_input_tokens: dict[int, int
             control_unit.is_in_interruption = True
             control_unit.step_in_port_interruption(main_port_number, False)  # 1 instruction
             logging.debug("Read interruption!!! %s", control_unit)
-            control_unit.ticks_counter += 1
+            control_unit.ticks_counter += 3
             continue
 
 
@@ -1056,7 +1016,7 @@ if __name__ == "__main__":
     bad_args_exception_text = (
         "Wrong arguments: machine.py <code_file> <input_file> "
         "<emit-port-interruption-handler> <key-port-interruption-handler> "
-        "[<output-port-interruption-handler>, <input-port-interruption-handler]*"
+        "[<output-port-interruption-handler> <input-port-interruption-handler]*"
     )
     assert len(sys.argv) >= 4, bad_args_exception_text
     assert (len(sys.argv) - 3) % 2 == 0, bad_args_exception_text

@@ -11,6 +11,7 @@ def test_translator_and_machine(golden, caplog):
     caplog.set_level(logging.DEBUG)
 
     with tempfile.TemporaryDirectory() as tmpdirname:
+        print(tmpdirname)
         source = os.path.join(tmpdirname, "source.forthchan")
         input_stream = os.path.join(tmpdirname, "input.txt")
         target = os.path.join(tmpdirname, "target.o")
@@ -29,7 +30,7 @@ def test_translator_and_machine(golden, caplog):
         stdout = subprocess.check_output(f"python translator.py {source} {target}", shell=True).decode()
         stdout += "============================================================\n"
         stdout += subprocess.check_output(
-            f"python machine.py {target} {input_stream} {read_interruption_handler} {write_interruption_handler}",
+            f"python machine.py {target} {input_stream} {write_interruption_handler} {read_interruption_handler}",
             shell=True,
         ).decode()
 
@@ -40,5 +41,5 @@ def test_translator_and_machine(golden, caplog):
             logs = file.read()
 
         assert code == golden.out["out_code"]
-        assert stdout == golden.out["out_stdout"].strip()
+        assert stdout.strip() == golden.out["out_stdout"].strip()
         assert logs.strip() == golden.out["out_log"].strip(), "Failed LOG"

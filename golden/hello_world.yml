@@ -1,0 +1,770 @@
+in_source: |
+  "Hello world!"
+in_stdin: |
+  1000 M
+  1100 i
+  1200 r
+  1300 o
+  1400 n
+  1500 `
+out_stdout: |
+  _string 13
+  _string_pointer 1
+  Total busy static memory cells: 14
+  source LoC: 1 code instr: 116
+  ============================================================
+  Hello world!
+read_interruption_handler: |
+  [{"index": 0, "opcode": "dup", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "dup"}},
+   {"index": 1, "opcode": "number", "arg": 119, "term": {"line_number": 2, "line_position": 1, "name": "119"}},
+   {"index": 2, "opcode": "eq", "arg": null, "term": {"line_number": 2, "line_position": 2, "name": "="}},
+   {"index": 3, "opcode": "exec if", "arg": null, "term": {"line_number": 2, "line_position": 3, "name": "if"}},
+   {"index": 4, "opcode": "jmp", "arg": 3, "term": {"line_number": 2, "line_position": 3, "name": "if"}},
+   {"index": 5, "opcode": "shift back", "arg": null, "term": {"line_number": 3, "line_position": 2, "name": "drop"}},
+   {"index": 6, "opcode": "number", "arg": 7777, "term": {"line_number": 3, "line_position": 3, "name": "7777"}},
+   {"index": 7, "opcode": "halt", "arg": null, "term": {"line_number": -1, "line_position": -1, "name": ""}}]
+write_interruption_handler: |
+  [{"index": 0, "opcode": "halt", "arg": null, "term": {"line_number": -1, "line_position": -1, "name": ""}}]
+out_code: |-
+  [{"index": 0, "opcode": "number", "arg": 0, "term": {"line_number": 1, "line_position": 1, "name": "_string&"}},
+   {"index": 1, "opcode": "sum top with vdsp", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "_string&"}},
+   {"index": 2, "opcode": "write vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer!"}},
+   {"index": 3, "opcode": "number", "arg": 72, "term": {"line_number": 1, "line_position": 1, "name": "72"}},
+   {"index": 4, "opcode": "read vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer?"}},
+   {"index": 5, "opcode": "put absolute", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "put_absolute"}},
+   {"index": 6, "opcode": "read vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer?"}},
+   {"index": 7, "opcode": "number", "arg": 1, "term": {"line_number": 1, "line_position": 1, "name": "1"}},
+   {"index": 8, "opcode": "sum", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "+"}},
+   {"index": 9, "opcode": "write vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer!"}},
+   {"index": 10, "opcode": "number", "arg": 101, "term": {"line_number": 1, "line_position": 1, "name": "101"}},
+   {"index": 11, "opcode": "read vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer?"}},
+   {"index": 12, "opcode": "put absolute", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "put_absolute"}},
+   {"index": 13, "opcode": "read vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer?"}},
+   {"index": 14, "opcode": "number", "arg": 1, "term": {"line_number": 1, "line_position": 1, "name": "1"}},
+   {"index": 15, "opcode": "sum", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "+"}},
+   {"index": 16, "opcode": "write vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer!"}},
+   {"index": 17, "opcode": "number", "arg": 108, "term": {"line_number": 1, "line_position": 1, "name": "108"}},
+   {"index": 18, "opcode": "read vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer?"}},
+   {"index": 19, "opcode": "put absolute", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "put_absolute"}},
+   {"index": 20, "opcode": "read vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer?"}},
+   {"index": 21, "opcode": "number", "arg": 1, "term": {"line_number": 1, "line_position": 1, "name": "1"}},
+   {"index": 22, "opcode": "sum", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "+"}},
+   {"index": 23, "opcode": "write vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer!"}},
+   {"index": 24, "opcode": "number", "arg": 108, "term": {"line_number": 1, "line_position": 1, "name": "108"}},
+   {"index": 25, "opcode": "read vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer?"}},
+   {"index": 26, "opcode": "put absolute", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "put_absolute"}},
+   {"index": 27, "opcode": "read vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer?"}},
+   {"index": 28, "opcode": "number", "arg": 1, "term": {"line_number": 1, "line_position": 1, "name": "1"}},
+   {"index": 29, "opcode": "sum", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "+"}},
+   {"index": 30, "opcode": "write vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer!"}},
+   {"index": 31, "opcode": "number", "arg": 111, "term": {"line_number": 1, "line_position": 1, "name": "111"}},
+   {"index": 32, "opcode": "read vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer?"}},
+   {"index": 33, "opcode": "put absolute", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "put_absolute"}},
+   {"index": 34, "opcode": "read vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer?"}},
+   {"index": 35, "opcode": "number", "arg": 1, "term": {"line_number": 1, "line_position": 1, "name": "1"}},
+   {"index": 36, "opcode": "sum", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "+"}},
+   {"index": 37, "opcode": "write vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer!"}},
+   {"index": 38, "opcode": "number", "arg": 32, "term": {"line_number": 1, "line_position": 1, "name": "32"}},
+   {"index": 39, "opcode": "read vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer?"}},
+   {"index": 40, "opcode": "put absolute", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "put_absolute"}},
+   {"index": 41, "opcode": "read vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer?"}},
+   {"index": 42, "opcode": "number", "arg": 1, "term": {"line_number": 1, "line_position": 1, "name": "1"}},
+   {"index": 43, "opcode": "sum", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "+"}},
+   {"index": 44, "opcode": "write vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer!"}},
+   {"index": 45, "opcode": "number", "arg": 119, "term": {"line_number": 1, "line_position": 1, "name": "119"}},
+   {"index": 46, "opcode": "read vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer?"}},
+   {"index": 47, "opcode": "put absolute", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "put_absolute"}},
+   {"index": 48, "opcode": "read vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer?"}},
+   {"index": 49, "opcode": "number", "arg": 1, "term": {"line_number": 1, "line_position": 1, "name": "1"}},
+   {"index": 50, "opcode": "sum", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "+"}},
+   {"index": 51, "opcode": "write vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer!"}},
+   {"index": 52, "opcode": "number", "arg": 111, "term": {"line_number": 1, "line_position": 1, "name": "111"}},
+   {"index": 53, "opcode": "read vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer?"}},
+   {"index": 54, "opcode": "put absolute", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "put_absolute"}},
+   {"index": 55, "opcode": "read vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer?"}},
+   {"index": 56, "opcode": "number", "arg": 1, "term": {"line_number": 1, "line_position": 1, "name": "1"}},
+   {"index": 57, "opcode": "sum", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "+"}},
+   {"index": 58, "opcode": "write vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer!"}},
+   {"index": 59, "opcode": "number", "arg": 114, "term": {"line_number": 1, "line_position": 1, "name": "114"}},
+   {"index": 60, "opcode": "read vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer?"}},
+   {"index": 61, "opcode": "put absolute", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "put_absolute"}},
+   {"index": 62, "opcode": "read vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer?"}},
+   {"index": 63, "opcode": "number", "arg": 1, "term": {"line_number": 1, "line_position": 1, "name": "1"}},
+   {"index": 64, "opcode": "sum", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "+"}},
+   {"index": 65, "opcode": "write vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer!"}},
+   {"index": 66, "opcode": "number", "arg": 108, "term": {"line_number": 1, "line_position": 1, "name": "108"}},
+   {"index": 67, "opcode": "read vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer?"}},
+   {"index": 68, "opcode": "put absolute", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "put_absolute"}},
+   {"index": 69, "opcode": "read vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer?"}},
+   {"index": 70, "opcode": "number", "arg": 1, "term": {"line_number": 1, "line_position": 1, "name": "1"}},
+   {"index": 71, "opcode": "sum", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "+"}},
+   {"index": 72, "opcode": "write vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer!"}},
+   {"index": 73, "opcode": "number", "arg": 100, "term": {"line_number": 1, "line_position": 1, "name": "100"}},
+   {"index": 74, "opcode": "read vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer?"}},
+   {"index": 75, "opcode": "put absolute", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "put_absolute"}},
+   {"index": 76, "opcode": "read vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer?"}},
+   {"index": 77, "opcode": "number", "arg": 1, "term": {"line_number": 1, "line_position": 1, "name": "1"}},
+   {"index": 78, "opcode": "sum", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "+"}},
+   {"index": 79, "opcode": "write vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer!"}},
+   {"index": 80, "opcode": "number", "arg": 33, "term": {"line_number": 1, "line_position": 1, "name": "33"}},
+   {"index": 81, "opcode": "read vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer?"}},
+   {"index": 82, "opcode": "put absolute", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "put_absolute"}},
+   {"index": 83, "opcode": "read vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer?"}},
+   {"index": 84, "opcode": "number", "arg": 1, "term": {"line_number": 1, "line_position": 1, "name": "1"}},
+   {"index": 85, "opcode": "sum", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "+"}},
+   {"index": 86, "opcode": "write vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer!"}},
+   {"index": 87, "opcode": "number", "arg": 0, "term": {"line_number": 1, "line_position": 1, "name": "0"}},
+   {"index": 88, "opcode": "read vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer?"}},
+   {"index": 89, "opcode": "put absolute", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "put_absolute"}},
+   {"index": 90, "opcode": "number", "arg": 0, "term": {"line_number": 1, "line_position": 1, "name": "_string&"}},
+   {"index": 91, "opcode": "sum top with vdsp", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "_string&"}},
+   {"index": 92, "opcode": "write vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer!"}},
+   {"index": 93, "opcode": "read vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer?"}},
+   {"index": 94, "opcode": "pick absolute", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "pick_absolute"}},
+   {"index": 95, "opcode": "dup", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "dup"}},
+   {"index": 96, "opcode": "exec if", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "if"}},
+   {"index": 97, "opcode": "jmp", "arg": 3, "term": {"line_number": 1, "line_position": 1, "name": "if"}},
+   {"index": 98, "opcode": "shift back", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "drop"}},
+   {"index": 99, "opcode": "jmp", "arg": 16, "term": {"line_number": 1, "line_position": 1, "name": "leave"}},
+   {"index": 100, "opcode": "has port filled with cpu", "arg": 0, "term": {"line_number": 1, "line_position": 1, "name": "cant_emit"}},
+   {"index": 101, "opcode": "number", "arg": 0, "term": {"line_number": 1, "line_position": 1, "name": "0"}},
+   {"index": 102, "opcode": "eq", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "="}},
+   {"index": 103, "opcode": "number", "arg": 0, "term": {"line_number": 1, "line_position": 1, "name": "until"}},
+   {"index": 104, "opcode": "neq", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "until"}},
+   {"index": 105, "opcode": "exec cond jmp", "arg": -6, "term": {"line_number": 1, "line_position": 1, "name": "until"}},
+   {"index": 106, "opcode": "write port", "arg": 0, "term": {"line_number": 1, "line_position": 1, "name": "emit"}},
+   {"index": 107, "opcode": "read vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer?"}},
+   {"index": 108, "opcode": "number", "arg": 1, "term": {"line_number": 1, "line_position": 1, "name": "1"}},
+   {"index": 109, "opcode": "sum", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "+"}},
+   {"index": 110, "opcode": "write vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer!"}},
+   {"index": 111, "opcode": "number", "arg": 0, "term": {"line_number": 1, "line_position": 1, "name": "0"}},
+   {"index": 112, "opcode": "number", "arg": 0, "term": {"line_number": 1, "line_position": 1, "name": "until"}},
+   {"index": 113, "opcode": "neq", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "until"}},
+   {"index": 114, "opcode": "exec cond jmp", "arg": -22, "term": {"line_number": 1, "line_position": 1, "name": "until"}},
+   {"index": 115, "opcode": "halt", "arg": null, "term": {"line_number": -1, "line_position": -1, "name": ""}}]
+out_log: |
+  DEBUG:root:11, 111, 227
+  DEBUG:root:instrs:      0 ticks:      0 ISN:   1 IP: 111 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('_string&'@1:1)
+  DEBUG:root:instrs:      1 ticks:      1 ISN:   1 IP: 112 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	sum top with vdsp  ('_string&'@1:1)
+  DEBUG:root:instrs:      2 ticks:      2 ISN:   1 IP: 113 OD_SHP: 228 PRA_SHP: 999 TOP:   11 NEXT: None els below OD_SHP: 0 11, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:      2 ticks:      3 ISN:   2 IP: 113 OD_SHP: 228 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0 11, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:      3 ticks:      4 ISN:   1 IP: 114 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	number 72  ('72'@1:1)
+  DEBUG:root:instrs:      4 ticks:      5 ISN:   1 IP: 115 OD_SHP: 228 PRA_SHP: 999 TOP:   72 NEXT: None els below OD_SHP: 0 72, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:      4 ticks:      6 ISN:   2 IP: 115 OD_SHP: 228 PRA_SHP: 999 TOP:   11 NEXT: None els below OD_SHP: 0 72, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:      5 ticks:      7 ISN:   1 IP: 116 OD_SHP: 229 PRA_SHP: 999 TOP:   11 NEXT:   72 els below OD_SHP: 0 72 11, els over PRA_SHP: 0, VDStartP: 11 	put absolute  ('put_absolute'@1:1)
+  DEBUG:root:instrs:      5 ticks:      8 ISN:   2 IP: 116 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	put absolute  ('put_absolute'@1:1)
+  DEBUG:root:instrs:      6 ticks:      9 ISN:   1 IP: 117 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:      6 ticks:     10 ISN:   2 IP: 117 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:      7 ticks:     11 ISN:   1 IP: 118 OD_SHP: 228 PRA_SHP: 999 TOP:   11 NEXT: None els below OD_SHP: 0 11, els over PRA_SHP: 0, VDStartP: 11 	number 1  ('1'@1:1)
+  DEBUG:root:instrs:      8 ticks:     12 ISN:   1 IP: 119 OD_SHP: 229 PRA_SHP: 999 TOP:    1 NEXT:   11 els below OD_SHP: 0 11 1, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:      8 ticks:     13 ISN:   2 IP: 119 OD_SHP: 228 PRA_SHP: 999 TOP:   12 NEXT: None els below OD_SHP: 0 11, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:      9 ticks:     14 ISN:   1 IP: 120 OD_SHP: 228 PRA_SHP: 999 TOP:   12 NEXT: None els below OD_SHP: 0 12, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:      9 ticks:     15 ISN:   2 IP: 120 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 12, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:     10 ticks:     16 ISN:   1 IP: 121 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	number 101  ('101'@1:1)
+  DEBUG:root:instrs:     11 ticks:     17 ISN:   1 IP: 122 OD_SHP: 228 PRA_SHP: 999 TOP:  101 NEXT: None els below OD_SHP: 0 101, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     11 ticks:     18 ISN:   2 IP: 122 OD_SHP: 228 PRA_SHP: 999 TOP:   12 NEXT: None els below OD_SHP: 0 101, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     12 ticks:     19 ISN:   1 IP: 123 OD_SHP: 229 PRA_SHP: 999 TOP:   12 NEXT:  101 els below OD_SHP: 0 101 12, els over PRA_SHP: 0, VDStartP: 11 	put absolute  ('put_absolute'@1:1)
+  DEBUG:root:instrs:     12 ticks:     20 ISN:   2 IP: 123 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	put absolute  ('put_absolute'@1:1)
+  DEBUG:root:instrs:     13 ticks:     21 ISN:   1 IP: 124 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     13 ticks:     22 ISN:   2 IP: 124 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     14 ticks:     23 ISN:   1 IP: 125 OD_SHP: 228 PRA_SHP: 999 TOP:   12 NEXT: None els below OD_SHP: 0 12, els over PRA_SHP: 0, VDStartP: 11 	number 1  ('1'@1:1)
+  DEBUG:root:instrs:     15 ticks:     24 ISN:   1 IP: 126 OD_SHP: 229 PRA_SHP: 999 TOP:    1 NEXT:   12 els below OD_SHP: 0 12 1, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:     15 ticks:     25 ISN:   2 IP: 126 OD_SHP: 228 PRA_SHP: 999 TOP:   13 NEXT: None els below OD_SHP: 0 12, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:     16 ticks:     26 ISN:   1 IP: 127 OD_SHP: 228 PRA_SHP: 999 TOP:   13 NEXT: None els below OD_SHP: 0 13, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:     16 ticks:     27 ISN:   2 IP: 127 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 13, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:     17 ticks:     28 ISN:   1 IP: 128 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	number 108  ('108'@1:1)
+  DEBUG:root:instrs:     18 ticks:     29 ISN:   1 IP: 129 OD_SHP: 228 PRA_SHP: 999 TOP:  108 NEXT: None els below OD_SHP: 0 108, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     18 ticks:     30 ISN:   2 IP: 129 OD_SHP: 228 PRA_SHP: 999 TOP:   13 NEXT: None els below OD_SHP: 0 108, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     19 ticks:     31 ISN:   1 IP: 130 OD_SHP: 229 PRA_SHP: 999 TOP:   13 NEXT:  108 els below OD_SHP: 0 108 13, els over PRA_SHP: 0, VDStartP: 11 	put absolute  ('put_absolute'@1:1)
+  DEBUG:root:instrs:     19 ticks:     32 ISN:   2 IP: 130 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	put absolute  ('put_absolute'@1:1)
+  DEBUG:root:instrs:     20 ticks:     33 ISN:   1 IP: 131 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     20 ticks:     34 ISN:   2 IP: 131 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     21 ticks:     35 ISN:   1 IP: 132 OD_SHP: 228 PRA_SHP: 999 TOP:   13 NEXT: None els below OD_SHP: 0 13, els over PRA_SHP: 0, VDStartP: 11 	number 1  ('1'@1:1)
+  DEBUG:root:instrs:     22 ticks:     36 ISN:   1 IP: 133 OD_SHP: 229 PRA_SHP: 999 TOP:    1 NEXT:   13 els below OD_SHP: 0 13 1, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:     22 ticks:     37 ISN:   2 IP: 133 OD_SHP: 228 PRA_SHP: 999 TOP:   14 NEXT: None els below OD_SHP: 0 13, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:     23 ticks:     38 ISN:   1 IP: 134 OD_SHP: 228 PRA_SHP: 999 TOP:   14 NEXT: None els below OD_SHP: 0 14, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:     23 ticks:     39 ISN:   2 IP: 134 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 14, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:     24 ticks:     40 ISN:   1 IP: 135 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	number 108  ('108'@1:1)
+  DEBUG:root:instrs:     25 ticks:     41 ISN:   1 IP: 136 OD_SHP: 228 PRA_SHP: 999 TOP:  108 NEXT: None els below OD_SHP: 0 108, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     25 ticks:     42 ISN:   2 IP: 136 OD_SHP: 228 PRA_SHP: 999 TOP:   14 NEXT: None els below OD_SHP: 0 108, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     26 ticks:     43 ISN:   1 IP: 137 OD_SHP: 229 PRA_SHP: 999 TOP:   14 NEXT:  108 els below OD_SHP: 0 108 14, els over PRA_SHP: 0, VDStartP: 11 	put absolute  ('put_absolute'@1:1)
+  DEBUG:root:instrs:     26 ticks:     44 ISN:   2 IP: 137 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	put absolute  ('put_absolute'@1:1)
+  DEBUG:root:instrs:     27 ticks:     45 ISN:   1 IP: 138 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     27 ticks:     46 ISN:   2 IP: 138 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     28 ticks:     47 ISN:   1 IP: 139 OD_SHP: 228 PRA_SHP: 999 TOP:   14 NEXT: None els below OD_SHP: 0 14, els over PRA_SHP: 0, VDStartP: 11 	number 1  ('1'@1:1)
+  DEBUG:root:instrs:     29 ticks:     48 ISN:   1 IP: 140 OD_SHP: 229 PRA_SHP: 999 TOP:    1 NEXT:   14 els below OD_SHP: 0 14 1, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:     29 ticks:     49 ISN:   2 IP: 140 OD_SHP: 228 PRA_SHP: 999 TOP:   15 NEXT: None els below OD_SHP: 0 14, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:     30 ticks:     50 ISN:   1 IP: 141 OD_SHP: 228 PRA_SHP: 999 TOP:   15 NEXT: None els below OD_SHP: 0 15, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:     30 ticks:     51 ISN:   2 IP: 141 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 15, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:     31 ticks:     52 ISN:   1 IP: 142 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	number 111  ('111'@1:1)
+  DEBUG:root:instrs:     32 ticks:     53 ISN:   1 IP: 143 OD_SHP: 228 PRA_SHP: 999 TOP:  111 NEXT: None els below OD_SHP: 0 111, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     32 ticks:     54 ISN:   2 IP: 143 OD_SHP: 228 PRA_SHP: 999 TOP:   15 NEXT: None els below OD_SHP: 0 111, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     33 ticks:     55 ISN:   1 IP: 144 OD_SHP: 229 PRA_SHP: 999 TOP:   15 NEXT:  111 els below OD_SHP: 0 111 15, els over PRA_SHP: 0, VDStartP: 11 	put absolute  ('put_absolute'@1:1)
+  DEBUG:root:instrs:     33 ticks:     56 ISN:   2 IP: 144 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	put absolute  ('put_absolute'@1:1)
+  DEBUG:root:instrs:     34 ticks:     57 ISN:   1 IP: 145 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     34 ticks:     58 ISN:   2 IP: 145 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     35 ticks:     59 ISN:   1 IP: 146 OD_SHP: 228 PRA_SHP: 999 TOP:   15 NEXT: None els below OD_SHP: 0 15, els over PRA_SHP: 0, VDStartP: 11 	number 1  ('1'@1:1)
+  DEBUG:root:instrs:     36 ticks:     60 ISN:   1 IP: 147 OD_SHP: 229 PRA_SHP: 999 TOP:    1 NEXT:   15 els below OD_SHP: 0 15 1, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:     36 ticks:     61 ISN:   2 IP: 147 OD_SHP: 228 PRA_SHP: 999 TOP:   16 NEXT: None els below OD_SHP: 0 15, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:     37 ticks:     62 ISN:   1 IP: 148 OD_SHP: 228 PRA_SHP: 999 TOP:   16 NEXT: None els below OD_SHP: 0 16, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:     37 ticks:     63 ISN:   2 IP: 148 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 16, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:     38 ticks:     64 ISN:   1 IP: 149 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	number 32  ('32'@1:1)
+  DEBUG:root:instrs:     39 ticks:     65 ISN:   1 IP: 150 OD_SHP: 228 PRA_SHP: 999 TOP:   32 NEXT: None els below OD_SHP: 0 32, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     39 ticks:     66 ISN:   2 IP: 150 OD_SHP: 228 PRA_SHP: 999 TOP:   16 NEXT: None els below OD_SHP: 0 32, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     40 ticks:     67 ISN:   1 IP: 151 OD_SHP: 229 PRA_SHP: 999 TOP:   16 NEXT:   32 els below OD_SHP: 0 32 16, els over PRA_SHP: 0, VDStartP: 11 	put absolute  ('put_absolute'@1:1)
+  DEBUG:root:instrs:     40 ticks:     68 ISN:   2 IP: 151 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	put absolute  ('put_absolute'@1:1)
+  DEBUG:root:instrs:     41 ticks:     69 ISN:   1 IP: 152 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     41 ticks:     70 ISN:   2 IP: 152 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     42 ticks:     71 ISN:   1 IP: 153 OD_SHP: 228 PRA_SHP: 999 TOP:   16 NEXT: None els below OD_SHP: 0 16, els over PRA_SHP: 0, VDStartP: 11 	number 1  ('1'@1:1)
+  DEBUG:root:instrs:     43 ticks:     72 ISN:   1 IP: 154 OD_SHP: 229 PRA_SHP: 999 TOP:    1 NEXT:   16 els below OD_SHP: 0 16 1, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:     43 ticks:     73 ISN:   2 IP: 154 OD_SHP: 228 PRA_SHP: 999 TOP:   17 NEXT: None els below OD_SHP: 0 16, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:     44 ticks:     74 ISN:   1 IP: 155 OD_SHP: 228 PRA_SHP: 999 TOP:   17 NEXT: None els below OD_SHP: 0 17, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:     44 ticks:     75 ISN:   2 IP: 155 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 17, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:     45 ticks:     76 ISN:   1 IP: 156 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	number 119  ('119'@1:1)
+  DEBUG:root:instrs:     46 ticks:     77 ISN:   1 IP: 157 OD_SHP: 228 PRA_SHP: 999 TOP:  119 NEXT: None els below OD_SHP: 0 119, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     46 ticks:     78 ISN:   2 IP: 157 OD_SHP: 228 PRA_SHP: 999 TOP:   17 NEXT: None els below OD_SHP: 0 119, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     47 ticks:     79 ISN:   1 IP: 158 OD_SHP: 229 PRA_SHP: 999 TOP:   17 NEXT:  119 els below OD_SHP: 0 119 17, els over PRA_SHP: 0, VDStartP: 11 	put absolute  ('put_absolute'@1:1)
+  DEBUG:root:instrs:     47 ticks:     80 ISN:   2 IP: 158 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	put absolute  ('put_absolute'@1:1)
+  DEBUG:root:instrs:     48 ticks:     81 ISN:   1 IP: 159 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     48 ticks:     82 ISN:   2 IP: 159 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     49 ticks:     83 ISN:   1 IP: 160 OD_SHP: 228 PRA_SHP: 999 TOP:   17 NEXT: None els below OD_SHP: 0 17, els over PRA_SHP: 0, VDStartP: 11 	number 1  ('1'@1:1)
+  DEBUG:root:instrs:     50 ticks:     84 ISN:   1 IP: 161 OD_SHP: 229 PRA_SHP: 999 TOP:    1 NEXT:   17 els below OD_SHP: 0 17 1, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:     50 ticks:     85 ISN:   2 IP: 161 OD_SHP: 228 PRA_SHP: 999 TOP:   18 NEXT: None els below OD_SHP: 0 17, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:     51 ticks:     86 ISN:   1 IP: 162 OD_SHP: 228 PRA_SHP: 999 TOP:   18 NEXT: None els below OD_SHP: 0 18, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:     51 ticks:     87 ISN:   2 IP: 162 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 18, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:     52 ticks:     88 ISN:   1 IP: 163 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	number 111  ('111'@1:1)
+  DEBUG:root:instrs:     53 ticks:     89 ISN:   1 IP: 164 OD_SHP: 228 PRA_SHP: 999 TOP:  111 NEXT: None els below OD_SHP: 0 111, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     53 ticks:     90 ISN:   2 IP: 164 OD_SHP: 228 PRA_SHP: 999 TOP:   18 NEXT: None els below OD_SHP: 0 111, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     54 ticks:     91 ISN:   1 IP: 165 OD_SHP: 229 PRA_SHP: 999 TOP:   18 NEXT:  111 els below OD_SHP: 0 111 18, els over PRA_SHP: 0, VDStartP: 11 	put absolute  ('put_absolute'@1:1)
+  DEBUG:root:instrs:     54 ticks:     92 ISN:   2 IP: 165 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	put absolute  ('put_absolute'@1:1)
+  DEBUG:root:instrs:     55 ticks:     93 ISN:   1 IP: 166 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     55 ticks:     94 ISN:   2 IP: 166 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     56 ticks:     95 ISN:   1 IP: 167 OD_SHP: 228 PRA_SHP: 999 TOP:   18 NEXT: None els below OD_SHP: 0 18, els over PRA_SHP: 0, VDStartP: 11 	number 1  ('1'@1:1)
+  DEBUG:root:instrs:     57 ticks:     96 ISN:   1 IP: 168 OD_SHP: 229 PRA_SHP: 999 TOP:    1 NEXT:   18 els below OD_SHP: 0 18 1, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:     57 ticks:     97 ISN:   2 IP: 168 OD_SHP: 228 PRA_SHP: 999 TOP:   19 NEXT: None els below OD_SHP: 0 18, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:     58 ticks:     98 ISN:   1 IP: 169 OD_SHP: 228 PRA_SHP: 999 TOP:   19 NEXT: None els below OD_SHP: 0 19, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:     58 ticks:     99 ISN:   2 IP: 169 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 19, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:     59 ticks:    100 ISN:   1 IP: 170 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	number 114  ('114'@1:1)
+  DEBUG:root:instrs:     60 ticks:    101 ISN:   1 IP: 171 OD_SHP: 228 PRA_SHP: 999 TOP:  114 NEXT: None els below OD_SHP: 0 114, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     60 ticks:    102 ISN:   2 IP: 171 OD_SHP: 228 PRA_SHP: 999 TOP:   19 NEXT: None els below OD_SHP: 0 114, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     61 ticks:    103 ISN:   1 IP: 172 OD_SHP: 229 PRA_SHP: 999 TOP:   19 NEXT:  114 els below OD_SHP: 0 114 19, els over PRA_SHP: 0, VDStartP: 11 	put absolute  ('put_absolute'@1:1)
+  DEBUG:root:instrs:     61 ticks:    104 ISN:   2 IP: 172 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	put absolute  ('put_absolute'@1:1)
+  DEBUG:root:instrs:     62 ticks:    105 ISN:   1 IP: 173 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     62 ticks:    106 ISN:   2 IP: 173 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     63 ticks:    107 ISN:   1 IP: 174 OD_SHP: 228 PRA_SHP: 999 TOP:   19 NEXT: None els below OD_SHP: 0 19, els over PRA_SHP: 0, VDStartP: 11 	number 1  ('1'@1:1)
+  DEBUG:root:instrs:     64 ticks:    108 ISN:   1 IP: 175 OD_SHP: 229 PRA_SHP: 999 TOP:    1 NEXT:   19 els below OD_SHP: 0 19 1, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:     64 ticks:    109 ISN:   2 IP: 175 OD_SHP: 228 PRA_SHP: 999 TOP:   20 NEXT: None els below OD_SHP: 0 19, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:     65 ticks:    110 ISN:   1 IP: 176 OD_SHP: 228 PRA_SHP: 999 TOP:   20 NEXT: None els below OD_SHP: 0 20, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:     65 ticks:    111 ISN:   2 IP: 176 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 20, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:     66 ticks:    112 ISN:   1 IP: 177 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	number 108  ('108'@1:1)
+  DEBUG:root:instrs:     67 ticks:    113 ISN:   1 IP: 178 OD_SHP: 228 PRA_SHP: 999 TOP:  108 NEXT: None els below OD_SHP: 0 108, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     67 ticks:    114 ISN:   2 IP: 178 OD_SHP: 228 PRA_SHP: 999 TOP:   20 NEXT: None els below OD_SHP: 0 108, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     68 ticks:    115 ISN:   1 IP: 179 OD_SHP: 229 PRA_SHP: 999 TOP:   20 NEXT:  108 els below OD_SHP: 0 108 20, els over PRA_SHP: 0, VDStartP: 11 	put absolute  ('put_absolute'@1:1)
+  DEBUG:root:instrs:     68 ticks:    116 ISN:   2 IP: 179 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	put absolute  ('put_absolute'@1:1)
+  DEBUG:root:instrs:     69 ticks:    117 ISN:   1 IP: 180 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     69 ticks:    118 ISN:   2 IP: 180 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     70 ticks:    119 ISN:   1 IP: 181 OD_SHP: 228 PRA_SHP: 999 TOP:   20 NEXT: None els below OD_SHP: 0 20, els over PRA_SHP: 0, VDStartP: 11 	number 1  ('1'@1:1)
+  DEBUG:root:instrs:     71 ticks:    120 ISN:   1 IP: 182 OD_SHP: 229 PRA_SHP: 999 TOP:    1 NEXT:   20 els below OD_SHP: 0 20 1, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:     71 ticks:    121 ISN:   2 IP: 182 OD_SHP: 228 PRA_SHP: 999 TOP:   21 NEXT: None els below OD_SHP: 0 20, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:     72 ticks:    122 ISN:   1 IP: 183 OD_SHP: 228 PRA_SHP: 999 TOP:   21 NEXT: None els below OD_SHP: 0 21, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:     72 ticks:    123 ISN:   2 IP: 183 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 21, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:     73 ticks:    124 ISN:   1 IP: 184 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	number 100  ('100'@1:1)
+  DEBUG:root:instrs:     74 ticks:    125 ISN:   1 IP: 185 OD_SHP: 228 PRA_SHP: 999 TOP:  100 NEXT: None els below OD_SHP: 0 100, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     74 ticks:    126 ISN:   2 IP: 185 OD_SHP: 228 PRA_SHP: 999 TOP:   21 NEXT: None els below OD_SHP: 0 100, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     75 ticks:    127 ISN:   1 IP: 186 OD_SHP: 229 PRA_SHP: 999 TOP:   21 NEXT:  100 els below OD_SHP: 0 100 21, els over PRA_SHP: 0, VDStartP: 11 	put absolute  ('put_absolute'@1:1)
+  DEBUG:root:instrs:     75 ticks:    128 ISN:   2 IP: 186 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	put absolute  ('put_absolute'@1:1)
+  DEBUG:root:instrs:     76 ticks:    129 ISN:   1 IP: 187 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     76 ticks:    130 ISN:   2 IP: 187 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     77 ticks:    131 ISN:   1 IP: 188 OD_SHP: 228 PRA_SHP: 999 TOP:   21 NEXT: None els below OD_SHP: 0 21, els over PRA_SHP: 0, VDStartP: 11 	number 1  ('1'@1:1)
+  DEBUG:root:instrs:     78 ticks:    132 ISN:   1 IP: 189 OD_SHP: 229 PRA_SHP: 999 TOP:    1 NEXT:   21 els below OD_SHP: 0 21 1, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:     78 ticks:    133 ISN:   2 IP: 189 OD_SHP: 228 PRA_SHP: 999 TOP:   22 NEXT: None els below OD_SHP: 0 21, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:     79 ticks:    134 ISN:   1 IP: 190 OD_SHP: 228 PRA_SHP: 999 TOP:   22 NEXT: None els below OD_SHP: 0 22, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:     79 ticks:    135 ISN:   2 IP: 190 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 22, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:     80 ticks:    136 ISN:   1 IP: 191 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	number 33  ('33'@1:1)
+  DEBUG:root:instrs:     81 ticks:    137 ISN:   1 IP: 192 OD_SHP: 228 PRA_SHP: 999 TOP:   33 NEXT: None els below OD_SHP: 0 33, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     81 ticks:    138 ISN:   2 IP: 192 OD_SHP: 228 PRA_SHP: 999 TOP:   22 NEXT: None els below OD_SHP: 0 33, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     82 ticks:    139 ISN:   1 IP: 193 OD_SHP: 229 PRA_SHP: 999 TOP:   22 NEXT:   33 els below OD_SHP: 0 33 22, els over PRA_SHP: 0, VDStartP: 11 	put absolute  ('put_absolute'@1:1)
+  DEBUG:root:instrs:     82 ticks:    140 ISN:   2 IP: 193 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	put absolute  ('put_absolute'@1:1)
+  DEBUG:root:instrs:     83 ticks:    141 ISN:   1 IP: 194 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     83 ticks:    142 ISN:   2 IP: 194 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     84 ticks:    143 ISN:   1 IP: 195 OD_SHP: 228 PRA_SHP: 999 TOP:   22 NEXT: None els below OD_SHP: 0 22, els over PRA_SHP: 0, VDStartP: 11 	number 1  ('1'@1:1)
+  DEBUG:root:instrs:     85 ticks:    144 ISN:   1 IP: 196 OD_SHP: 229 PRA_SHP: 999 TOP:    1 NEXT:   22 els below OD_SHP: 0 22 1, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:     85 ticks:    145 ISN:   2 IP: 196 OD_SHP: 228 PRA_SHP: 999 TOP:   23 NEXT: None els below OD_SHP: 0 22, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:     86 ticks:    146 ISN:   1 IP: 197 OD_SHP: 228 PRA_SHP: 999 TOP:   23 NEXT: None els below OD_SHP: 0 23, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:     86 ticks:    147 ISN:   2 IP: 197 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 23, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:     87 ticks:    148 ISN:   1 IP: 198 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('0'@1:1)
+  DEBUG:root:instrs:     88 ticks:    149 ISN:   1 IP: 199 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     88 ticks:    150 ISN:   2 IP: 199 OD_SHP: 228 PRA_SHP: 999 TOP:   23 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     89 ticks:    151 ISN:   1 IP: 200 OD_SHP: 229 PRA_SHP: 999 TOP:   23 NEXT:    0 els below OD_SHP: 0 0 23, els over PRA_SHP: 0, VDStartP: 11 	put absolute  ('put_absolute'@1:1)
+  DEBUG:root:instrs:     89 ticks:    152 ISN:   2 IP: 200 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	put absolute  ('put_absolute'@1:1)
+  DEBUG:root:instrs:     90 ticks:    153 ISN:   1 IP: 201 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('_string&'@1:1)
+  DEBUG:root:instrs:     91 ticks:    154 ISN:   1 IP: 202 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	sum top with vdsp  ('_string&'@1:1)
+  DEBUG:root:instrs:     92 ticks:    155 ISN:   1 IP: 203 OD_SHP: 228 PRA_SHP: 999 TOP:   11 NEXT: None els below OD_SHP: 0 11, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:     92 ticks:    156 ISN:   2 IP: 203 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 11, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:     93 ticks:    157 ISN:   1 IP: 204 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     93 ticks:    158 ISN:   2 IP: 204 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:     94 ticks:    159 ISN:   1 IP: 205 OD_SHP: 228 PRA_SHP: 999 TOP:   11 NEXT: None els below OD_SHP: 0 11, els over PRA_SHP: 0, VDStartP: 11 	pick absolute  ('pick_absolute'@1:1)
+  DEBUG:root:instrs:     94 ticks:    160 ISN:   2 IP: 205 OD_SHP: 228 PRA_SHP: 999 TOP:   72 NEXT: None els below OD_SHP: 0 11, els over PRA_SHP: 0, VDStartP: 11 	pick absolute  ('pick_absolute'@1:1)
+  DEBUG:root:instrs:     95 ticks:    161 ISN:   1 IP: 206 OD_SHP: 228 PRA_SHP: 999 TOP:   72 NEXT: None els below OD_SHP: 0 72, els over PRA_SHP: 0, VDStartP: 11 	dup  ('dup'@1:1)
+  DEBUG:root:instrs:     96 ticks:    162 ISN:   1 IP: 207 OD_SHP: 229 PRA_SHP: 999 TOP:   72 NEXT:   72 els below OD_SHP: 0 72 72, els over PRA_SHP: 0, VDStartP: 11 	exec if  ('if'@1:1)
+  DEBUG:root:instrs:     97 ticks:    163 ISN:   1 IP: 208 OD_SHP: 228 PRA_SHP: 999 TOP:   72 NEXT: None els below OD_SHP: 0 72, els over PRA_SHP: 0, VDStartP: 11 	jmp 3  ('if'@1:1)
+  DEBUG:root:instrs:     98 ticks:    164 ISN:   1 IP: 211 OD_SHP: 228 PRA_SHP: 999 TOP:   72 NEXT: None els below OD_SHP: 0 72, els over PRA_SHP: 0, VDStartP: 11 	has port filled with cpu 0  ('cant_emit'@1:1)
+  DEBUG:root:instrs:     99 ticks:    165 ISN:   1 IP: 212 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:   72 els below OD_SHP: 0 72 -1, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('0'@1:1)
+  DEBUG:root:instrs:    100 ticks:    166 ISN:   1 IP: 213 OD_SHP: 230 PRA_SHP: 999 TOP:    0 NEXT:   -1 els below OD_SHP: 0 72 -1 0, els over PRA_SHP: 0, VDStartP: 11 	eq  ('='@1:1)
+  DEBUG:root:instrs:    100 ticks:    167 ISN:   2 IP: 213 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:   72 els below OD_SHP: 0 72 -1, els over PRA_SHP: 0, VDStartP: 11 	eq  ('='@1:1)
+  DEBUG:root:instrs:    101 ticks:    168 ISN:   1 IP: 214 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:   72 els below OD_SHP: 0 72 -1, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('until'@1:1)
+  DEBUG:root:instrs:    102 ticks:    169 ISN:   1 IP: 215 OD_SHP: 230 PRA_SHP: 999 TOP:    0 NEXT:   -1 els below OD_SHP: 0 72 -1 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    102 ticks:    170 ISN:   2 IP: 215 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:   72 els below OD_SHP: 0 72 -1, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    103 ticks:    171 ISN:   1 IP: 216 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:   72 els below OD_SHP: 0 72 0, els over PRA_SHP: 0, VDStartP: 11 	exec cond jmp -6  ('until'@1:1)
+  DEBUG:root:instrs:    104 ticks:    172 ISN:   1 IP: 217 OD_SHP: 228 PRA_SHP: 999 TOP:   72 NEXT: None els below OD_SHP: 0 72, els over PRA_SHP: 0, VDStartP: 11 	write port 0  ('emit'@1:1)
+  DEBUG:root:instrs:    105 ticks:    173 ISN:   1 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:Printed: H
+  DEBUG:root:Read interruption!!! instrs:    105 ticks:    173 ISN:   1 IP:   3 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	dup  ('dup'@1:1)
+  DEBUG:root:instrs:    106 ticks:    177 ISN:   1 IP:   4 OD_SHP: 228 PRA_SHP: 997 TOP:    0 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	number 119  ('119'@2:1)
+  DEBUG:root:instrs:    107 ticks:    178 ISN:   1 IP:   5 OD_SHP: 229 PRA_SHP: 997 TOP:  119 NEXT:    0 els below OD_SHP: 0 0 119, els over PRA_SHP: 1 218 0, VDStartP: 11 	eq  ('='@2:2)
+  DEBUG:root:instrs:    107 ticks:    179 ISN:   2 IP:   5 OD_SHP: 228 PRA_SHP: 997 TOP:   -1 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	eq  ('='@2:2)
+  DEBUG:root:instrs:    108 ticks:    180 ISN:   1 IP:   6 OD_SHP: 228 PRA_SHP: 997 TOP:   -1 NEXT: None els below OD_SHP: 0 -1, els over PRA_SHP: 1 218 0, VDStartP: 11 	exec if  ('if'@2:3)
+  DEBUG:root:instrs:    109 ticks:    181 ISN:   1 IP:   7 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	jmp 3  ('if'@2:3)
+  DEBUG:root:instrs:    110 ticks:    182 ISN:   1 IP:  10 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	halt  (''@-1:-1)
+  DEBUG:root:Interruption exit!!!
+  DEBUG:root:instrs:    110 ticks:    183 ISN:   1 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    110 ticks:    184 ISN:   2 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    111 ticks:    185 ISN:   1 IP: 219 OD_SHP: 228 PRA_SHP: 999 TOP:   11 NEXT: None els below OD_SHP: 0 11, els over PRA_SHP: 0, VDStartP: 11 	number 1  ('1'@1:1)
+  DEBUG:root:instrs:    112 ticks:    186 ISN:   1 IP: 220 OD_SHP: 229 PRA_SHP: 999 TOP:    1 NEXT:   11 els below OD_SHP: 0 11 1, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:    112 ticks:    187 ISN:   2 IP: 220 OD_SHP: 228 PRA_SHP: 999 TOP:   12 NEXT: None els below OD_SHP: 0 11, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:    113 ticks:    188 ISN:   1 IP: 221 OD_SHP: 228 PRA_SHP: 999 TOP:   12 NEXT: None els below OD_SHP: 0 12, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:    113 ticks:    189 ISN:   2 IP: 221 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 12, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:    114 ticks:    190 ISN:   1 IP: 222 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('0'@1:1)
+  DEBUG:root:instrs:    115 ticks:    191 ISN:   1 IP: 223 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('until'@1:1)
+  DEBUG:root:instrs:    116 ticks:    192 ISN:   1 IP: 224 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:    0 els below OD_SHP: 0 0 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    116 ticks:    193 ISN:   2 IP: 224 OD_SHP: 228 PRA_SHP: 999 TOP:   -1 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    117 ticks:    194 ISN:   1 IP: 225 OD_SHP: 228 PRA_SHP: 999 TOP:   -1 NEXT: None els below OD_SHP: 0 -1, els over PRA_SHP: 0, VDStartP: 11 	exec cond jmp -22  ('until'@1:1)
+  DEBUG:root:instrs:    118 ticks:    195 ISN:   1 IP: 204 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    118 ticks:    196 ISN:   2 IP: 204 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    119 ticks:    197 ISN:   1 IP: 205 OD_SHP: 228 PRA_SHP: 999 TOP:   12 NEXT: None els below OD_SHP: 0 12, els over PRA_SHP: 0, VDStartP: 11 	pick absolute  ('pick_absolute'@1:1)
+  DEBUG:root:instrs:    119 ticks:    198 ISN:   2 IP: 205 OD_SHP: 228 PRA_SHP: 999 TOP:  101 NEXT: None els below OD_SHP: 0 12, els over PRA_SHP: 0, VDStartP: 11 	pick absolute  ('pick_absolute'@1:1)
+  DEBUG:root:instrs:    120 ticks:    199 ISN:   1 IP: 206 OD_SHP: 228 PRA_SHP: 999 TOP:  101 NEXT: None els below OD_SHP: 0 101, els over PRA_SHP: 0, VDStartP: 11 	dup  ('dup'@1:1)
+  DEBUG:root:instrs:    121 ticks:    200 ISN:   1 IP: 207 OD_SHP: 229 PRA_SHP: 999 TOP:  101 NEXT:  101 els below OD_SHP: 0 101 101, els over PRA_SHP: 0, VDStartP: 11 	exec if  ('if'@1:1)
+  DEBUG:root:instrs:    122 ticks:    201 ISN:   1 IP: 208 OD_SHP: 228 PRA_SHP: 999 TOP:  101 NEXT: None els below OD_SHP: 0 101, els over PRA_SHP: 0, VDStartP: 11 	jmp 3  ('if'@1:1)
+  DEBUG:root:instrs:    123 ticks:    202 ISN:   1 IP: 211 OD_SHP: 228 PRA_SHP: 999 TOP:  101 NEXT: None els below OD_SHP: 0 101, els over PRA_SHP: 0, VDStartP: 11 	has port filled with cpu 0  ('cant_emit'@1:1)
+  DEBUG:root:instrs:    124 ticks:    203 ISN:   1 IP: 212 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:  101 els below OD_SHP: 0 101 -1, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('0'@1:1)
+  DEBUG:root:instrs:    125 ticks:    204 ISN:   1 IP: 213 OD_SHP: 230 PRA_SHP: 999 TOP:    0 NEXT:   -1 els below OD_SHP: 0 101 -1 0, els over PRA_SHP: 0, VDStartP: 11 	eq  ('='@1:1)
+  DEBUG:root:instrs:    125 ticks:    205 ISN:   2 IP: 213 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:  101 els below OD_SHP: 0 101 -1, els over PRA_SHP: 0, VDStartP: 11 	eq  ('='@1:1)
+  DEBUG:root:instrs:    126 ticks:    206 ISN:   1 IP: 214 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:  101 els below OD_SHP: 0 101 -1, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('until'@1:1)
+  DEBUG:root:instrs:    127 ticks:    207 ISN:   1 IP: 215 OD_SHP: 230 PRA_SHP: 999 TOP:    0 NEXT:   -1 els below OD_SHP: 0 101 -1 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    127 ticks:    208 ISN:   2 IP: 215 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:  101 els below OD_SHP: 0 101 -1, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    128 ticks:    209 ISN:   1 IP: 216 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:  101 els below OD_SHP: 0 101 0, els over PRA_SHP: 0, VDStartP: 11 	exec cond jmp -6  ('until'@1:1)
+  DEBUG:root:instrs:    129 ticks:    210 ISN:   1 IP: 217 OD_SHP: 228 PRA_SHP: 999 TOP:  101 NEXT: None els below OD_SHP: 0 101, els over PRA_SHP: 0, VDStartP: 11 	write port 0  ('emit'@1:1)
+  DEBUG:root:instrs:    130 ticks:    211 ISN:   1 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:Printed: e
+  DEBUG:root:Read interruption!!! instrs:    130 ticks:    211 ISN:   1 IP:   3 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	dup  ('dup'@1:1)
+  DEBUG:root:instrs:    131 ticks:    215 ISN:   1 IP:   4 OD_SHP: 228 PRA_SHP: 997 TOP:    0 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	number 119  ('119'@2:1)
+  DEBUG:root:instrs:    132 ticks:    216 ISN:   1 IP:   5 OD_SHP: 229 PRA_SHP: 997 TOP:  119 NEXT:    0 els below OD_SHP: 0 0 119, els over PRA_SHP: 1 218 0, VDStartP: 11 	eq  ('='@2:2)
+  DEBUG:root:instrs:    132 ticks:    217 ISN:   2 IP:   5 OD_SHP: 228 PRA_SHP: 997 TOP:   -1 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	eq  ('='@2:2)
+  DEBUG:root:instrs:    133 ticks:    218 ISN:   1 IP:   6 OD_SHP: 228 PRA_SHP: 997 TOP:   -1 NEXT: None els below OD_SHP: 0 -1, els over PRA_SHP: 1 218 0, VDStartP: 11 	exec if  ('if'@2:3)
+  DEBUG:root:instrs:    134 ticks:    219 ISN:   1 IP:   7 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	jmp 3  ('if'@2:3)
+  DEBUG:root:instrs:    135 ticks:    220 ISN:   1 IP:  10 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	halt  (''@-1:-1)
+  DEBUG:root:Interruption exit!!!
+  DEBUG:root:instrs:    135 ticks:    221 ISN:   1 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    135 ticks:    222 ISN:   2 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    136 ticks:    223 ISN:   1 IP: 219 OD_SHP: 228 PRA_SHP: 999 TOP:   12 NEXT: None els below OD_SHP: 0 12, els over PRA_SHP: 0, VDStartP: 11 	number 1  ('1'@1:1)
+  DEBUG:root:instrs:    137 ticks:    224 ISN:   1 IP: 220 OD_SHP: 229 PRA_SHP: 999 TOP:    1 NEXT:   12 els below OD_SHP: 0 12 1, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:    137 ticks:    225 ISN:   2 IP: 220 OD_SHP: 228 PRA_SHP: 999 TOP:   13 NEXT: None els below OD_SHP: 0 12, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:    138 ticks:    226 ISN:   1 IP: 221 OD_SHP: 228 PRA_SHP: 999 TOP:   13 NEXT: None els below OD_SHP: 0 13, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:    138 ticks:    227 ISN:   2 IP: 221 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 13, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:    139 ticks:    228 ISN:   1 IP: 222 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('0'@1:1)
+  DEBUG:root:instrs:    140 ticks:    229 ISN:   1 IP: 223 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('until'@1:1)
+  DEBUG:root:instrs:    141 ticks:    230 ISN:   1 IP: 224 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:    0 els below OD_SHP: 0 0 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    141 ticks:    231 ISN:   2 IP: 224 OD_SHP: 228 PRA_SHP: 999 TOP:   -1 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    142 ticks:    232 ISN:   1 IP: 225 OD_SHP: 228 PRA_SHP: 999 TOP:   -1 NEXT: None els below OD_SHP: 0 -1, els over PRA_SHP: 0, VDStartP: 11 	exec cond jmp -22  ('until'@1:1)
+  DEBUG:root:instrs:    143 ticks:    233 ISN:   1 IP: 204 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    143 ticks:    234 ISN:   2 IP: 204 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    144 ticks:    235 ISN:   1 IP: 205 OD_SHP: 228 PRA_SHP: 999 TOP:   13 NEXT: None els below OD_SHP: 0 13, els over PRA_SHP: 0, VDStartP: 11 	pick absolute  ('pick_absolute'@1:1)
+  DEBUG:root:instrs:    144 ticks:    236 ISN:   2 IP: 205 OD_SHP: 228 PRA_SHP: 999 TOP:  108 NEXT: None els below OD_SHP: 0 13, els over PRA_SHP: 0, VDStartP: 11 	pick absolute  ('pick_absolute'@1:1)
+  DEBUG:root:instrs:    145 ticks:    237 ISN:   1 IP: 206 OD_SHP: 228 PRA_SHP: 999 TOP:  108 NEXT: None els below OD_SHP: 0 108, els over PRA_SHP: 0, VDStartP: 11 	dup  ('dup'@1:1)
+  DEBUG:root:instrs:    146 ticks:    238 ISN:   1 IP: 207 OD_SHP: 229 PRA_SHP: 999 TOP:  108 NEXT:  108 els below OD_SHP: 0 108 108, els over PRA_SHP: 0, VDStartP: 11 	exec if  ('if'@1:1)
+  DEBUG:root:instrs:    147 ticks:    239 ISN:   1 IP: 208 OD_SHP: 228 PRA_SHP: 999 TOP:  108 NEXT: None els below OD_SHP: 0 108, els over PRA_SHP: 0, VDStartP: 11 	jmp 3  ('if'@1:1)
+  DEBUG:root:instrs:    148 ticks:    240 ISN:   1 IP: 211 OD_SHP: 228 PRA_SHP: 999 TOP:  108 NEXT: None els below OD_SHP: 0 108, els over PRA_SHP: 0, VDStartP: 11 	has port filled with cpu 0  ('cant_emit'@1:1)
+  DEBUG:root:instrs:    149 ticks:    241 ISN:   1 IP: 212 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:  108 els below OD_SHP: 0 108 -1, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('0'@1:1)
+  DEBUG:root:instrs:    150 ticks:    242 ISN:   1 IP: 213 OD_SHP: 230 PRA_SHP: 999 TOP:    0 NEXT:   -1 els below OD_SHP: 0 108 -1 0, els over PRA_SHP: 0, VDStartP: 11 	eq  ('='@1:1)
+  DEBUG:root:instrs:    150 ticks:    243 ISN:   2 IP: 213 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:  108 els below OD_SHP: 0 108 -1, els over PRA_SHP: 0, VDStartP: 11 	eq  ('='@1:1)
+  DEBUG:root:instrs:    151 ticks:    244 ISN:   1 IP: 214 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:  108 els below OD_SHP: 0 108 -1, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('until'@1:1)
+  DEBUG:root:instrs:    152 ticks:    245 ISN:   1 IP: 215 OD_SHP: 230 PRA_SHP: 999 TOP:    0 NEXT:   -1 els below OD_SHP: 0 108 -1 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    152 ticks:    246 ISN:   2 IP: 215 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:  108 els below OD_SHP: 0 108 -1, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    153 ticks:    247 ISN:   1 IP: 216 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:  108 els below OD_SHP: 0 108 0, els over PRA_SHP: 0, VDStartP: 11 	exec cond jmp -6  ('until'@1:1)
+  DEBUG:root:instrs:    154 ticks:    248 ISN:   1 IP: 217 OD_SHP: 228 PRA_SHP: 999 TOP:  108 NEXT: None els below OD_SHP: 0 108, els over PRA_SHP: 0, VDStartP: 11 	write port 0  ('emit'@1:1)
+  DEBUG:root:instrs:    155 ticks:    249 ISN:   1 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:Printed: l
+  DEBUG:root:Read interruption!!! instrs:    155 ticks:    249 ISN:   1 IP:   3 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	dup  ('dup'@1:1)
+  DEBUG:root:instrs:    156 ticks:    253 ISN:   1 IP:   4 OD_SHP: 228 PRA_SHP: 997 TOP:    0 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	number 119  ('119'@2:1)
+  DEBUG:root:instrs:    157 ticks:    254 ISN:   1 IP:   5 OD_SHP: 229 PRA_SHP: 997 TOP:  119 NEXT:    0 els below OD_SHP: 0 0 119, els over PRA_SHP: 1 218 0, VDStartP: 11 	eq  ('='@2:2)
+  DEBUG:root:instrs:    157 ticks:    255 ISN:   2 IP:   5 OD_SHP: 228 PRA_SHP: 997 TOP:   -1 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	eq  ('='@2:2)
+  DEBUG:root:instrs:    158 ticks:    256 ISN:   1 IP:   6 OD_SHP: 228 PRA_SHP: 997 TOP:   -1 NEXT: None els below OD_SHP: 0 -1, els over PRA_SHP: 1 218 0, VDStartP: 11 	exec if  ('if'@2:3)
+  DEBUG:root:instrs:    159 ticks:    257 ISN:   1 IP:   7 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	jmp 3  ('if'@2:3)
+  DEBUG:root:instrs:    160 ticks:    258 ISN:   1 IP:  10 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	halt  (''@-1:-1)
+  DEBUG:root:Interruption exit!!!
+  DEBUG:root:instrs:    160 ticks:    259 ISN:   1 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    160 ticks:    260 ISN:   2 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    161 ticks:    261 ISN:   1 IP: 219 OD_SHP: 228 PRA_SHP: 999 TOP:   13 NEXT: None els below OD_SHP: 0 13, els over PRA_SHP: 0, VDStartP: 11 	number 1  ('1'@1:1)
+  DEBUG:root:instrs:    162 ticks:    262 ISN:   1 IP: 220 OD_SHP: 229 PRA_SHP: 999 TOP:    1 NEXT:   13 els below OD_SHP: 0 13 1, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:    162 ticks:    263 ISN:   2 IP: 220 OD_SHP: 228 PRA_SHP: 999 TOP:   14 NEXT: None els below OD_SHP: 0 13, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:    163 ticks:    264 ISN:   1 IP: 221 OD_SHP: 228 PRA_SHP: 999 TOP:   14 NEXT: None els below OD_SHP: 0 14, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:    163 ticks:    265 ISN:   2 IP: 221 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 14, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:    164 ticks:    266 ISN:   1 IP: 222 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('0'@1:1)
+  DEBUG:root:instrs:    165 ticks:    267 ISN:   1 IP: 223 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('until'@1:1)
+  DEBUG:root:instrs:    166 ticks:    268 ISN:   1 IP: 224 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:    0 els below OD_SHP: 0 0 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    166 ticks:    269 ISN:   2 IP: 224 OD_SHP: 228 PRA_SHP: 999 TOP:   -1 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    167 ticks:    270 ISN:   1 IP: 225 OD_SHP: 228 PRA_SHP: 999 TOP:   -1 NEXT: None els below OD_SHP: 0 -1, els over PRA_SHP: 0, VDStartP: 11 	exec cond jmp -22  ('until'@1:1)
+  DEBUG:root:instrs:    168 ticks:    271 ISN:   1 IP: 204 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    168 ticks:    272 ISN:   2 IP: 204 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    169 ticks:    273 ISN:   1 IP: 205 OD_SHP: 228 PRA_SHP: 999 TOP:   14 NEXT: None els below OD_SHP: 0 14, els over PRA_SHP: 0, VDStartP: 11 	pick absolute  ('pick_absolute'@1:1)
+  DEBUG:root:instrs:    169 ticks:    274 ISN:   2 IP: 205 OD_SHP: 228 PRA_SHP: 999 TOP:  108 NEXT: None els below OD_SHP: 0 14, els over PRA_SHP: 0, VDStartP: 11 	pick absolute  ('pick_absolute'@1:1)
+  DEBUG:root:instrs:    170 ticks:    275 ISN:   1 IP: 206 OD_SHP: 228 PRA_SHP: 999 TOP:  108 NEXT: None els below OD_SHP: 0 108, els over PRA_SHP: 0, VDStartP: 11 	dup  ('dup'@1:1)
+  DEBUG:root:instrs:    171 ticks:    276 ISN:   1 IP: 207 OD_SHP: 229 PRA_SHP: 999 TOP:  108 NEXT:  108 els below OD_SHP: 0 108 108, els over PRA_SHP: 0, VDStartP: 11 	exec if  ('if'@1:1)
+  DEBUG:root:instrs:    172 ticks:    277 ISN:   1 IP: 208 OD_SHP: 228 PRA_SHP: 999 TOP:  108 NEXT: None els below OD_SHP: 0 108, els over PRA_SHP: 0, VDStartP: 11 	jmp 3  ('if'@1:1)
+  DEBUG:root:instrs:    173 ticks:    278 ISN:   1 IP: 211 OD_SHP: 228 PRA_SHP: 999 TOP:  108 NEXT: None els below OD_SHP: 0 108, els over PRA_SHP: 0, VDStartP: 11 	has port filled with cpu 0  ('cant_emit'@1:1)
+  DEBUG:root:instrs:    174 ticks:    279 ISN:   1 IP: 212 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:  108 els below OD_SHP: 0 108 -1, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('0'@1:1)
+  DEBUG:root:instrs:    175 ticks:    280 ISN:   1 IP: 213 OD_SHP: 230 PRA_SHP: 999 TOP:    0 NEXT:   -1 els below OD_SHP: 0 108 -1 0, els over PRA_SHP: 0, VDStartP: 11 	eq  ('='@1:1)
+  DEBUG:root:instrs:    175 ticks:    281 ISN:   2 IP: 213 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:  108 els below OD_SHP: 0 108 -1, els over PRA_SHP: 0, VDStartP: 11 	eq  ('='@1:1)
+  DEBUG:root:instrs:    176 ticks:    282 ISN:   1 IP: 214 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:  108 els below OD_SHP: 0 108 -1, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('until'@1:1)
+  DEBUG:root:instrs:    177 ticks:    283 ISN:   1 IP: 215 OD_SHP: 230 PRA_SHP: 999 TOP:    0 NEXT:   -1 els below OD_SHP: 0 108 -1 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    177 ticks:    284 ISN:   2 IP: 215 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:  108 els below OD_SHP: 0 108 -1, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    178 ticks:    285 ISN:   1 IP: 216 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:  108 els below OD_SHP: 0 108 0, els over PRA_SHP: 0, VDStartP: 11 	exec cond jmp -6  ('until'@1:1)
+  DEBUG:root:instrs:    179 ticks:    286 ISN:   1 IP: 217 OD_SHP: 228 PRA_SHP: 999 TOP:  108 NEXT: None els below OD_SHP: 0 108, els over PRA_SHP: 0, VDStartP: 11 	write port 0  ('emit'@1:1)
+  DEBUG:root:instrs:    180 ticks:    287 ISN:   1 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:Printed: l
+  DEBUG:root:Read interruption!!! instrs:    180 ticks:    287 ISN:   1 IP:   3 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	dup  ('dup'@1:1)
+  DEBUG:root:instrs:    181 ticks:    291 ISN:   1 IP:   4 OD_SHP: 228 PRA_SHP: 997 TOP:    0 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	number 119  ('119'@2:1)
+  DEBUG:root:instrs:    182 ticks:    292 ISN:   1 IP:   5 OD_SHP: 229 PRA_SHP: 997 TOP:  119 NEXT:    0 els below OD_SHP: 0 0 119, els over PRA_SHP: 1 218 0, VDStartP: 11 	eq  ('='@2:2)
+  DEBUG:root:instrs:    182 ticks:    293 ISN:   2 IP:   5 OD_SHP: 228 PRA_SHP: 997 TOP:   -1 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	eq  ('='@2:2)
+  DEBUG:root:instrs:    183 ticks:    294 ISN:   1 IP:   6 OD_SHP: 228 PRA_SHP: 997 TOP:   -1 NEXT: None els below OD_SHP: 0 -1, els over PRA_SHP: 1 218 0, VDStartP: 11 	exec if  ('if'@2:3)
+  DEBUG:root:instrs:    184 ticks:    295 ISN:   1 IP:   7 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	jmp 3  ('if'@2:3)
+  DEBUG:root:instrs:    185 ticks:    296 ISN:   1 IP:  10 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	halt  (''@-1:-1)
+  DEBUG:root:Interruption exit!!!
+  DEBUG:root:instrs:    185 ticks:    297 ISN:   1 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    185 ticks:    298 ISN:   2 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    186 ticks:    299 ISN:   1 IP: 219 OD_SHP: 228 PRA_SHP: 999 TOP:   14 NEXT: None els below OD_SHP: 0 14, els over PRA_SHP: 0, VDStartP: 11 	number 1  ('1'@1:1)
+  DEBUG:root:instrs:    187 ticks:    300 ISN:   1 IP: 220 OD_SHP: 229 PRA_SHP: 999 TOP:    1 NEXT:   14 els below OD_SHP: 0 14 1, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:    187 ticks:    301 ISN:   2 IP: 220 OD_SHP: 228 PRA_SHP: 999 TOP:   15 NEXT: None els below OD_SHP: 0 14, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:    188 ticks:    302 ISN:   1 IP: 221 OD_SHP: 228 PRA_SHP: 999 TOP:   15 NEXT: None els below OD_SHP: 0 15, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:    188 ticks:    303 ISN:   2 IP: 221 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 15, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:    189 ticks:    304 ISN:   1 IP: 222 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('0'@1:1)
+  DEBUG:root:instrs:    190 ticks:    305 ISN:   1 IP: 223 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('until'@1:1)
+  DEBUG:root:instrs:    191 ticks:    306 ISN:   1 IP: 224 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:    0 els below OD_SHP: 0 0 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    191 ticks:    307 ISN:   2 IP: 224 OD_SHP: 228 PRA_SHP: 999 TOP:   -1 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    192 ticks:    308 ISN:   1 IP: 225 OD_SHP: 228 PRA_SHP: 999 TOP:   -1 NEXT: None els below OD_SHP: 0 -1, els over PRA_SHP: 0, VDStartP: 11 	exec cond jmp -22  ('until'@1:1)
+  DEBUG:root:instrs:    193 ticks:    309 ISN:   1 IP: 204 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    193 ticks:    310 ISN:   2 IP: 204 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    194 ticks:    311 ISN:   1 IP: 205 OD_SHP: 228 PRA_SHP: 999 TOP:   15 NEXT: None els below OD_SHP: 0 15, els over PRA_SHP: 0, VDStartP: 11 	pick absolute  ('pick_absolute'@1:1)
+  DEBUG:root:instrs:    194 ticks:    312 ISN:   2 IP: 205 OD_SHP: 228 PRA_SHP: 999 TOP:  111 NEXT: None els below OD_SHP: 0 15, els over PRA_SHP: 0, VDStartP: 11 	pick absolute  ('pick_absolute'@1:1)
+  DEBUG:root:instrs:    195 ticks:    313 ISN:   1 IP: 206 OD_SHP: 228 PRA_SHP: 999 TOP:  111 NEXT: None els below OD_SHP: 0 111, els over PRA_SHP: 0, VDStartP: 11 	dup  ('dup'@1:1)
+  DEBUG:root:instrs:    196 ticks:    314 ISN:   1 IP: 207 OD_SHP: 229 PRA_SHP: 999 TOP:  111 NEXT:  111 els below OD_SHP: 0 111 111, els over PRA_SHP: 0, VDStartP: 11 	exec if  ('if'@1:1)
+  DEBUG:root:instrs:    197 ticks:    315 ISN:   1 IP: 208 OD_SHP: 228 PRA_SHP: 999 TOP:  111 NEXT: None els below OD_SHP: 0 111, els over PRA_SHP: 0, VDStartP: 11 	jmp 3  ('if'@1:1)
+  DEBUG:root:instrs:    198 ticks:    316 ISN:   1 IP: 211 OD_SHP: 228 PRA_SHP: 999 TOP:  111 NEXT: None els below OD_SHP: 0 111, els over PRA_SHP: 0, VDStartP: 11 	has port filled with cpu 0  ('cant_emit'@1:1)
+  DEBUG:root:instrs:    199 ticks:    317 ISN:   1 IP: 212 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:  111 els below OD_SHP: 0 111 -1, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('0'@1:1)
+  DEBUG:root:instrs:    200 ticks:    318 ISN:   1 IP: 213 OD_SHP: 230 PRA_SHP: 999 TOP:    0 NEXT:   -1 els below OD_SHP: 0 111 -1 0, els over PRA_SHP: 0, VDStartP: 11 	eq  ('='@1:1)
+  DEBUG:root:instrs:    200 ticks:    319 ISN:   2 IP: 213 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:  111 els below OD_SHP: 0 111 -1, els over PRA_SHP: 0, VDStartP: 11 	eq  ('='@1:1)
+  DEBUG:root:instrs:    201 ticks:    320 ISN:   1 IP: 214 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:  111 els below OD_SHP: 0 111 -1, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('until'@1:1)
+  DEBUG:root:instrs:    202 ticks:    321 ISN:   1 IP: 215 OD_SHP: 230 PRA_SHP: 999 TOP:    0 NEXT:   -1 els below OD_SHP: 0 111 -1 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    202 ticks:    322 ISN:   2 IP: 215 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:  111 els below OD_SHP: 0 111 -1, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    203 ticks:    323 ISN:   1 IP: 216 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:  111 els below OD_SHP: 0 111 0, els over PRA_SHP: 0, VDStartP: 11 	exec cond jmp -6  ('until'@1:1)
+  DEBUG:root:instrs:    204 ticks:    324 ISN:   1 IP: 217 OD_SHP: 228 PRA_SHP: 999 TOP:  111 NEXT: None els below OD_SHP: 0 111, els over PRA_SHP: 0, VDStartP: 11 	write port 0  ('emit'@1:1)
+  DEBUG:root:instrs:    205 ticks:    325 ISN:   1 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:Printed: o
+  DEBUG:root:Read interruption!!! instrs:    205 ticks:    325 ISN:   1 IP:   3 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	dup  ('dup'@1:1)
+  DEBUG:root:instrs:    206 ticks:    329 ISN:   1 IP:   4 OD_SHP: 228 PRA_SHP: 997 TOP:    0 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	number 119  ('119'@2:1)
+  DEBUG:root:instrs:    207 ticks:    330 ISN:   1 IP:   5 OD_SHP: 229 PRA_SHP: 997 TOP:  119 NEXT:    0 els below OD_SHP: 0 0 119, els over PRA_SHP: 1 218 0, VDStartP: 11 	eq  ('='@2:2)
+  DEBUG:root:instrs:    207 ticks:    331 ISN:   2 IP:   5 OD_SHP: 228 PRA_SHP: 997 TOP:   -1 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	eq  ('='@2:2)
+  DEBUG:root:instrs:    208 ticks:    332 ISN:   1 IP:   6 OD_SHP: 228 PRA_SHP: 997 TOP:   -1 NEXT: None els below OD_SHP: 0 -1, els over PRA_SHP: 1 218 0, VDStartP: 11 	exec if  ('if'@2:3)
+  DEBUG:root:instrs:    209 ticks:    333 ISN:   1 IP:   7 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	jmp 3  ('if'@2:3)
+  DEBUG:root:instrs:    210 ticks:    334 ISN:   1 IP:  10 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	halt  (''@-1:-1)
+  DEBUG:root:Interruption exit!!!
+  DEBUG:root:instrs:    210 ticks:    335 ISN:   1 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    210 ticks:    336 ISN:   2 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    211 ticks:    337 ISN:   1 IP: 219 OD_SHP: 228 PRA_SHP: 999 TOP:   15 NEXT: None els below OD_SHP: 0 15, els over PRA_SHP: 0, VDStartP: 11 	number 1  ('1'@1:1)
+  DEBUG:root:instrs:    212 ticks:    338 ISN:   1 IP: 220 OD_SHP: 229 PRA_SHP: 999 TOP:    1 NEXT:   15 els below OD_SHP: 0 15 1, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:    212 ticks:    339 ISN:   2 IP: 220 OD_SHP: 228 PRA_SHP: 999 TOP:   16 NEXT: None els below OD_SHP: 0 15, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:    213 ticks:    340 ISN:   1 IP: 221 OD_SHP: 228 PRA_SHP: 999 TOP:   16 NEXT: None els below OD_SHP: 0 16, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:    213 ticks:    341 ISN:   2 IP: 221 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 16, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:    214 ticks:    342 ISN:   1 IP: 222 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('0'@1:1)
+  DEBUG:root:instrs:    215 ticks:    343 ISN:   1 IP: 223 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('until'@1:1)
+  DEBUG:root:instrs:    216 ticks:    344 ISN:   1 IP: 224 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:    0 els below OD_SHP: 0 0 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    216 ticks:    345 ISN:   2 IP: 224 OD_SHP: 228 PRA_SHP: 999 TOP:   -1 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    217 ticks:    346 ISN:   1 IP: 225 OD_SHP: 228 PRA_SHP: 999 TOP:   -1 NEXT: None els below OD_SHP: 0 -1, els over PRA_SHP: 0, VDStartP: 11 	exec cond jmp -22  ('until'@1:1)
+  DEBUG:root:instrs:    218 ticks:    347 ISN:   1 IP: 204 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    218 ticks:    348 ISN:   2 IP: 204 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    219 ticks:    349 ISN:   1 IP: 205 OD_SHP: 228 PRA_SHP: 999 TOP:   16 NEXT: None els below OD_SHP: 0 16, els over PRA_SHP: 0, VDStartP: 11 	pick absolute  ('pick_absolute'@1:1)
+  DEBUG:root:instrs:    219 ticks:    350 ISN:   2 IP: 205 OD_SHP: 228 PRA_SHP: 999 TOP:   32 NEXT: None els below OD_SHP: 0 16, els over PRA_SHP: 0, VDStartP: 11 	pick absolute  ('pick_absolute'@1:1)
+  DEBUG:root:instrs:    220 ticks:    351 ISN:   1 IP: 206 OD_SHP: 228 PRA_SHP: 999 TOP:   32 NEXT: None els below OD_SHP: 0 32, els over PRA_SHP: 0, VDStartP: 11 	dup  ('dup'@1:1)
+  DEBUG:root:instrs:    221 ticks:    352 ISN:   1 IP: 207 OD_SHP: 229 PRA_SHP: 999 TOP:   32 NEXT:   32 els below OD_SHP: 0 32 32, els over PRA_SHP: 0, VDStartP: 11 	exec if  ('if'@1:1)
+  DEBUG:root:instrs:    222 ticks:    353 ISN:   1 IP: 208 OD_SHP: 228 PRA_SHP: 999 TOP:   32 NEXT: None els below OD_SHP: 0 32, els over PRA_SHP: 0, VDStartP: 11 	jmp 3  ('if'@1:1)
+  DEBUG:root:instrs:    223 ticks:    354 ISN:   1 IP: 211 OD_SHP: 228 PRA_SHP: 999 TOP:   32 NEXT: None els below OD_SHP: 0 32, els over PRA_SHP: 0, VDStartP: 11 	has port filled with cpu 0  ('cant_emit'@1:1)
+  DEBUG:root:instrs:    224 ticks:    355 ISN:   1 IP: 212 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:   32 els below OD_SHP: 0 32 -1, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('0'@1:1)
+  DEBUG:root:instrs:    225 ticks:    356 ISN:   1 IP: 213 OD_SHP: 230 PRA_SHP: 999 TOP:    0 NEXT:   -1 els below OD_SHP: 0 32 -1 0, els over PRA_SHP: 0, VDStartP: 11 	eq  ('='@1:1)
+  DEBUG:root:instrs:    225 ticks:    357 ISN:   2 IP: 213 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:   32 els below OD_SHP: 0 32 -1, els over PRA_SHP: 0, VDStartP: 11 	eq  ('='@1:1)
+  DEBUG:root:instrs:    226 ticks:    358 ISN:   1 IP: 214 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:   32 els below OD_SHP: 0 32 -1, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('until'@1:1)
+  DEBUG:root:instrs:    227 ticks:    359 ISN:   1 IP: 215 OD_SHP: 230 PRA_SHP: 999 TOP:    0 NEXT:   -1 els below OD_SHP: 0 32 -1 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    227 ticks:    360 ISN:   2 IP: 215 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:   32 els below OD_SHP: 0 32 -1, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    228 ticks:    361 ISN:   1 IP: 216 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:   32 els below OD_SHP: 0 32 0, els over PRA_SHP: 0, VDStartP: 11 	exec cond jmp -6  ('until'@1:1)
+  DEBUG:root:instrs:    229 ticks:    362 ISN:   1 IP: 217 OD_SHP: 228 PRA_SHP: 999 TOP:   32 NEXT: None els below OD_SHP: 0 32, els over PRA_SHP: 0, VDStartP: 11 	write port 0  ('emit'@1:1)
+  DEBUG:root:instrs:    230 ticks:    363 ISN:   1 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:Printed:  
+  DEBUG:root:Read interruption!!! instrs:    230 ticks:    363 ISN:   1 IP:   3 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	dup  ('dup'@1:1)
+  DEBUG:root:instrs:    231 ticks:    367 ISN:   1 IP:   4 OD_SHP: 228 PRA_SHP: 997 TOP:    0 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	number 119  ('119'@2:1)
+  DEBUG:root:instrs:    232 ticks:    368 ISN:   1 IP:   5 OD_SHP: 229 PRA_SHP: 997 TOP:  119 NEXT:    0 els below OD_SHP: 0 0 119, els over PRA_SHP: 1 218 0, VDStartP: 11 	eq  ('='@2:2)
+  DEBUG:root:instrs:    232 ticks:    369 ISN:   2 IP:   5 OD_SHP: 228 PRA_SHP: 997 TOP:   -1 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	eq  ('='@2:2)
+  DEBUG:root:instrs:    233 ticks:    370 ISN:   1 IP:   6 OD_SHP: 228 PRA_SHP: 997 TOP:   -1 NEXT: None els below OD_SHP: 0 -1, els over PRA_SHP: 1 218 0, VDStartP: 11 	exec if  ('if'@2:3)
+  DEBUG:root:instrs:    234 ticks:    371 ISN:   1 IP:   7 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	jmp 3  ('if'@2:3)
+  DEBUG:root:instrs:    235 ticks:    372 ISN:   1 IP:  10 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	halt  (''@-1:-1)
+  DEBUG:root:Interruption exit!!!
+  DEBUG:root:instrs:    235 ticks:    373 ISN:   1 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    235 ticks:    374 ISN:   2 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    236 ticks:    375 ISN:   1 IP: 219 OD_SHP: 228 PRA_SHP: 999 TOP:   16 NEXT: None els below OD_SHP: 0 16, els over PRA_SHP: 0, VDStartP: 11 	number 1  ('1'@1:1)
+  DEBUG:root:instrs:    237 ticks:    376 ISN:   1 IP: 220 OD_SHP: 229 PRA_SHP: 999 TOP:    1 NEXT:   16 els below OD_SHP: 0 16 1, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:    237 ticks:    377 ISN:   2 IP: 220 OD_SHP: 228 PRA_SHP: 999 TOP:   17 NEXT: None els below OD_SHP: 0 16, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:    238 ticks:    378 ISN:   1 IP: 221 OD_SHP: 228 PRA_SHP: 999 TOP:   17 NEXT: None els below OD_SHP: 0 17, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:    238 ticks:    379 ISN:   2 IP: 221 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 17, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:    239 ticks:    380 ISN:   1 IP: 222 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('0'@1:1)
+  DEBUG:root:instrs:    240 ticks:    381 ISN:   1 IP: 223 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('until'@1:1)
+  DEBUG:root:instrs:    241 ticks:    382 ISN:   1 IP: 224 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:    0 els below OD_SHP: 0 0 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    241 ticks:    383 ISN:   2 IP: 224 OD_SHP: 228 PRA_SHP: 999 TOP:   -1 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    242 ticks:    384 ISN:   1 IP: 225 OD_SHP: 228 PRA_SHP: 999 TOP:   -1 NEXT: None els below OD_SHP: 0 -1, els over PRA_SHP: 0, VDStartP: 11 	exec cond jmp -22  ('until'@1:1)
+  DEBUG:root:instrs:    243 ticks:    385 ISN:   1 IP: 204 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    243 ticks:    386 ISN:   2 IP: 204 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    244 ticks:    387 ISN:   1 IP: 205 OD_SHP: 228 PRA_SHP: 999 TOP:   17 NEXT: None els below OD_SHP: 0 17, els over PRA_SHP: 0, VDStartP: 11 	pick absolute  ('pick_absolute'@1:1)
+  DEBUG:root:instrs:    244 ticks:    388 ISN:   2 IP: 205 OD_SHP: 228 PRA_SHP: 999 TOP:  119 NEXT: None els below OD_SHP: 0 17, els over PRA_SHP: 0, VDStartP: 11 	pick absolute  ('pick_absolute'@1:1)
+  DEBUG:root:instrs:    245 ticks:    389 ISN:   1 IP: 206 OD_SHP: 228 PRA_SHP: 999 TOP:  119 NEXT: None els below OD_SHP: 0 119, els over PRA_SHP: 0, VDStartP: 11 	dup  ('dup'@1:1)
+  DEBUG:root:instrs:    246 ticks:    390 ISN:   1 IP: 207 OD_SHP: 229 PRA_SHP: 999 TOP:  119 NEXT:  119 els below OD_SHP: 0 119 119, els over PRA_SHP: 0, VDStartP: 11 	exec if  ('if'@1:1)
+  DEBUG:root:instrs:    247 ticks:    391 ISN:   1 IP: 208 OD_SHP: 228 PRA_SHP: 999 TOP:  119 NEXT: None els below OD_SHP: 0 119, els over PRA_SHP: 0, VDStartP: 11 	jmp 3  ('if'@1:1)
+  DEBUG:root:instrs:    248 ticks:    392 ISN:   1 IP: 211 OD_SHP: 228 PRA_SHP: 999 TOP:  119 NEXT: None els below OD_SHP: 0 119, els over PRA_SHP: 0, VDStartP: 11 	has port filled with cpu 0  ('cant_emit'@1:1)
+  DEBUG:root:instrs:    249 ticks:    393 ISN:   1 IP: 212 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:  119 els below OD_SHP: 0 119 -1, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('0'@1:1)
+  DEBUG:root:instrs:    250 ticks:    394 ISN:   1 IP: 213 OD_SHP: 230 PRA_SHP: 999 TOP:    0 NEXT:   -1 els below OD_SHP: 0 119 -1 0, els over PRA_SHP: 0, VDStartP: 11 	eq  ('='@1:1)
+  DEBUG:root:instrs:    250 ticks:    395 ISN:   2 IP: 213 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:  119 els below OD_SHP: 0 119 -1, els over PRA_SHP: 0, VDStartP: 11 	eq  ('='@1:1)
+  DEBUG:root:instrs:    251 ticks:    396 ISN:   1 IP: 214 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:  119 els below OD_SHP: 0 119 -1, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('until'@1:1)
+  DEBUG:root:instrs:    252 ticks:    397 ISN:   1 IP: 215 OD_SHP: 230 PRA_SHP: 999 TOP:    0 NEXT:   -1 els below OD_SHP: 0 119 -1 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    252 ticks:    398 ISN:   2 IP: 215 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:  119 els below OD_SHP: 0 119 -1, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    253 ticks:    399 ISN:   1 IP: 216 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:  119 els below OD_SHP: 0 119 0, els over PRA_SHP: 0, VDStartP: 11 	exec cond jmp -6  ('until'@1:1)
+  DEBUG:root:instrs:    254 ticks:    400 ISN:   1 IP: 217 OD_SHP: 228 PRA_SHP: 999 TOP:  119 NEXT: None els below OD_SHP: 0 119, els over PRA_SHP: 0, VDStartP: 11 	write port 0  ('emit'@1:1)
+  DEBUG:root:instrs:    255 ticks:    401 ISN:   1 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:Printed: w
+  DEBUG:root:Read interruption!!! instrs:    255 ticks:    401 ISN:   1 IP:   3 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	dup  ('dup'@1:1)
+  DEBUG:root:instrs:    256 ticks:    405 ISN:   1 IP:   4 OD_SHP: 228 PRA_SHP: 997 TOP:    0 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	number 119  ('119'@2:1)
+  DEBUG:root:instrs:    257 ticks:    406 ISN:   1 IP:   5 OD_SHP: 229 PRA_SHP: 997 TOP:  119 NEXT:    0 els below OD_SHP: 0 0 119, els over PRA_SHP: 1 218 0, VDStartP: 11 	eq  ('='@2:2)
+  DEBUG:root:instrs:    257 ticks:    407 ISN:   2 IP:   5 OD_SHP: 228 PRA_SHP: 997 TOP:   -1 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	eq  ('='@2:2)
+  DEBUG:root:instrs:    258 ticks:    408 ISN:   1 IP:   6 OD_SHP: 228 PRA_SHP: 997 TOP:   -1 NEXT: None els below OD_SHP: 0 -1, els over PRA_SHP: 1 218 0, VDStartP: 11 	exec if  ('if'@2:3)
+  DEBUG:root:instrs:    259 ticks:    409 ISN:   1 IP:   7 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	jmp 3  ('if'@2:3)
+  DEBUG:root:instrs:    260 ticks:    410 ISN:   1 IP:  10 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	halt  (''@-1:-1)
+  DEBUG:root:Interruption exit!!!
+  DEBUG:root:instrs:    260 ticks:    411 ISN:   1 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    260 ticks:    412 ISN:   2 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    261 ticks:    413 ISN:   1 IP: 219 OD_SHP: 228 PRA_SHP: 999 TOP:   17 NEXT: None els below OD_SHP: 0 17, els over PRA_SHP: 0, VDStartP: 11 	number 1  ('1'@1:1)
+  DEBUG:root:instrs:    262 ticks:    414 ISN:   1 IP: 220 OD_SHP: 229 PRA_SHP: 999 TOP:    1 NEXT:   17 els below OD_SHP: 0 17 1, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:    262 ticks:    415 ISN:   2 IP: 220 OD_SHP: 228 PRA_SHP: 999 TOP:   18 NEXT: None els below OD_SHP: 0 17, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:    263 ticks:    416 ISN:   1 IP: 221 OD_SHP: 228 PRA_SHP: 999 TOP:   18 NEXT: None els below OD_SHP: 0 18, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:    263 ticks:    417 ISN:   2 IP: 221 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 18, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:    264 ticks:    418 ISN:   1 IP: 222 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('0'@1:1)
+  DEBUG:root:instrs:    265 ticks:    419 ISN:   1 IP: 223 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('until'@1:1)
+  DEBUG:root:instrs:    266 ticks:    420 ISN:   1 IP: 224 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:    0 els below OD_SHP: 0 0 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    266 ticks:    421 ISN:   2 IP: 224 OD_SHP: 228 PRA_SHP: 999 TOP:   -1 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    267 ticks:    422 ISN:   1 IP: 225 OD_SHP: 228 PRA_SHP: 999 TOP:   -1 NEXT: None els below OD_SHP: 0 -1, els over PRA_SHP: 0, VDStartP: 11 	exec cond jmp -22  ('until'@1:1)
+  DEBUG:root:instrs:    268 ticks:    423 ISN:   1 IP: 204 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    268 ticks:    424 ISN:   2 IP: 204 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    269 ticks:    425 ISN:   1 IP: 205 OD_SHP: 228 PRA_SHP: 999 TOP:   18 NEXT: None els below OD_SHP: 0 18, els over PRA_SHP: 0, VDStartP: 11 	pick absolute  ('pick_absolute'@1:1)
+  DEBUG:root:instrs:    269 ticks:    426 ISN:   2 IP: 205 OD_SHP: 228 PRA_SHP: 999 TOP:  111 NEXT: None els below OD_SHP: 0 18, els over PRA_SHP: 0, VDStartP: 11 	pick absolute  ('pick_absolute'@1:1)
+  DEBUG:root:instrs:    270 ticks:    427 ISN:   1 IP: 206 OD_SHP: 228 PRA_SHP: 999 TOP:  111 NEXT: None els below OD_SHP: 0 111, els over PRA_SHP: 0, VDStartP: 11 	dup  ('dup'@1:1)
+  DEBUG:root:instrs:    271 ticks:    428 ISN:   1 IP: 207 OD_SHP: 229 PRA_SHP: 999 TOP:  111 NEXT:  111 els below OD_SHP: 0 111 111, els over PRA_SHP: 0, VDStartP: 11 	exec if  ('if'@1:1)
+  DEBUG:root:instrs:    272 ticks:    429 ISN:   1 IP: 208 OD_SHP: 228 PRA_SHP: 999 TOP:  111 NEXT: None els below OD_SHP: 0 111, els over PRA_SHP: 0, VDStartP: 11 	jmp 3  ('if'@1:1)
+  DEBUG:root:instrs:    273 ticks:    430 ISN:   1 IP: 211 OD_SHP: 228 PRA_SHP: 999 TOP:  111 NEXT: None els below OD_SHP: 0 111, els over PRA_SHP: 0, VDStartP: 11 	has port filled with cpu 0  ('cant_emit'@1:1)
+  DEBUG:root:instrs:    274 ticks:    431 ISN:   1 IP: 212 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:  111 els below OD_SHP: 0 111 -1, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('0'@1:1)
+  DEBUG:root:instrs:    275 ticks:    432 ISN:   1 IP: 213 OD_SHP: 230 PRA_SHP: 999 TOP:    0 NEXT:   -1 els below OD_SHP: 0 111 -1 0, els over PRA_SHP: 0, VDStartP: 11 	eq  ('='@1:1)
+  DEBUG:root:instrs:    275 ticks:    433 ISN:   2 IP: 213 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:  111 els below OD_SHP: 0 111 -1, els over PRA_SHP: 0, VDStartP: 11 	eq  ('='@1:1)
+  DEBUG:root:instrs:    276 ticks:    434 ISN:   1 IP: 214 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:  111 els below OD_SHP: 0 111 -1, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('until'@1:1)
+  DEBUG:root:instrs:    277 ticks:    435 ISN:   1 IP: 215 OD_SHP: 230 PRA_SHP: 999 TOP:    0 NEXT:   -1 els below OD_SHP: 0 111 -1 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    277 ticks:    436 ISN:   2 IP: 215 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:  111 els below OD_SHP: 0 111 -1, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    278 ticks:    437 ISN:   1 IP: 216 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:  111 els below OD_SHP: 0 111 0, els over PRA_SHP: 0, VDStartP: 11 	exec cond jmp -6  ('until'@1:1)
+  DEBUG:root:instrs:    279 ticks:    438 ISN:   1 IP: 217 OD_SHP: 228 PRA_SHP: 999 TOP:  111 NEXT: None els below OD_SHP: 0 111, els over PRA_SHP: 0, VDStartP: 11 	write port 0  ('emit'@1:1)
+  DEBUG:root:instrs:    280 ticks:    439 ISN:   1 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:Printed: o
+  DEBUG:root:Read interruption!!! instrs:    280 ticks:    439 ISN:   1 IP:   3 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	dup  ('dup'@1:1)
+  DEBUG:root:instrs:    281 ticks:    443 ISN:   1 IP:   4 OD_SHP: 228 PRA_SHP: 997 TOP:    0 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	number 119  ('119'@2:1)
+  DEBUG:root:instrs:    282 ticks:    444 ISN:   1 IP:   5 OD_SHP: 229 PRA_SHP: 997 TOP:  119 NEXT:    0 els below OD_SHP: 0 0 119, els over PRA_SHP: 1 218 0, VDStartP: 11 	eq  ('='@2:2)
+  DEBUG:root:instrs:    282 ticks:    445 ISN:   2 IP:   5 OD_SHP: 228 PRA_SHP: 997 TOP:   -1 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	eq  ('='@2:2)
+  DEBUG:root:instrs:    283 ticks:    446 ISN:   1 IP:   6 OD_SHP: 228 PRA_SHP: 997 TOP:   -1 NEXT: None els below OD_SHP: 0 -1, els over PRA_SHP: 1 218 0, VDStartP: 11 	exec if  ('if'@2:3)
+  DEBUG:root:instrs:    284 ticks:    447 ISN:   1 IP:   7 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	jmp 3  ('if'@2:3)
+  DEBUG:root:instrs:    285 ticks:    448 ISN:   1 IP:  10 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	halt  (''@-1:-1)
+  DEBUG:root:Interruption exit!!!
+  DEBUG:root:instrs:    285 ticks:    449 ISN:   1 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    285 ticks:    450 ISN:   2 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    286 ticks:    451 ISN:   1 IP: 219 OD_SHP: 228 PRA_SHP: 999 TOP:   18 NEXT: None els below OD_SHP: 0 18, els over PRA_SHP: 0, VDStartP: 11 	number 1  ('1'@1:1)
+  DEBUG:root:instrs:    287 ticks:    452 ISN:   1 IP: 220 OD_SHP: 229 PRA_SHP: 999 TOP:    1 NEXT:   18 els below OD_SHP: 0 18 1, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:    287 ticks:    453 ISN:   2 IP: 220 OD_SHP: 228 PRA_SHP: 999 TOP:   19 NEXT: None els below OD_SHP: 0 18, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:    288 ticks:    454 ISN:   1 IP: 221 OD_SHP: 228 PRA_SHP: 999 TOP:   19 NEXT: None els below OD_SHP: 0 19, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:    288 ticks:    455 ISN:   2 IP: 221 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 19, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:    289 ticks:    456 ISN:   1 IP: 222 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('0'@1:1)
+  DEBUG:root:instrs:    290 ticks:    457 ISN:   1 IP: 223 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('until'@1:1)
+  DEBUG:root:instrs:    291 ticks:    458 ISN:   1 IP: 224 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:    0 els below OD_SHP: 0 0 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    291 ticks:    459 ISN:   2 IP: 224 OD_SHP: 228 PRA_SHP: 999 TOP:   -1 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    292 ticks:    460 ISN:   1 IP: 225 OD_SHP: 228 PRA_SHP: 999 TOP:   -1 NEXT: None els below OD_SHP: 0 -1, els over PRA_SHP: 0, VDStartP: 11 	exec cond jmp -22  ('until'@1:1)
+  DEBUG:root:instrs:    293 ticks:    461 ISN:   1 IP: 204 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    293 ticks:    462 ISN:   2 IP: 204 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    294 ticks:    463 ISN:   1 IP: 205 OD_SHP: 228 PRA_SHP: 999 TOP:   19 NEXT: None els below OD_SHP: 0 19, els over PRA_SHP: 0, VDStartP: 11 	pick absolute  ('pick_absolute'@1:1)
+  DEBUG:root:instrs:    294 ticks:    464 ISN:   2 IP: 205 OD_SHP: 228 PRA_SHP: 999 TOP:  114 NEXT: None els below OD_SHP: 0 19, els over PRA_SHP: 0, VDStartP: 11 	pick absolute  ('pick_absolute'@1:1)
+  DEBUG:root:instrs:    295 ticks:    465 ISN:   1 IP: 206 OD_SHP: 228 PRA_SHP: 999 TOP:  114 NEXT: None els below OD_SHP: 0 114, els over PRA_SHP: 0, VDStartP: 11 	dup  ('dup'@1:1)
+  DEBUG:root:instrs:    296 ticks:    466 ISN:   1 IP: 207 OD_SHP: 229 PRA_SHP: 999 TOP:  114 NEXT:  114 els below OD_SHP: 0 114 114, els over PRA_SHP: 0, VDStartP: 11 	exec if  ('if'@1:1)
+  DEBUG:root:instrs:    297 ticks:    467 ISN:   1 IP: 208 OD_SHP: 228 PRA_SHP: 999 TOP:  114 NEXT: None els below OD_SHP: 0 114, els over PRA_SHP: 0, VDStartP: 11 	jmp 3  ('if'@1:1)
+  DEBUG:root:instrs:    298 ticks:    468 ISN:   1 IP: 211 OD_SHP: 228 PRA_SHP: 999 TOP:  114 NEXT: None els below OD_SHP: 0 114, els over PRA_SHP: 0, VDStartP: 11 	has port filled with cpu 0  ('cant_emit'@1:1)
+  DEBUG:root:instrs:    299 ticks:    469 ISN:   1 IP: 212 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:  114 els below OD_SHP: 0 114 -1, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('0'@1:1)
+  DEBUG:root:instrs:    300 ticks:    470 ISN:   1 IP: 213 OD_SHP: 230 PRA_SHP: 999 TOP:    0 NEXT:   -1 els below OD_SHP: 0 114 -1 0, els over PRA_SHP: 0, VDStartP: 11 	eq  ('='@1:1)
+  DEBUG:root:instrs:    300 ticks:    471 ISN:   2 IP: 213 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:  114 els below OD_SHP: 0 114 -1, els over PRA_SHP: 0, VDStartP: 11 	eq  ('='@1:1)
+  DEBUG:root:instrs:    301 ticks:    472 ISN:   1 IP: 214 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:  114 els below OD_SHP: 0 114 -1, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('until'@1:1)
+  DEBUG:root:instrs:    302 ticks:    473 ISN:   1 IP: 215 OD_SHP: 230 PRA_SHP: 999 TOP:    0 NEXT:   -1 els below OD_SHP: 0 114 -1 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    302 ticks:    474 ISN:   2 IP: 215 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:  114 els below OD_SHP: 0 114 -1, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    303 ticks:    475 ISN:   1 IP: 216 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:  114 els below OD_SHP: 0 114 0, els over PRA_SHP: 0, VDStartP: 11 	exec cond jmp -6  ('until'@1:1)
+  DEBUG:root:instrs:    304 ticks:    476 ISN:   1 IP: 217 OD_SHP: 228 PRA_SHP: 999 TOP:  114 NEXT: None els below OD_SHP: 0 114, els over PRA_SHP: 0, VDStartP: 11 	write port 0  ('emit'@1:1)
+  DEBUG:root:instrs:    305 ticks:    477 ISN:   1 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:Printed: r
+  DEBUG:root:Read interruption!!! instrs:    305 ticks:    477 ISN:   1 IP:   3 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	dup  ('dup'@1:1)
+  DEBUG:root:instrs:    306 ticks:    481 ISN:   1 IP:   4 OD_SHP: 228 PRA_SHP: 997 TOP:    0 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	number 119  ('119'@2:1)
+  DEBUG:root:instrs:    307 ticks:    482 ISN:   1 IP:   5 OD_SHP: 229 PRA_SHP: 997 TOP:  119 NEXT:    0 els below OD_SHP: 0 0 119, els over PRA_SHP: 1 218 0, VDStartP: 11 	eq  ('='@2:2)
+  DEBUG:root:instrs:    307 ticks:    483 ISN:   2 IP:   5 OD_SHP: 228 PRA_SHP: 997 TOP:   -1 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	eq  ('='@2:2)
+  DEBUG:root:instrs:    308 ticks:    484 ISN:   1 IP:   6 OD_SHP: 228 PRA_SHP: 997 TOP:   -1 NEXT: None els below OD_SHP: 0 -1, els over PRA_SHP: 1 218 0, VDStartP: 11 	exec if  ('if'@2:3)
+  DEBUG:root:instrs:    309 ticks:    485 ISN:   1 IP:   7 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	jmp 3  ('if'@2:3)
+  DEBUG:root:instrs:    310 ticks:    486 ISN:   1 IP:  10 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	halt  (''@-1:-1)
+  DEBUG:root:Interruption exit!!!
+  DEBUG:root:instrs:    310 ticks:    487 ISN:   1 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    310 ticks:    488 ISN:   2 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    311 ticks:    489 ISN:   1 IP: 219 OD_SHP: 228 PRA_SHP: 999 TOP:   19 NEXT: None els below OD_SHP: 0 19, els over PRA_SHP: 0, VDStartP: 11 	number 1  ('1'@1:1)
+  DEBUG:root:instrs:    312 ticks:    490 ISN:   1 IP: 220 OD_SHP: 229 PRA_SHP: 999 TOP:    1 NEXT:   19 els below OD_SHP: 0 19 1, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:    312 ticks:    491 ISN:   2 IP: 220 OD_SHP: 228 PRA_SHP: 999 TOP:   20 NEXT: None els below OD_SHP: 0 19, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:    313 ticks:    492 ISN:   1 IP: 221 OD_SHP: 228 PRA_SHP: 999 TOP:   20 NEXT: None els below OD_SHP: 0 20, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:    313 ticks:    493 ISN:   2 IP: 221 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 20, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:    314 ticks:    494 ISN:   1 IP: 222 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('0'@1:1)
+  DEBUG:root:instrs:    315 ticks:    495 ISN:   1 IP: 223 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('until'@1:1)
+  DEBUG:root:instrs:    316 ticks:    496 ISN:   1 IP: 224 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:    0 els below OD_SHP: 0 0 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    316 ticks:    497 ISN:   2 IP: 224 OD_SHP: 228 PRA_SHP: 999 TOP:   -1 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    317 ticks:    498 ISN:   1 IP: 225 OD_SHP: 228 PRA_SHP: 999 TOP:   -1 NEXT: None els below OD_SHP: 0 -1, els over PRA_SHP: 0, VDStartP: 11 	exec cond jmp -22  ('until'@1:1)
+  DEBUG:root:instrs:    318 ticks:    499 ISN:   1 IP: 204 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    318 ticks:    500 ISN:   2 IP: 204 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    319 ticks:    501 ISN:   1 IP: 205 OD_SHP: 228 PRA_SHP: 999 TOP:   20 NEXT: None els below OD_SHP: 0 20, els over PRA_SHP: 0, VDStartP: 11 	pick absolute  ('pick_absolute'@1:1)
+  DEBUG:root:instrs:    319 ticks:    502 ISN:   2 IP: 205 OD_SHP: 228 PRA_SHP: 999 TOP:  108 NEXT: None els below OD_SHP: 0 20, els over PRA_SHP: 0, VDStartP: 11 	pick absolute  ('pick_absolute'@1:1)
+  DEBUG:root:instrs:    320 ticks:    503 ISN:   1 IP: 206 OD_SHP: 228 PRA_SHP: 999 TOP:  108 NEXT: None els below OD_SHP: 0 108, els over PRA_SHP: 0, VDStartP: 11 	dup  ('dup'@1:1)
+  DEBUG:root:instrs:    321 ticks:    504 ISN:   1 IP: 207 OD_SHP: 229 PRA_SHP: 999 TOP:  108 NEXT:  108 els below OD_SHP: 0 108 108, els over PRA_SHP: 0, VDStartP: 11 	exec if  ('if'@1:1)
+  DEBUG:root:instrs:    322 ticks:    505 ISN:   1 IP: 208 OD_SHP: 228 PRA_SHP: 999 TOP:  108 NEXT: None els below OD_SHP: 0 108, els over PRA_SHP: 0, VDStartP: 11 	jmp 3  ('if'@1:1)
+  DEBUG:root:instrs:    323 ticks:    506 ISN:   1 IP: 211 OD_SHP: 228 PRA_SHP: 999 TOP:  108 NEXT: None els below OD_SHP: 0 108, els over PRA_SHP: 0, VDStartP: 11 	has port filled with cpu 0  ('cant_emit'@1:1)
+  DEBUG:root:instrs:    324 ticks:    507 ISN:   1 IP: 212 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:  108 els below OD_SHP: 0 108 -1, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('0'@1:1)
+  DEBUG:root:instrs:    325 ticks:    508 ISN:   1 IP: 213 OD_SHP: 230 PRA_SHP: 999 TOP:    0 NEXT:   -1 els below OD_SHP: 0 108 -1 0, els over PRA_SHP: 0, VDStartP: 11 	eq  ('='@1:1)
+  DEBUG:root:instrs:    325 ticks:    509 ISN:   2 IP: 213 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:  108 els below OD_SHP: 0 108 -1, els over PRA_SHP: 0, VDStartP: 11 	eq  ('='@1:1)
+  DEBUG:root:instrs:    326 ticks:    510 ISN:   1 IP: 214 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:  108 els below OD_SHP: 0 108 -1, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('until'@1:1)
+  DEBUG:root:instrs:    327 ticks:    511 ISN:   1 IP: 215 OD_SHP: 230 PRA_SHP: 999 TOP:    0 NEXT:   -1 els below OD_SHP: 0 108 -1 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    327 ticks:    512 ISN:   2 IP: 215 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:  108 els below OD_SHP: 0 108 -1, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    328 ticks:    513 ISN:   1 IP: 216 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:  108 els below OD_SHP: 0 108 0, els over PRA_SHP: 0, VDStartP: 11 	exec cond jmp -6  ('until'@1:1)
+  DEBUG:root:instrs:    329 ticks:    514 ISN:   1 IP: 217 OD_SHP: 228 PRA_SHP: 999 TOP:  108 NEXT: None els below OD_SHP: 0 108, els over PRA_SHP: 0, VDStartP: 11 	write port 0  ('emit'@1:1)
+  DEBUG:root:instrs:    330 ticks:    515 ISN:   1 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:Printed: l
+  DEBUG:root:Read interruption!!! instrs:    330 ticks:    515 ISN:   1 IP:   3 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	dup  ('dup'@1:1)
+  DEBUG:root:instrs:    331 ticks:    519 ISN:   1 IP:   4 OD_SHP: 228 PRA_SHP: 997 TOP:    0 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	number 119  ('119'@2:1)
+  DEBUG:root:instrs:    332 ticks:    520 ISN:   1 IP:   5 OD_SHP: 229 PRA_SHP: 997 TOP:  119 NEXT:    0 els below OD_SHP: 0 0 119, els over PRA_SHP: 1 218 0, VDStartP: 11 	eq  ('='@2:2)
+  DEBUG:root:instrs:    332 ticks:    521 ISN:   2 IP:   5 OD_SHP: 228 PRA_SHP: 997 TOP:   -1 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	eq  ('='@2:2)
+  DEBUG:root:instrs:    333 ticks:    522 ISN:   1 IP:   6 OD_SHP: 228 PRA_SHP: 997 TOP:   -1 NEXT: None els below OD_SHP: 0 -1, els over PRA_SHP: 1 218 0, VDStartP: 11 	exec if  ('if'@2:3)
+  DEBUG:root:instrs:    334 ticks:    523 ISN:   1 IP:   7 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	jmp 3  ('if'@2:3)
+  DEBUG:root:instrs:    335 ticks:    524 ISN:   1 IP:  10 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	halt  (''@-1:-1)
+  DEBUG:root:Interruption exit!!!
+  DEBUG:root:instrs:    335 ticks:    525 ISN:   1 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    335 ticks:    526 ISN:   2 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    336 ticks:    527 ISN:   1 IP: 219 OD_SHP: 228 PRA_SHP: 999 TOP:   20 NEXT: None els below OD_SHP: 0 20, els over PRA_SHP: 0, VDStartP: 11 	number 1  ('1'@1:1)
+  DEBUG:root:instrs:    337 ticks:    528 ISN:   1 IP: 220 OD_SHP: 229 PRA_SHP: 999 TOP:    1 NEXT:   20 els below OD_SHP: 0 20 1, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:    337 ticks:    529 ISN:   2 IP: 220 OD_SHP: 228 PRA_SHP: 999 TOP:   21 NEXT: None els below OD_SHP: 0 20, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:    338 ticks:    530 ISN:   1 IP: 221 OD_SHP: 228 PRA_SHP: 999 TOP:   21 NEXT: None els below OD_SHP: 0 21, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:    338 ticks:    531 ISN:   2 IP: 221 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 21, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:    339 ticks:    532 ISN:   1 IP: 222 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('0'@1:1)
+  DEBUG:root:instrs:    340 ticks:    533 ISN:   1 IP: 223 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('until'@1:1)
+  DEBUG:root:instrs:    341 ticks:    534 ISN:   1 IP: 224 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:    0 els below OD_SHP: 0 0 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    341 ticks:    535 ISN:   2 IP: 224 OD_SHP: 228 PRA_SHP: 999 TOP:   -1 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    342 ticks:    536 ISN:   1 IP: 225 OD_SHP: 228 PRA_SHP: 999 TOP:   -1 NEXT: None els below OD_SHP: 0 -1, els over PRA_SHP: 0, VDStartP: 11 	exec cond jmp -22  ('until'@1:1)
+  DEBUG:root:instrs:    343 ticks:    537 ISN:   1 IP: 204 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    343 ticks:    538 ISN:   2 IP: 204 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    344 ticks:    539 ISN:   1 IP: 205 OD_SHP: 228 PRA_SHP: 999 TOP:   21 NEXT: None els below OD_SHP: 0 21, els over PRA_SHP: 0, VDStartP: 11 	pick absolute  ('pick_absolute'@1:1)
+  DEBUG:root:instrs:    344 ticks:    540 ISN:   2 IP: 205 OD_SHP: 228 PRA_SHP: 999 TOP:  100 NEXT: None els below OD_SHP: 0 21, els over PRA_SHP: 0, VDStartP: 11 	pick absolute  ('pick_absolute'@1:1)
+  DEBUG:root:instrs:    345 ticks:    541 ISN:   1 IP: 206 OD_SHP: 228 PRA_SHP: 999 TOP:  100 NEXT: None els below OD_SHP: 0 100, els over PRA_SHP: 0, VDStartP: 11 	dup  ('dup'@1:1)
+  DEBUG:root:instrs:    346 ticks:    542 ISN:   1 IP: 207 OD_SHP: 229 PRA_SHP: 999 TOP:  100 NEXT:  100 els below OD_SHP: 0 100 100, els over PRA_SHP: 0, VDStartP: 11 	exec if  ('if'@1:1)
+  DEBUG:root:instrs:    347 ticks:    543 ISN:   1 IP: 208 OD_SHP: 228 PRA_SHP: 999 TOP:  100 NEXT: None els below OD_SHP: 0 100, els over PRA_SHP: 0, VDStartP: 11 	jmp 3  ('if'@1:1)
+  DEBUG:root:instrs:    348 ticks:    544 ISN:   1 IP: 211 OD_SHP: 228 PRA_SHP: 999 TOP:  100 NEXT: None els below OD_SHP: 0 100, els over PRA_SHP: 0, VDStartP: 11 	has port filled with cpu 0  ('cant_emit'@1:1)
+  DEBUG:root:instrs:    349 ticks:    545 ISN:   1 IP: 212 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:  100 els below OD_SHP: 0 100 -1, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('0'@1:1)
+  DEBUG:root:instrs:    350 ticks:    546 ISN:   1 IP: 213 OD_SHP: 230 PRA_SHP: 999 TOP:    0 NEXT:   -1 els below OD_SHP: 0 100 -1 0, els over PRA_SHP: 0, VDStartP: 11 	eq  ('='@1:1)
+  DEBUG:root:instrs:    350 ticks:    547 ISN:   2 IP: 213 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:  100 els below OD_SHP: 0 100 -1, els over PRA_SHP: 0, VDStartP: 11 	eq  ('='@1:1)
+  DEBUG:root:instrs:    351 ticks:    548 ISN:   1 IP: 214 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:  100 els below OD_SHP: 0 100 -1, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('until'@1:1)
+  DEBUG:root:instrs:    352 ticks:    549 ISN:   1 IP: 215 OD_SHP: 230 PRA_SHP: 999 TOP:    0 NEXT:   -1 els below OD_SHP: 0 100 -1 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    352 ticks:    550 ISN:   2 IP: 215 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:  100 els below OD_SHP: 0 100 -1, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    353 ticks:    551 ISN:   1 IP: 216 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:  100 els below OD_SHP: 0 100 0, els over PRA_SHP: 0, VDStartP: 11 	exec cond jmp -6  ('until'@1:1)
+  DEBUG:root:instrs:    354 ticks:    552 ISN:   1 IP: 217 OD_SHP: 228 PRA_SHP: 999 TOP:  100 NEXT: None els below OD_SHP: 0 100, els over PRA_SHP: 0, VDStartP: 11 	write port 0  ('emit'@1:1)
+  DEBUG:root:instrs:    355 ticks:    553 ISN:   1 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:Printed: d
+  DEBUG:root:Read interruption!!! instrs:    355 ticks:    553 ISN:   1 IP:   3 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	dup  ('dup'@1:1)
+  DEBUG:root:instrs:    356 ticks:    557 ISN:   1 IP:   4 OD_SHP: 228 PRA_SHP: 997 TOP:    0 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	number 119  ('119'@2:1)
+  DEBUG:root:instrs:    357 ticks:    558 ISN:   1 IP:   5 OD_SHP: 229 PRA_SHP: 997 TOP:  119 NEXT:    0 els below OD_SHP: 0 0 119, els over PRA_SHP: 1 218 0, VDStartP: 11 	eq  ('='@2:2)
+  DEBUG:root:instrs:    357 ticks:    559 ISN:   2 IP:   5 OD_SHP: 228 PRA_SHP: 997 TOP:   -1 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	eq  ('='@2:2)
+  DEBUG:root:instrs:    358 ticks:    560 ISN:   1 IP:   6 OD_SHP: 228 PRA_SHP: 997 TOP:   -1 NEXT: None els below OD_SHP: 0 -1, els over PRA_SHP: 1 218 0, VDStartP: 11 	exec if  ('if'@2:3)
+  DEBUG:root:instrs:    359 ticks:    561 ISN:   1 IP:   7 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	jmp 3  ('if'@2:3)
+  DEBUG:root:instrs:    360 ticks:    562 ISN:   1 IP:  10 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	halt  (''@-1:-1)
+  DEBUG:root:Interruption exit!!!
+  DEBUG:root:instrs:    360 ticks:    563 ISN:   1 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    360 ticks:    564 ISN:   2 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    361 ticks:    565 ISN:   1 IP: 219 OD_SHP: 228 PRA_SHP: 999 TOP:   21 NEXT: None els below OD_SHP: 0 21, els over PRA_SHP: 0, VDStartP: 11 	number 1  ('1'@1:1)
+  DEBUG:root:instrs:    362 ticks:    566 ISN:   1 IP: 220 OD_SHP: 229 PRA_SHP: 999 TOP:    1 NEXT:   21 els below OD_SHP: 0 21 1, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:    362 ticks:    567 ISN:   2 IP: 220 OD_SHP: 228 PRA_SHP: 999 TOP:   22 NEXT: None els below OD_SHP: 0 21, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:    363 ticks:    568 ISN:   1 IP: 221 OD_SHP: 228 PRA_SHP: 999 TOP:   22 NEXT: None els below OD_SHP: 0 22, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:    363 ticks:    569 ISN:   2 IP: 221 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 22, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:    364 ticks:    570 ISN:   1 IP: 222 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('0'@1:1)
+  DEBUG:root:instrs:    365 ticks:    571 ISN:   1 IP: 223 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('until'@1:1)
+  DEBUG:root:instrs:    366 ticks:    572 ISN:   1 IP: 224 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:    0 els below OD_SHP: 0 0 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    366 ticks:    573 ISN:   2 IP: 224 OD_SHP: 228 PRA_SHP: 999 TOP:   -1 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    367 ticks:    574 ISN:   1 IP: 225 OD_SHP: 228 PRA_SHP: 999 TOP:   -1 NEXT: None els below OD_SHP: 0 -1, els over PRA_SHP: 0, VDStartP: 11 	exec cond jmp -22  ('until'@1:1)
+  DEBUG:root:instrs:    368 ticks:    575 ISN:   1 IP: 204 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    368 ticks:    576 ISN:   2 IP: 204 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    369 ticks:    577 ISN:   1 IP: 205 OD_SHP: 228 PRA_SHP: 999 TOP:   22 NEXT: None els below OD_SHP: 0 22, els over PRA_SHP: 0, VDStartP: 11 	pick absolute  ('pick_absolute'@1:1)
+  DEBUG:root:instrs:    369 ticks:    578 ISN:   2 IP: 205 OD_SHP: 228 PRA_SHP: 999 TOP:   33 NEXT: None els below OD_SHP: 0 22, els over PRA_SHP: 0, VDStartP: 11 	pick absolute  ('pick_absolute'@1:1)
+  DEBUG:root:instrs:    370 ticks:    579 ISN:   1 IP: 206 OD_SHP: 228 PRA_SHP: 999 TOP:   33 NEXT: None els below OD_SHP: 0 33, els over PRA_SHP: 0, VDStartP: 11 	dup  ('dup'@1:1)
+  DEBUG:root:instrs:    371 ticks:    580 ISN:   1 IP: 207 OD_SHP: 229 PRA_SHP: 999 TOP:   33 NEXT:   33 els below OD_SHP: 0 33 33, els over PRA_SHP: 0, VDStartP: 11 	exec if  ('if'@1:1)
+  DEBUG:root:instrs:    372 ticks:    581 ISN:   1 IP: 208 OD_SHP: 228 PRA_SHP: 999 TOP:   33 NEXT: None els below OD_SHP: 0 33, els over PRA_SHP: 0, VDStartP: 11 	jmp 3  ('if'@1:1)
+  DEBUG:root:instrs:    373 ticks:    582 ISN:   1 IP: 211 OD_SHP: 228 PRA_SHP: 999 TOP:   33 NEXT: None els below OD_SHP: 0 33, els over PRA_SHP: 0, VDStartP: 11 	has port filled with cpu 0  ('cant_emit'@1:1)
+  DEBUG:root:instrs:    374 ticks:    583 ISN:   1 IP: 212 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:   33 els below OD_SHP: 0 33 -1, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('0'@1:1)
+  DEBUG:root:instrs:    375 ticks:    584 ISN:   1 IP: 213 OD_SHP: 230 PRA_SHP: 999 TOP:    0 NEXT:   -1 els below OD_SHP: 0 33 -1 0, els over PRA_SHP: 0, VDStartP: 11 	eq  ('='@1:1)
+  DEBUG:root:instrs:    375 ticks:    585 ISN:   2 IP: 213 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:   33 els below OD_SHP: 0 33 -1, els over PRA_SHP: 0, VDStartP: 11 	eq  ('='@1:1)
+  DEBUG:root:instrs:    376 ticks:    586 ISN:   1 IP: 214 OD_SHP: 229 PRA_SHP: 999 TOP:   -1 NEXT:   33 els below OD_SHP: 0 33 -1, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('until'@1:1)
+  DEBUG:root:instrs:    377 ticks:    587 ISN:   1 IP: 215 OD_SHP: 230 PRA_SHP: 999 TOP:    0 NEXT:   -1 els below OD_SHP: 0 33 -1 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    377 ticks:    588 ISN:   2 IP: 215 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:   33 els below OD_SHP: 0 33 -1, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    378 ticks:    589 ISN:   1 IP: 216 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:   33 els below OD_SHP: 0 33 0, els over PRA_SHP: 0, VDStartP: 11 	exec cond jmp -6  ('until'@1:1)
+  DEBUG:root:instrs:    379 ticks:    590 ISN:   1 IP: 217 OD_SHP: 228 PRA_SHP: 999 TOP:   33 NEXT: None els below OD_SHP: 0 33, els over PRA_SHP: 0, VDStartP: 11 	write port 0  ('emit'@1:1)
+  DEBUG:root:instrs:    380 ticks:    591 ISN:   1 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:Printed: !
+  DEBUG:root:Read interruption!!! instrs:    380 ticks:    591 ISN:   1 IP:   3 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	dup  ('dup'@1:1)
+  DEBUG:root:instrs:    381 ticks:    595 ISN:   1 IP:   4 OD_SHP: 228 PRA_SHP: 997 TOP:    0 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	number 119  ('119'@2:1)
+  DEBUG:root:instrs:    382 ticks:    596 ISN:   1 IP:   5 OD_SHP: 229 PRA_SHP: 997 TOP:  119 NEXT:    0 els below OD_SHP: 0 0 119, els over PRA_SHP: 1 218 0, VDStartP: 11 	eq  ('='@2:2)
+  DEBUG:root:instrs:    382 ticks:    597 ISN:   2 IP:   5 OD_SHP: 228 PRA_SHP: 997 TOP:   -1 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	eq  ('='@2:2)
+  DEBUG:root:instrs:    383 ticks:    598 ISN:   1 IP:   6 OD_SHP: 228 PRA_SHP: 997 TOP:   -1 NEXT: None els below OD_SHP: 0 -1, els over PRA_SHP: 1 218 0, VDStartP: 11 	exec if  ('if'@2:3)
+  DEBUG:root:instrs:    384 ticks:    599 ISN:   1 IP:   7 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	jmp 3  ('if'@2:3)
+  DEBUG:root:instrs:    385 ticks:    600 ISN:   1 IP:  10 OD_SHP: 227 PRA_SHP: 997 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 1 218 0, VDStartP: 11 	halt  (''@-1:-1)
+  DEBUG:root:Interruption exit!!!
+  DEBUG:root:instrs:    385 ticks:    601 ISN:   1 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    385 ticks:    602 ISN:   2 IP: 218 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    386 ticks:    603 ISN:   1 IP: 219 OD_SHP: 228 PRA_SHP: 999 TOP:   22 NEXT: None els below OD_SHP: 0 22, els over PRA_SHP: 0, VDStartP: 11 	number 1  ('1'@1:1)
+  DEBUG:root:instrs:    387 ticks:    604 ISN:   1 IP: 220 OD_SHP: 229 PRA_SHP: 999 TOP:    1 NEXT:   22 els below OD_SHP: 0 22 1, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:    387 ticks:    605 ISN:   2 IP: 220 OD_SHP: 228 PRA_SHP: 999 TOP:   23 NEXT: None els below OD_SHP: 0 22, els over PRA_SHP: 0, VDStartP: 11 	sum  ('+'@1:1)
+  DEBUG:root:instrs:    388 ticks:    606 ISN:   1 IP: 221 OD_SHP: 228 PRA_SHP: 999 TOP:   23 NEXT: None els below OD_SHP: 0 23, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:    388 ticks:    607 ISN:   2 IP: 221 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 23, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:    389 ticks:    608 ISN:   1 IP: 222 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('0'@1:1)
+  DEBUG:root:instrs:    390 ticks:    609 ISN:   1 IP: 223 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('until'@1:1)
+  DEBUG:root:instrs:    391 ticks:    610 ISN:   1 IP: 224 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:    0 els below OD_SHP: 0 0 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    391 ticks:    611 ISN:   2 IP: 224 OD_SHP: 228 PRA_SHP: 999 TOP:   -1 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	neq  ('until'@1:1)
+  DEBUG:root:instrs:    392 ticks:    612 ISN:   1 IP: 225 OD_SHP: 228 PRA_SHP: 999 TOP:   -1 NEXT: None els below OD_SHP: 0 -1, els over PRA_SHP: 0, VDStartP: 11 	exec cond jmp -22  ('until'@1:1)
+  DEBUG:root:instrs:    393 ticks:    613 ISN:   1 IP: 204 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    393 ticks:    614 ISN:   2 IP: 204 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
+  DEBUG:root:instrs:    394 ticks:    615 ISN:   1 IP: 205 OD_SHP: 228 PRA_SHP: 999 TOP:   23 NEXT: None els below OD_SHP: 0 23, els over PRA_SHP: 0, VDStartP: 11 	pick absolute  ('pick_absolute'@1:1)
+  DEBUG:root:instrs:    394 ticks:    616 ISN:   2 IP: 205 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 23, els over PRA_SHP: 0, VDStartP: 11 	pick absolute  ('pick_absolute'@1:1)
+  DEBUG:root:instrs:    395 ticks:    617 ISN:   1 IP: 206 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	dup  ('dup'@1:1)
+  DEBUG:root:instrs:    396 ticks:    618 ISN:   1 IP: 207 OD_SHP: 229 PRA_SHP: 999 TOP:    0 NEXT:    0 els below OD_SHP: 0 0 0, els over PRA_SHP: 0, VDStartP: 11 	exec if  ('if'@1:1)
+  DEBUG:root:instrs:    397 ticks:    619 ISN:   1 IP: 209 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	shift back  ('drop'@1:1)
+  DEBUG:root:instrs:    398 ticks:    620 ISN:   1 IP: 210 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	jmp 16  ('leave'@1:1)
+  DEBUG:root:instrs:    399 ticks:    621 ISN:   1 IP: 226 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	halt  (''@-1:-1)
+  INFO:root:ticks count: 621
+  INFO:root:instructions count: 399

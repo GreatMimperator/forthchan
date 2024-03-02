@@ -1,24 +1,23 @@
 from __future__ import annotations
 
 import re
-import struct
 import sys
+import math
 
 from isa import Instruction, Opcode, Term, write_code
 
 
-def is_int64(value: int) -> bool:
-    try:
-        packed_value = struct.pack("q", value)
-        return len(packed_value) == 8
-    except struct.error:
-        return False
+def is_int56(value: int) -> bool:
+    if value < 0:
+        return -value > -(2**56)
+    else:
+        return value < 2**56 - 1
 
 
 def is_correct_number(char_seq: str) -> bool:
     try:
         value = int(char_seq)
-        return is_int64(value)
+        return is_int56(value)
     except ValueError:
         return False
 
@@ -313,19 +312,19 @@ def print_string_code_terms(term: Term) -> map:
         re.split(
             r"\s+",
             """_string_pointer!
-                            begin
-                                 _string_pointer? pick_absolute
-                                 dup
-                                 if
-                                    drop
-                                    leave
-                                 then
-                                 begin
-                                    cant_emit
-                                 0 = until
-                                 emit
-                                 _string_pointer? 1 + _string_pointer!
-                            0 until""",
+                begin
+                     _string_pointer? pick_absolute
+                     dup
+                     if
+                        drop
+                        leave
+                     then
+                     begin
+                        cant_emit
+                     0 = until
+                     emit
+                     _string_pointer? 1 + _string_pointer!
+                0 until""",
         ),
     )
 

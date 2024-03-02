@@ -328,10 +328,7 @@ def support_imm_string_terms(terms: list[Term]) -> list[Term]:
         new_terms.extend(
             map(
                 lambda name: Term(term.line_number, term.line_position, name),
-                re.split(
-                    r"\s+",
-                    """0 _string_pointer? put_absolute"""
-                ),
+                re.split(r"\s+", """0 _string_pointer? put_absolute"""),
             )
         )
         string_index += 1
@@ -345,8 +342,6 @@ def support_imm_string_terms(terms: list[Term]) -> list[Term]:
         else:
             new_terms.append(term)
     return new_terms
-
-
 
 
 def translate(lines):

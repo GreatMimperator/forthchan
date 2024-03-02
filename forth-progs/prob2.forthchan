@@ -1,0 +1,62 @@
+:read_number
+    -1 counter!
+	begin
+		counter? 1 + counter!			\ increment counter
+		begin
+		    has_input
+		0 <> until
+		key
+		dup 96 =		\ check if key is `
+	0 <> until
+	drop 	\ ignore `, after counter is on top
+	0 result_number!
+	1 digit_power!
+	begin
+	    counter? 1 - counter!
+	    48 - digit_power? *
+	    result_number? + result_number!
+        digit_power? 10 * digit_power!
+	    counter?
+	0 <> until
+	result_number?  \ return
+;
+
+:print_int
+    input!
+    0 print_int_counter!
+    begin
+        print_int_counter? 1 + print_int_counter!
+        input? 10 mod
+        input? 10 / input!
+        input?
+    0 <> until
+    print_int_counter?
+    0
+    do
+		begin
+		    cant_emit
+		0 = until
+		48 +
+        emit
+    loop
+;
+
+:limited_fib
+    dudup + swap drop
+    dup limit? <=
+    if
+        dup 2 mod 0 =
+        if
+            dup answer? + answer!
+        then
+        swap
+        limited_fib
+    then
+;
+
+0 answer!
+read_number limit!
+2 answer!
+2 1
+limited_fib
+answer? print_int

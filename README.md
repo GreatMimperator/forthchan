@@ -475,7 +475,7 @@ jobs:
 Пример проверки исходного кода:
 
 ```shell
-# poetry run pytest . -v                                                                                                                                                                                                                                                                                                                   ✔  forthchan  
+$ poetry run pytest . -v                                                                                                                                                                                                                                                                                                                   ✔  forthchan  
 
 ====================================================================================================================================================================================================== test session starts =======================================================================================================================================================================================================
 platform linux -- Python 3.11.7, pytest-7.4.4, pluggy-1.4.0 -- /home/imperator/Documents/university/labs/arch-comp/forthchan/venv/bin/python
@@ -491,8 +491,8 @@ integration_test.py::test_translator_and_machine[golden/prob2.yml] PASSED       
 integration_test.py::test_translator_and_machine[golden/alice.yml] PASSED                                                                                                                                                                                                                                                                                                                                                  [100%]
 
 ======================================================================================================================================================================================================= 4 passed in 1.03s ========================================================================================================================================================================================================
-# poetry run ruff check .                                                                                                                                                                                                                                                                                                                  ✔  forthchan  
+$ poetry run ruff check .                                                                                                                                                                                                                                                                                                                  ✔  forthchan  
 
-# poetry run ruff format .                                                                                                                                                                                                                                                                                                                 ✔  forthchan  
+$ poetry run ruff format .                                                                                                                                                                                                                                                                                                                 ✔  forthchan  
 4 files left unchanged
 ```

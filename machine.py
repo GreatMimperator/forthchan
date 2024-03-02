@@ -92,6 +92,8 @@ class DataPath:
 
     var_data_start_point: int = None
 
+    is_in_interruption: bool = False
+
     class RegsState:
         ip: int
         od_shp: int
@@ -169,7 +171,7 @@ class DataPath:
             case _:
                 raise "fatal"
 
-    def latch_od_shp(self, instruction: Instruction, latch_input: LatchInput):
+    def latch_od_shp(self, latch_input: LatchInput):
         match latch_input:
             case LatchInput.OD_SHP_INC:
                 self.od_sh_pointer += 1
@@ -180,7 +182,7 @@ class DataPath:
             case _:
                 raise "fatal"
 
-    def latch_pra_shp(self, instruction: Instruction, latch_input: LatchInput):
+    def latch_pra_shp(self, latch_input: LatchInput):
         match latch_input:
             case LatchInput.PRA_SHP_INC:
                 self.pra_shp_pointer += 1
@@ -453,6 +455,15 @@ class DataPath:
             case _:
                 raise "fatal exception"
 
+    def latch_is_in_interruption(self, latch_input: LatchInput):
+        match latch_input:
+            case LatchInput.TRUE:
+                self.is_in_interruption = True
+            case LatchInput.FALSE:
+                self.is_in_interruption = False
+            case _:
+                raise "fatal exception"
+
 
 class ControlUnit:
     """Блок управления процессора. Выполняет декодирование инструкций и
@@ -462,8 +473,6 @@ class ControlUnit:
     Следовательно, индекс памяти команд эквивалентен номеру инструкции."""
 
     data_path: DataPath
-
-    is_in_interruption: bool = False
 
     ticks_counter: int = 0
 
@@ -493,14 +502,14 @@ class ControlUnit:
         is_last_instruction_tick = False
         match instruction.opcode:
             case Opcode.HALT:
-                if not self.is_in_interruption:
+                if not self.data_path.is_in_interruption:
                     raise StopIteration()
                 self.data_path.instruction_stage_number = self.data_path.data_memory[self.data_path.pra_shp_pointer]
                 self.data_path.pra_shp_pointer += 1
                 self.data_path.instruction_pointer = self.data_path.data_memory[self.data_path.pra_shp_pointer]
                 self.data_path.pra_shp_pointer += 1
                 self.ticks_counter += 1  # 2 ticks to restore
-                self.is_in_interruption = False
+                self.data_path.latch_is_in_interruption(LatchInput.FALSE)
                 logging.debug("Interruption exit!!!")
                 return True
 
@@ -571,7 +580,7 @@ class ControlUnit:
                 self.data_path.latch_next(instruction, LatchInput.TOP)
                 self.data_path.latch_memory_data(instruction, LatchInput.ARG)
                 self.data_path.latch_top(instruction, LatchInput.ARG)
-                self.data_path.latch_od_shp(instruction, LatchInput.OD_SHP_INC)
+                self.data_path.latch_od_shp(LatchInput.OD_SHP_INC)
                 self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                 return True
             case (
@@ -591,7 +600,7 @@ class ControlUnit:
                     case 1:
                         self.data_path.latch_top(instruction, LatchInput.ALU_OUT)
                         self.data_path.latch_next(instruction, LatchInput.MA_OUT)
-                        self.data_path.latch_od_shp(instruction, LatchInput.OD_SHP_DEC)
+                        self.data_path.latch_od_shp(LatchInput.OD_SHP_DEC)
                     case 2:
                         self.data_path.latch_memory_data(instruction, LatchInput.TOP)
                         self.data_path.latch_ip(instruction, LatchInput.IP_INC)
@@ -601,14 +610,14 @@ class ControlUnit:
             case Opcode.SHIFT_BACK:
                 self.data_path.latch_top(instruction, LatchInput.NEXT)
                 self.data_path.latch_next(instruction, LatchInput.MA_OUT)
-                self.data_path.latch_od_shp(instruction, LatchInput.OD_SHP_DEC)
+                self.data_path.latch_od_shp(LatchInput.OD_SHP_DEC)
                 self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                 return True
             case Opcode.PUT | Opcode.PUT_ABSOLUTE:
                 match self.data_path.instruction_stage_number:
                     case 1:
                         self.data_path.latch_memory_data(instruction, LatchInput.NEXT)
-                        self.data_path.latch_od_shp(instruction, LatchInput.OD_SHP_MINUS_TWO)
+                        self.data_path.latch_od_shp(LatchInput.OD_SHP_MINUS_TWO)
                     case 2:
                         self.data_path.latch_top(instruction, LatchInput.MA_OUT)
                         self.data_path.latch_next(instruction, LatchInput.MA_MINUS_ONE_OUT)
@@ -646,7 +655,7 @@ class ControlUnit:
         match instruction.opcode:
             case Opcode.PUSH_INC_INC_IP_TO_PRA_SHP:
                 self.data_path.latch_memory_data(instruction, LatchInput.IP_PLUS_TWO)
-                self.data_path.latch_pra_shp(instruction, LatchInput.PRA_SHP_DEC)
+                self.data_path.latch_pra_shp(LatchInput.PRA_SHP_DEC)
                 self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                 return True
             case Opcode.INCREMENT_RET | Opcode.DECREMENT_RET:
@@ -665,7 +674,7 @@ class ControlUnit:
                 match self.data_path.instruction_stage_number:
                     case 1:
                         self.data_path.latch_top(instruction, LatchInput.ALU_OUT)
-                        self.data_path.latch_pra_shp(instruction, LatchInput.PRA_SHP_DEC)
+                        self.data_path.latch_pra_shp(LatchInput.PRA_SHP_DEC)
                     case 2:
                         self.data_path.latch_memory_data(instruction, LatchInput.TOP)
                     case 3:
@@ -678,9 +687,9 @@ class ControlUnit:
                 match self.data_path.instruction_stage_number:
                     case 1:
                         self.data_path.latch_memory_data(instruction, LatchInput.TOP)
-                        self.data_path.latch_pra_shp(instruction, LatchInput.PRA_SHP_DEC)
+                        self.data_path.latch_pra_shp(LatchInput.PRA_SHP_DEC)
                         self.data_path.latch_top(instruction, LatchInput.NEXT)
-                        self.data_path.latch_od_shp(instruction, LatchInput.OD_SHP_DEC)
+                        self.data_path.latch_od_shp(LatchInput.OD_SHP_DEC)
                     case 2:
                         self.data_path.latch_next(instruction, LatchInput.MA_MINUS_ONE_OUT)
                         self.data_path.latch_ip(instruction, LatchInput.IP_INC)
@@ -691,7 +700,7 @@ class ControlUnit:
                 match self.data_path.instruction_stage_number:
                     case 1:
                         self.data_path.latch_top(instruction, LatchInput.MA_OUT)
-                        self.data_path.latch_od_shp(instruction, LatchInput.OD_SHP_INC)
+                        self.data_path.latch_od_shp(LatchInput.OD_SHP_INC)
                     case 2:
                         self.data_path.latch_memory_data(instruction, LatchInput.TOP)
                     case 3:
@@ -701,7 +710,7 @@ class ControlUnit:
                     case _:
                         raise "fatal exception"
             case Opcode.SHIFT_BACK_RET:
-                self.data_path.latch_pra_shp(instruction, LatchInput.PRA_SHP_INC)
+                self.data_path.latch_pra_shp(LatchInput.PRA_SHP_INC)
                 self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                 return True
             case _:
@@ -715,7 +724,7 @@ class ControlUnit:
                 self.data_path.latch_top(instruction, LatchInput.PORT_VALUE)
                 self.data_path.latch_memory_data(instruction, LatchInput.PORT_VALUE)
                 self.data_path.latch_port_flags(instruction, LatchInput.FALSE)
-                self.data_path.latch_od_shp(instruction, LatchInput.OD_SHP_INC)
+                self.data_path.latch_od_shp(LatchInput.OD_SHP_INC)
                 self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                 return True
             case Opcode.WRITE_PORT:
@@ -723,7 +732,7 @@ class ControlUnit:
                 self.data_path.latch_top(instruction, LatchInput.NEXT)
                 self.data_path.latch_next(instruction, LatchInput.MA_MINUS_ONE_OUT)
                 self.data_path.latch_port_flags(instruction, LatchInput.TRUE)
-                self.data_path.latch_od_shp(instruction, LatchInput.OD_SHP_DEC)
+                self.data_path.latch_od_shp(LatchInput.OD_SHP_DEC)
                 self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                 return True
             case Opcode.HAS_PORT_FILLED_WITH_CPU | Opcode.HAS_PORT_FILLED_WITH_DEVICE:
@@ -737,7 +746,7 @@ class ControlUnit:
                         self.data_path.latch_top(instruction, LatchInput.HAS_PORT_FILLED_WITH_DEVICE)
                     case _:
                         raise "fatal exception"
-                self.data_path.latch_od_shp(instruction, LatchInput.OD_SHP_INC)
+                self.data_path.latch_od_shp(LatchInput.OD_SHP_INC)
                 self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                 return True
             case _:
@@ -753,7 +762,7 @@ class ControlUnit:
                         self.data_path.latch_top(instruction, LatchInput.MA_OUT)
                     case 2:
                         self.data_path.latch_memory_data(instruction, LatchInput.TOP)
-                        self.data_path.latch_od_shp(instruction, LatchInput.OD_SHP_INC)
+                        self.data_path.latch_od_shp(LatchInput.OD_SHP_INC)
                         self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                         return True
             case Opcode.WRITE_VARDATA:
@@ -763,7 +772,7 @@ class ControlUnit:
                         self.data_path.latch_top(instruction, LatchInput.NEXT)
                     case 2:
                         self.data_path.latch_next(instruction, LatchInput.MA_MINUS_ONE_OUT)
-                        self.data_path.latch_od_shp(instruction, LatchInput.OD_SHP_DEC)
+                        self.data_path.latch_od_shp(LatchInput.OD_SHP_DEC)
                         self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                         return True
             case Opcode.SUM_TOP_WITH_VDSP:
@@ -783,7 +792,7 @@ class ControlUnit:
                         self.data_path.latch_top(instruction, LatchInput.MA_OUT)
                     case 2:
                         self.data_path.latch_memory_data(instruction, LatchInput.TOP)
-                        self.data_path.latch_pra_shp(instruction, LatchInput.PRA_SHP_INC)
+                        self.data_path.latch_pra_shp(LatchInput.PRA_SHP_INC)
                     case 3:
                         self.data_path.latch_top(instruction, LatchInput.MA_OUT)
                         self.data_path.latch_ip(instruction, LatchInput.IP_INC)
@@ -793,17 +802,17 @@ class ControlUnit:
             case Opcode.DUP:
                 self.data_path.latch_next(instruction, LatchInput.TOP)
                 self.data_path.latch_memory_data(instruction, LatchInput.TOP)
-                self.data_path.latch_od_shp(instruction, LatchInput.OD_SHP_INC)
+                self.data_path.latch_od_shp(LatchInput.OD_SHP_INC)
                 self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                 return True
             case Opcode.DUDUP:
                 match self.data_path.instruction_stage_number:
                     case 1:
                         self.data_path.latch_memory_data(instruction, LatchInput.NEXT)
-                        self.data_path.latch_od_shp(instruction, LatchInput.OD_SHP_INC)
+                        self.data_path.latch_od_shp(LatchInput.OD_SHP_INC)
                     case 2:
                         self.data_path.latch_memory_data(instruction, LatchInput.TOP)
-                        self.data_path.latch_od_shp(instruction, LatchInput.OD_SHP_INC)
+                        self.data_path.latch_od_shp(LatchInput.OD_SHP_INC)
                         self.data_path.latch_ip(instruction, LatchInput.IP_INC)
                         return True
                     case _:
@@ -821,17 +830,17 @@ class ControlUnit:
                 self.data_path.latch_next(instruction, LatchInput.MA_MINUS_ONE_OUT)
                 self.data_path.latch_ip(instruction, LatchInput.IP_CONV_SIG_SUM_INC)
                 self.data_path.latch_top(instruction, LatchInput.NEXT)
-                self.data_path.latch_od_shp(instruction, LatchInput.OD_SHP_DEC)
+                self.data_path.latch_od_shp(LatchInput.OD_SHP_DEC)
                 return True
             case Opcode.EXEC_COND_JMP_RET:
                 self.data_path.latch_ip(instruction, LatchInput.IP_CONV_SIG_SUM_INC)
-                self.data_path.latch_pra_shp(instruction, LatchInput.PRA_SHP_INC)
+                self.data_path.latch_pra_shp(LatchInput.PRA_SHP_INC)
                 return True
             case Opcode.JMP_POP_PRA_SHP:
                 match self.data_path.instruction_stage_number:
                     case 1:
                         self.data_path.latch_top(instruction, LatchInput.MA_OUT)
-                        self.data_path.latch_pra_shp(instruction, LatchInput.PRA_SHP_INC)
+                        self.data_path.latch_pra_shp(LatchInput.PRA_SHP_INC)
                     case 2:
                         self.data_path.latch_ip(instruction, LatchInput.TOP)
                         self.data_path.latch_top(instruction, LatchInput.MA_OUT)
@@ -957,8 +966,8 @@ def do_simulation(control_unit: ControlUnit, trimmed_input_tokens: dict[int, int
     data_path = control_unit.data_path
     while control_unit.ticks_counter < ticks_limit:
         if control_unit.ticks_counter in trimmed_input_tokens:
-            if not control_unit.is_in_interruption:
-                control_unit.is_in_interruption = True
+            if not control_unit.data_path.is_in_interruption:
+                control_unit.data_path.latch_is_in_interruption(LatchInput.TRUE)
                 control_unit.data_path.ports[main_port_number].data = trimmed_input_tokens[control_unit.ticks_counter]
                 control_unit.data_path.ports[main_port_number].filled_with_device = True
                 control_unit.step_in_port_interruption(main_port_number, True)
@@ -979,7 +988,7 @@ def do_simulation(control_unit: ControlUnit, trimmed_input_tokens: dict[int, int
             else:
                 print(char_to_print, end="", flush=True)
             data_path.ports[main_port_number].filled_with_cpu = False
-            control_unit.is_in_interruption = True
+            control_unit.data_path.latch_is_in_interruption(LatchInput.TRUE)
             control_unit.step_in_port_interruption(main_port_number, False)  # 1 instruction
             logging.debug("Read interruption!!! %s", control_unit)
             control_unit.ticks_counter += 3

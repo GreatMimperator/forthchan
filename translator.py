@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import re
 import sys
-import math
 
 from isa import Instruction, Opcode, Term, write_code
 
@@ -10,8 +9,7 @@ from isa import Instruction, Opcode, Term, write_code
 def is_int56(value: int) -> bool:
     if value < 0:
         return -value > -(2**56)
-    else:
-        return value < 2**56 - 1
+    return value < 2**56 - 1
 
 
 def is_correct_number(char_seq: str) -> bool:

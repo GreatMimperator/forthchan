@@ -357,22 +357,37 @@ _string&
 
 Реализовано в модуле: `machine`
 
+### Datapath
+
 Реализован в классе DataPath.
+
+#### TOS:
+
+![изображение](https://github.com/GreatMimperator/forthchan/assets/93261336/45b1142f-b40e-46f0-ae9e-3992bd1bfc91)
+
+#### Datapath:
+
+![изображение](https://github.com/GreatMimperator/forthchan/assets/93261336/a4d35da6-7de5-47db-a253-f7e2580fa0a9)
 
 data_memory - однопортовая память, поэтому либо читаем, либо пишем 
 
 Сигналы (обрабатываются за один такт, реализованы в виде методов класса):
 
-- latch_ip - защелкнуть выбранное значение в `IP`
-- latch_od_shp - в `OD_SHP` 
-- latch_pra_shp - в `PRA_SHP`
-- latch_top - в `TOP`
-- latch_next - в `NEXT`
-- latch_memory_data - в память
-- signal_increment_instruction_stage_number - увеличенный на 1 `isn` в `isn`
-- signal_reset_instruction_stage_number - 1 в `isn`
-- latch_port_flags - флаги порта (индекс в `arg`)
-- latch_port_value - значение порта 
+- `latch_ip` - защелкнуть выбранное значение в `IP`
+- `latch_od_shp` - в `OD_SHP` 
+- `latch_pra_shp` - в `PRA_SHP`
+- `latch_top` - в `TOP`
+- `latch_next` - в `NEXT`
+- `latch_memory_data` - в память
+- `signal_increment_instruction_stage_number` - увеличенный на 1 `isn` в `isn`
+- `signal_reset_instruction_stage_number` - 1 в `isn`
+- `latch_port_flags` - флаги порта (индекс в `arg`)
+- `latch_port_value` - значение порта
+- `latch_is_in_interruption` - состояние прерывания
+
+### Control Unit
+
+![изображение](https://github.com/GreatMimperator/forthchan/assets/93261336/64db5a56-4e77-4979-b08f-5e783a491e16)
 
 Реализован в классе ControlUnit.
 
@@ -400,13 +415,99 @@ data_memory - однопортовая память, поэтому либо ч�
 
 Интеграционные тесты реализованы в модуле `integration_test` в виде `golden` тестов:
 
-CI при помощи Github Action: .github/workflows/python.yaml
+CI при помощи Github Action:
+
+```yaml
+name: Translator Model Python CI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/*"
+      - "./**"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/*"
+      - "./**"
+
+defaults:
+  run:
+    working-directory: .
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry
+          poetry install
+      - name: Run tests and collect coverage
+        run: |
+          poetry run coverage run -m pytest .
+          poetry run coverage report -m
+        env:
+          CI: true
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry
+          poetry install
+      - name: Check code formatting with Ruff
+        run: poetry run ruff format --check .
+      - name: Run Ruff linters
+        run: poetry run ruff check .
+```
 
 где:
 
-- poetry - управления зависимостями для языка программирования Python.
-- coverage - формирование отчёта об уровне покрытия исходного кода.
-- pytest - утилита для запуска тестов.
-- ruff - утилита для форматирования и проверки стиля кодирования.
+- `poetry` - управления зависимостями для языка программирования Python.
+- `coverage` - формирование отчёта об уровне покрытия исходного кода.
+- `pytest` - утилита для запуска тестов.
+- `ruff` - утилита для форматирования и проверки стиля кодирования.
 
 Пример проверки исходного кода:
+
+```shell
+$ poetry run pytest . -v                                                                                                                                                                                                                                                                                                                   ✔  forthchan  
+
+====================================================================================================================================================================================================== test session starts =======================================================================================================================================================================================================
+platform linux -- Python 3.11.7, pytest-7.4.4, pluggy-1.4.0 -- /home/imperator/Documents/university/labs/arch-comp/forthchan/venv/bin/python
+cachedir: .pytest_cache
+rootdir: /home/imperator/Documents/university/labs/arch-comp/forthchan
+configfile: pyproject.toml
+plugins: golden-0.2.2
+collected 4 items                                                                                                                                                                                                                                                                                                                                                                                                                
+
+integration_test.py::test_translator_and_machine[golden/cat.yml] PASSED                                                                                                                                                                                                                                                                                                                                                    [ 25%]
+integration_test.py::test_translator_and_machine[golden/hello_world.yml] PASSED                                                                                                                                                                                                                                                                                                                                            [ 50%]
+integration_test.py::test_translator_and_machine[golden/prob2.yml] PASSED                                                                                                                                                                                                                                                                                                                                                  [ 75%]
+integration_test.py::test_translator_and_machine[golden/alice.yml] PASSED                                                                                                                                                                                                                                                                                                                                                  [100%]
+
+======================================================================================================================================================================================================= 4 passed in 1.03s ========================================================================================================================================================================================================
+$ poetry run ruff check .                                                                                                                                                                                                                                                                                                                  ✔  forthchan  
+
+$ poetry run ruff format .                                                                                                                                                                                                                                                                                                                 ✔  forthchan  
+4 files left unchanged
+```

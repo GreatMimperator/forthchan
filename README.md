@@ -514,6 +514,7 @@ $ poetry run ruff check .                                                       
 
 $ poetry run ruff format .                                                                                                                                                                                                                                                                                                                 ✔  forthchan  
 4 files left unchanged
+```
 ```text
 | ФИО                            | алг     | LoC | code байт | code инстр. | инстр. | такт. | вариант                                                                         |
 | Зенин Мирон Александрович      | alice   | 17   | -        | 350         | 1502   | 2280  | forth | stack | neum | hw | tick | struct | trap | port | cstr | prob2          |

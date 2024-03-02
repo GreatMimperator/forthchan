@@ -1,6 +1,6 @@
-# Forthchan
+![изображение](https://github.com/GreatMimperator/forthchan/assets/93261336/5e48b18d-e161-4fb4-b954-a33776cdd3dc)# Forthchan
 Зенин Мирон Александрович, Группа P33101  
-Вариант: `forth | stack | neum | hw | tick | struct | trap | port | cstr | prob1`  
+Вариант: `forth | stack | neum | hw | tick | struct | trap | port | cstr | prob2`  
 Без усложнения  
 # Язык программирования
 ```ebnf
@@ -365,9 +365,13 @@ _string&
 
 ![изображение](https://github.com/GreatMimperator/forthchan/assets/93261336/45b1142f-b40e-46f0-ae9e-3992bd1bfc91)
 
+### Instruction Pointer:
+
+![изображение](https://github.com/GreatMimperator/forthchan/assets/93261336/85d13515-b90d-4a11-b905-0eccc24c89d6)
+
 #### Datapath:
 
-![изображение](https://github.com/GreatMimperator/forthchan/assets/93261336/a4d35da6-7de5-47db-a253-f7e2580fa0a9)
+![изображение](https://github.com/GreatMimperator/forthchan/assets/93261336/639c6986-e711-4d3c-bbac-2fb36770fe10)
 
 data_memory - однопортовая память, поэтому либо читаем, либо пишем 
 
@@ -511,3 +515,8 @@ $ poetry run ruff check .                                                       
 $ poetry run ruff format .                                                                                                                                                                                                                                                                                                                 ✔  forthchan  
 4 files left unchanged
 ```
+| ФИО                            | алг     | LoC | code байт | code инстр. | инстр. | такт. | вариант                                                                         |
+| Зенин Мирон Александрович      | alice   | 17   | -        | 350         | 1502   | 2280  | forth | stack | neum | hw | tick | struct | trap | port | cstr | prob2          |
+| Зенин Мирон Александрович      | cat     | 47   | -        | 80          | 1336   | 1336  | forth | stack | neum | hw | tick | struct | trap | port | cstr | prob2          |
+| Зенин Мирон Александрович      | hello   | 1    | -        | 116         | 399    | 621   | forth | stack | neum | hw | tick | struct | trap | port | cstr | prob2         |
+| Зенин Мирон Александрович      | prob2   | 62   | -        | 126         | 1760   | 2636  | forth | stack | neum | hw | tick | struct | trap | port | cstr | prob2          |

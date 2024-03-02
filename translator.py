@@ -29,7 +29,7 @@ def is_comparator_word(char_seq: str) -> bool:
 
 
 def is_user_word(char_seq: str) -> bool:
-    return re.fullmatch(r"[a-zA-Z][a-zA-Z\-\\_]*", char_seq) is not None
+    return re.fullmatch(r"[a-zA-Z][a-zA-Z\\_0-9]*", char_seq) is not None
 
 
 def is_compiler_word(char_seq: str) -> bool:
@@ -264,41 +264,6 @@ def replace_complex_terms(terms: list[Term]) -> list[Term]:
     for term in terms:
         if term.name == "print_string":
             new_terms.extend(print_string_code_terms(term))
-        elif is_string_imm_printing(term.name):
-            string = term.name[1:-1]
-            new_terms.extend(
-                map(
-                    lambda name: Term(term.line_number, term.line_position, name),
-                    re.split(
-                        r"\s+",
-                        f"""_string-{len(string) + 1}
-                    _string& _string_pointer!""",
-                    ),
-                )
-            )
-            for ch in string:
-                new_terms.extend(
-                    map(
-                        lambda name: Term(term.line_number, term.line_position, name),
-                        re.split(
-                            r"\s+",
-                            f"""{ord(ch)}
-                        _string_pointer? put_absolute
-                        _string_pointer? 1 + _string_pointer!""",
-                        ),
-                    )
-                )
-            new_terms.extend(
-                map(
-                    lambda name: Term(term.line_number, term.line_position, name),
-                    re.split(
-                        r"\s+",
-                        """0 _string_pointer? put_absolute
-                    _string&""",
-                    ),
-                )
-            )
-            new_terms.extend(print_string_code_terms(term))
         else:
             new_terms.append(term)
     return new_terms
@@ -327,11 +292,69 @@ def print_string_code_terms(term: Term) -> map:
     )
 
 
+def support_imm_string_terms(terms: list[Term]) -> list[Term]:
+    unique_strings_with_length: dict[str, int] = {}
+    for term in terms:
+        if is_string_imm_printing(term.name):
+            string: str = term.name[1:-1]
+            unique_strings_with_length[string] = len(string)
+    new_terms: list[Term] = []
+    unique_strings_with_index: dict[str, int] = {}
+    string_index = 0
+    for string, length in unique_strings_with_length.items():
+        unique_strings_with_index[string] = string_index
+        new_terms.extend(
+            map(
+                lambda name: Term(-1, -1, name),
+                re.split(
+                    r"\s+",
+                    f"""_string_{string_index}-{length + 1}
+                    _string_{string_index}& _string_pointer!""",
+                ),
+            )
+        )
+        for ch in string:
+            new_terms.extend(
+                map(
+                    lambda name: Term(term.line_number, term.line_position, name),
+                    re.split(
+                        r"\s+",
+                        f"""{ord(ch)}
+                        _string_pointer? put_absolute
+                        _string_pointer? 1 + _string_pointer!""",
+                    ),
+                )
+            )
+        new_terms.extend(
+            map(
+                lambda name: Term(term.line_number, term.line_position, name),
+                re.split(
+                    r"\s+",
+                    """0 _string_pointer? put_absolute"""
+                ),
+            )
+        )
+        string_index += 1
+
+    for term in terms:
+        if is_string_imm_printing(term.name):
+            string: str = term.name[1:-1]
+            string_index = unique_strings_with_index[string]
+            new_terms.append(Term(term.line_number, term.line_position, f"_string_{string_index}&"))
+            new_terms.extend(print_string_code_terms(term))
+        else:
+            new_terms.append(term)
+    return new_terms
+
+
+
+
 def translate(lines):
     """Трансляция текста программы в машинный код"""
     terms = lines_to_terms(lines)
     code_correctness_check(terms)
     terms = replace_complex_terms(terms)
+    terms = support_imm_string_terms(terms)
 
     word_def_pc: dict[str, int] = {}
     word_jmp_pcs: dict[str, list[int]] = {}

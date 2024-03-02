@@ -8,7 +8,7 @@ in_stdin: |
   1400 n
   1500 `
 out_stdout: |
-  _string 13
+  _string_0 13
   _string_pointer 1
   Total busy static memory cells: 14
   source LoC: 1 code instr: 116
@@ -26,9 +26,9 @@ read_interruption_handler: |
 write_interruption_handler: |
   [{"index": 0, "opcode": "halt", "arg": null, "term": {"line_number": -1, "line_position": -1, "name": ""}}]
 out_code: |-
-  [{"index": 0, "opcode": "number", "arg": 0, "term": {"line_number": 1, "line_position": 1, "name": "_string&"}},
-   {"index": 1, "opcode": "sum top with vdsp", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "_string&"}},
-   {"index": 2, "opcode": "write vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer!"}},
+  [{"index": 0, "opcode": "number", "arg": 0, "term": {"line_number": -1, "line_position": -1, "name": "_string_0&"}},
+   {"index": 1, "opcode": "sum top with vdsp", "arg": null, "term": {"line_number": -1, "line_position": -1, "name": "_string_0&"}},
+   {"index": 2, "opcode": "write vardata", "arg": 13, "term": {"line_number": -1, "line_position": -1, "name": "_string_pointer!"}},
    {"index": 3, "opcode": "number", "arg": 72, "term": {"line_number": 1, "line_position": 1, "name": "72"}},
    {"index": 4, "opcode": "read vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer?"}},
    {"index": 5, "opcode": "put absolute", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "put_absolute"}},
@@ -116,8 +116,8 @@ out_code: |-
    {"index": 87, "opcode": "number", "arg": 0, "term": {"line_number": 1, "line_position": 1, "name": "0"}},
    {"index": 88, "opcode": "read vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer?"}},
    {"index": 89, "opcode": "put absolute", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "put_absolute"}},
-   {"index": 90, "opcode": "number", "arg": 0, "term": {"line_number": 1, "line_position": 1, "name": "_string&"}},
-   {"index": 91, "opcode": "sum top with vdsp", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "_string&"}},
+   {"index": 90, "opcode": "number", "arg": 0, "term": {"line_number": 1, "line_position": 1, "name": "_string_0&"}},
+   {"index": 91, "opcode": "sum top with vdsp", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "_string_0&"}},
    {"index": 92, "opcode": "write vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer!"}},
    {"index": 93, "opcode": "read vardata", "arg": 13, "term": {"line_number": 1, "line_position": 1, "name": "_string_pointer?"}},
    {"index": 94, "opcode": "pick absolute", "arg": null, "term": {"line_number": 1, "line_position": 1, "name": "pick_absolute"}},
@@ -144,10 +144,10 @@ out_code: |-
    {"index": 115, "opcode": "halt", "arg": null, "term": {"line_number": -1, "line_position": -1, "name": ""}}]
 out_log: |
   DEBUG:root:11, 111, 227
-  DEBUG:root:instrs:      0 ticks:      0 ISN:   1 IP: 111 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('_string&'@1:1)
-  DEBUG:root:instrs:      1 ticks:      1 ISN:   1 IP: 112 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	sum top with vdsp  ('_string&'@1:1)
-  DEBUG:root:instrs:      2 ticks:      2 ISN:   1 IP: 113 OD_SHP: 228 PRA_SHP: 999 TOP:   11 NEXT: None els below OD_SHP: 0 11, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
-  DEBUG:root:instrs:      2 ticks:      3 ISN:   2 IP: 113 OD_SHP: 228 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0 11, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
+  DEBUG:root:instrs:      0 ticks:      0 ISN:   1 IP: 111 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('_string_0&'@-1:-1)
+  DEBUG:root:instrs:      1 ticks:      1 ISN:   1 IP: 112 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	sum top with vdsp  ('_string_0&'@-1:-1)
+  DEBUG:root:instrs:      2 ticks:      2 ISN:   1 IP: 113 OD_SHP: 228 PRA_SHP: 999 TOP:   11 NEXT: None els below OD_SHP: 0 11, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@-1:-1)
+  DEBUG:root:instrs:      2 ticks:      3 ISN:   2 IP: 113 OD_SHP: 228 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0 11, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@-1:-1)
   DEBUG:root:instrs:      3 ticks:      4 ISN:   1 IP: 114 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	number 72  ('72'@1:1)
   DEBUG:root:instrs:      4 ticks:      5 ISN:   1 IP: 115 OD_SHP: 228 PRA_SHP: 999 TOP:   72 NEXT: None els below OD_SHP: 0 72, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
   DEBUG:root:instrs:      4 ticks:      6 ISN:   2 IP: 115 OD_SHP: 228 PRA_SHP: 999 TOP:   11 NEXT: None els below OD_SHP: 0 72, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
@@ -297,8 +297,8 @@ out_log: |
   DEBUG:root:instrs:     88 ticks:    150 ISN:   2 IP: 199 OD_SHP: 228 PRA_SHP: 999 TOP:   23 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)
   DEBUG:root:instrs:     89 ticks:    151 ISN:   1 IP: 200 OD_SHP: 229 PRA_SHP: 999 TOP:   23 NEXT:    0 els below OD_SHP: 0 0 23, els over PRA_SHP: 0, VDStartP: 11 	put absolute  ('put_absolute'@1:1)
   DEBUG:root:instrs:     89 ticks:    152 ISN:   2 IP: 200 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	put absolute  ('put_absolute'@1:1)
-  DEBUG:root:instrs:     90 ticks:    153 ISN:   1 IP: 201 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('_string&'@1:1)
-  DEBUG:root:instrs:     91 ticks:    154 ISN:   1 IP: 202 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	sum top with vdsp  ('_string&'@1:1)
+  DEBUG:root:instrs:     90 ticks:    153 ISN:   1 IP: 201 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	number 0  ('_string_0&'@1:1)
+  DEBUG:root:instrs:     91 ticks:    154 ISN:   1 IP: 202 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 0, els over PRA_SHP: 0, VDStartP: 11 	sum top with vdsp  ('_string_0&'@1:1)
   DEBUG:root:instrs:     92 ticks:    155 ISN:   1 IP: 203 OD_SHP: 228 PRA_SHP: 999 TOP:   11 NEXT: None els below OD_SHP: 0 11, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
   DEBUG:root:instrs:     92 ticks:    156 ISN:   2 IP: 203 OD_SHP: 228 PRA_SHP: 999 TOP:    0 NEXT: None els below OD_SHP: 0 11, els over PRA_SHP: 0, VDStartP: 11 	write vardata 13  ('_string_pointer!'@1:1)
   DEBUG:root:instrs:     93 ticks:    157 ISN:   1 IP: 204 OD_SHP: 227 PRA_SHP: 999 TOP: None NEXT: None els below OD_SHP: 0, els over PRA_SHP: 0, VDStartP: 11 	read vardata 13  ('_string_pointer?'@1:1)

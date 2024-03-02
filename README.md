@@ -371,7 +371,8 @@ _string&
 
 #### Datapath:
 
-![изображение](https://github.com/GreatMimperator/forthchan/assets/93261336/e02afedb-3cb9-48b1-831e-772d2fe97dd4)
+![изображение](https://github.com/GreatMimperator/forthchan/assets/93261336/2ce2022d-e112-41f1-bf87-ab0bfd384459)
+
 
 data_memory - однопортовая память, поэтому либо читаем, либо пишем 
 
